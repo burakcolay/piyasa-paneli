@@ -81,6 +81,7 @@
       "quote": "BTC.D %59 civarında, yani altcoin'lere geniş bir para akışı yok.",
       "rule": "USDT.D yükselirken kripto rallisi zayıftır; USDT.D düşerken ve TOTAL2 yükselirken altcoin'lere para giriyordur.",
       "related": ["risk"]
-    }
+    },
+    "vadeprimi": {"name": "Vade primi (term premium)", "cat": "Faizler", "learned": "2026-10-06", "def": "Uzun vadeli tahvil alan yatırımcının, parasını uzun süre kilitleme ve enflasyon ile borç belirsizliği için kısa vadeye göre istediği ek getiridir.", "analogy": "Arkadaşına parayı bir haftalığına ödünç verirsen faiz istemezsin; on yıllığına verirsen hem enflasyon hem de ödenmeme riski için ekstra istersin. Bu ekstra, vade primidir.", "chain": ["Enflasyon veya borç arzı endişesi artar", "Yatırımcı uzun tahvil için daha yüksek prim ister", "10 yıllık faiz Fed faizinden bağımsız yükselir", "Hisse değerlemeleri ve borçlanma maliyetleri baskılanır"], "quote": "Zayıf istihdama rağmen 10 yıllık faiz %5,31 ile 2002'den bu yana en yükseğe çıktı; petrol gerileyince 5 baz puan düştü.", "rule": "Kısa faiz düşerken uzun faiz yükseliyorsa sorun Fed beklentisinde değil vade primindedir; enflasyon ve borç arzı haberlerine bak.", "related": ["egri", "faiz"]}
   }
 }
