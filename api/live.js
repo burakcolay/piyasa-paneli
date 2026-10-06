@@ -98,6 +98,7 @@ async function stooq(out, errors) {
 }
 
 module.exports = async (req, res) => {
+  if (String(req.url || '').includes('probe=1')) return require('./probe.js')(req, res);
   const out = { ts: Date.now(), markets: {}, crypto: {}, global: null, fng: null, errors: [] };
 
   const tasks = [
