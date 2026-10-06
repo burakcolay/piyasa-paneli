@@ -276,3 +276,28 @@ i.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; back
 .earn small { font-size: 12px; padding-left: 70px; }
 .earn.hot { background: var(--bad-bg); }
 @media (max-width: 640px) { .earn .top { grid-template-columns: 50px 1fr auto auto; gap: 8px; font-size: 13px; } .earn .top .small { font-size: 12px; } .earn small { padding-left: 0; } }
+
+/* ---------- veriler ne söylüyor ---------- */
+.analysis { padding: 18px; background: var(--bg); border-radius: 10px; display: flex; flex-direction: column; gap: 12px; }
+.analysis h2 { font-size: 21px; }
+.analysis p { font-size: 15.5px; line-height: 1.65; color: var(--ink-2); }
+.effects { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); gap: 8px; margin-top: 8px; }
+.effect { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; }
+.effect span { font-size: 13px; font-weight: 600; }
+.effect small { grid-column: 1 / -1; font-size: 13px; color: var(--muted); line-height: 1.45; }
+
+/* ---------- şirket kartı (bilanço) ---------- */
+.earn { cursor: pointer; }
+.earn:hover { background: var(--accent-soft); }
+.earn .more { color: var(--accent); font-size: 12px; }
+.modal-bg { position: fixed; inset: 0; background: rgba(22,24,29,.45); z-index: 50; display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; overflow-y: auto; }
+.modal { background: var(--card); border-radius: 14px; max-width: 760px; width: 100%; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+.modal .close { margin-left: auto; font: inherit; font-size: 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.modal h2 { font-size: 26px; }
+.modal h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; margin-bottom: 6px; }
+.seg { display: grid; grid-template-columns: 170px 1fr 52px; gap: 8px; align-items: center; font-size: 14px; padding: 3px 0; }
+.seg .bar { height: 10px; background: var(--bg); border-radius: 5px; overflow: hidden; }
+.seg .bar span { display: block; height: 100%; background: var(--accent); border-radius: 5px; }
+.rate-bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin: 6px 0; }
+.modal ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+@media (max-width: 640px) { .modal-bg { padding: 0; } .modal { border-radius: 0; min-height: 100vh; padding: 18px; } .seg { grid-template-columns: 120px 1fr 46px; font-size: 13px; } }

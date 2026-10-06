@@ -5,6 +5,21 @@ const BADGE = { good: 'b-good', bad: 'b-bad', flat: 'b-flat' };
 const TXT = { good: 't-good', bad: 't-bad', flat: 't-flat' };
 const IMPACT = { high: ['b-bad', 'Yüksek'], mid: ['b-mid', 'Orta'], low: ['b-flat', 'Düşük'] };
 
+const DIR = { up: ['▲', 'up', 'Yukarı'], down: ['▼', 'down', 'Aşağı'], flat: ['◆', 'flat', 'Karışık'] };
+function analysisBlock(M) {
+  const A = M.analysis;
+  if (!A) return M.surprises_note ? `<p class="note"><strong>Veriler ne söylüyor:</strong> ${esc(M.surprises_note)}</p>` : '';
+  const chain = A.chain?.length ? `<div class="cause">${A.chain.map((x, i) => `${i ? '<span class="arr">→</span>' : ''}<span class="step">${esc(x)}</span>`).join('')}</div>` : '';
+  return `<div class="analysis">
+    <span class="eyebrow accent">Veriler ne söylüyor</span>
+    <h2>${esc(A.headline)}</h2>
+    ${chain}
+    ${map(A.paragraphs, (p) => `<p>${esc(p)}</p>`)}
+    ${A.effects?.length ? `<div><span class="eyebrow">Piyasalara olası etkisi</span>
+      <div class="effects">${map(A.effects, (e) => { const [ic, cls, lb] = DIR[e.dir] || DIR.flat; return `<div class="effect"><b>${esc(e.asset)}</b><span class="${cls}" title="${lb}">${ic} ${lb}</span><small>${esc(e.why)}</small></div>`; })}</div></div>` : ''}
+  </div>`;
+}
+
 async function main() {
   const ctx = await loadDay();
   const M = ctx.data.makro;
@@ -43,7 +58,7 @@ async function main() {
         <div class="head-row" style="flex-wrap:nowrap"><b style="font-weight:500">${esc(s.name)}</b><span class="badge ${BADGE[s.tone] || 'b-flat'}">${esc(s.verdict)}</span></div>
         <div class="mono small" style="display:flex;gap:14px;flex-wrap:wrap"><span>Gerç. <strong>${esc(s.actual)}</strong></span><span class="muted">Bekl. ${esc(s.cons)}</span><span class="muted">Önc. ${esc(s.prev)}</span></div>
         <span class="xs muted">${esc(s.meta)}</span></div>`)}</div>
-      <p class="note"><strong>Veriler ne söylüyor:</strong> ${esc(M.surprises_note)}</p>
+      ${analysisBlock(M)}
     </section>
 
     <section class="card">

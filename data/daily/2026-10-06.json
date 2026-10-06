@@ -2329,7 +2329,54 @@
     "cons": "—",
     "prev": "%37,00"
    }
-  ]
+  ],
+  "analysis": {
+   "headline": "ABD yavaşlıyor ama fiyat baskısı bitmedi; Avrupa ise en kötü karışımda",
+   "chain": [
+    "İstihdam ve ücretler zayıf",
+    "Tüketici harcaması yavaşlar",
+    "Fed artırımı zorlaşır",
+    "Ama enerji fiyatları enflasyonu canlı tutuyor"
+   ],
+   "paragraphs": [
+    "ABD verileri iki farklı hikâye anlatıyor. İşgücü tarafında net bir soğuma var: ekonomi çok az iş yaratıyor ve ücret artışı yavaşlıyor. Ücretler yavaşlayınca tüketicinin harcama gücü azalır, bu da birkaç ay içinde büyümeyi aşağı çeker. Fed'in takip ettiği çekirdek enflasyonun beklentinin altında gelmesi de aynı yöne işaret ediyor: talep kaynaklı fiyat baskısı geriliyor.",
+    "Ama hikâyenin öbür yarısı fiyatlarda. Hizmet sektörü anketinde şirketlerin ödediği fiyatlar hâlâ çok yüksek; bunun ana kaynağı petrol ve enerji. Yani enflasyonun 'çekirdeği' soğurken, enerji kaynaklı kısmı inatçı. Fed açısından bu en zor durum: ekonomiyi korumak için gevşemek isterken, enerji fiyatları yüzünden elini tam serbest bırakamıyor. Piyasanın Ekim'de ikinci bir artırıma düşük ihtimal vermesi, Fed'in bekle-gör moduna geçeceği beklentisini gösteriyor.",
+    "Avrupa'da tablo daha zor: enflasyon beklentinin üzerinde hızlanırken tüketim zayıf. Buna stagflasyon riski denir; merkez bankası faizi indirse enflasyon kızışır, artırsa zaten zayıf olan ekonomiyi daha da yavaşlatır. Türkiye ise ters yönde ayrışıyor: enflasyon beklentiden hızlı düştüğü için TCMB'nin indirim alanı genişliyor.",
+    "Bundan sonraki kritik veri 14 Ekim ABD TÜFE'si. Çekirdek enflasyon düşmeye devam ederse 'yavaşlayan ama kontrol altındaki ekonomi' senaryosu güçlenir; enerji kaynaklı fiyatlar çekirdeğe sızarsa faizler yeniden yukarı döner."
+   ],
+   "effects": [
+    {
+     "asset": "Fed",
+     "dir": "flat",
+     "why": "Artırım ihtimali azaldı ama enerji fiyatları yüzünden indirime de geçemez; bekle-gör."
+    },
+    {
+     "asset": "ABD 10Y faiz",
+     "dir": "flat",
+     "why": "Zayıf istihdam aşağı, enerji kaynaklı enflasyon ve borç arzı yukarı çekiyor."
+    },
+    {
+     "asset": "Dolar",
+     "dir": "down",
+     "why": "Zayıf ABD verisi doları baskılar; ama Avrupa'daki stagflasyon riski euroyu da sınırlıyor."
+    },
+    {
+     "asset": "NQ / ABD hisseleri",
+     "dir": "up",
+     "why": "Fed artırım korkusunun azalması büyüme hisselerine nefes aldırıyor; risk yüksek faiz."
+    },
+    {
+     "asset": "Altın",
+     "dir": "up",
+     "why": "Zayıflayan dolar ve yavaşlayan büyüme altına destek; yüksek reel faiz ise freni."
+    },
+    {
+     "asset": "Türkiye",
+     "dir": "up",
+     "why": "Enflasyonun beklentiden hızlı düşmesi TCMB'nin indirim alanını açıyor."
+    }
+   ]
+  }
  },
  "sources": "Bigdata.com (fiyatlar FMP, takvim, haberler; ABD getiri eğrisi 5 Eki kapanışı). Borsa MCP bu çalıştırmada erişilemedi; BIST, TCMB, TR tahvil, kripto dominans ve korku endeksi son bilinen değerlerdir. Rakamlar 16:41 (TSİ) anlık görüntüsüdür.",
  "nq": {

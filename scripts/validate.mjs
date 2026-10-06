@@ -148,6 +148,23 @@ if (G) {
   }
 }
 
+// NQ devleri şirket kartları
+const CO = read('data/companies.json');
+if (CO) {
+  for (const [tk, c] of Object.entries(CO.companies || {})) {
+    for (const f of ['name', 'about']) if (!isStr(c[f])) errors.push(`companies.${tk}.${f} boş`);
+    if (c.last) for (const k of ['eps', 'rev']) if (!isNum(c.last[k]?.act) || !isNum(c.last[k]?.est)) errors.push(`companies.${tk}.last.${k} act/est sayı olmalı`);
+    if (c.next && !/^\d{4}-\d{2}-\d{2}$/.test(c.next.date || '')) errors.push(`companies.${tk}.next.date YYYY-MM-DD olmalı`);
+    for (const k of ['eps_est', 'rev_est']) if (c.next && c.next[k] !== undefined && !numOrNull(c.next[k])) errors.push(`companies.${tk}.next.${k} sayı ya da null olmalı`);
+  }
+  for (const e of D?.nq?.earnings || []) if (!CO.companies?.[e.ticker]) errors.push(`nq.earnings ${e.ticker} için data/companies.json kaydı yok`);
+}
+if (D?.makro?.analysis) {
+  const A = D.makro.analysis;
+  if (!isStr(A.headline) || !Array.isArray(A.paragraphs) || A.paragraphs.length < 2) errors.push('makro.analysis headline ve en az 2 paragraf olmalı');
+  each(A.effects, 'makro.analysis.effects', (e, p) => { if (!['up', 'down', 'flat'].includes(e.dir)) errors.push(`${p}.dir up|down|flat olmalı`); });
+} else if (D) errors.push('makro.analysis eksik');
+
 const weeks = read('data/weekly/index.json');
 if (latest?.week) {
   if (weeks && !weeks.some((w) => w.id === latest.week)) errors.push(`weekly/index.json içinde ${latest.week} yok`);

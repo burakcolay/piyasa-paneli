@@ -10,6 +10,8 @@ const YAHOO = {
   usdtry: 'TRY=X', eurtry: 'EURTRY=X', eurusd: 'EURUSD=X',
   gold: 'GC=F', brent: 'BZ=F',
   sx5e: '^STOXX50E', dax: '^GDAXI', n225: '^N225', hsi: '^HSI',
+  // NQ devleri (bilanço kartları için)
+  AAPL: 'AAPL', MSFT: 'MSFT', NVDA: 'NVDA', AMZN: 'AMZN', META: 'META', GOOGL: 'GOOGL', TSLA: 'TSLA', AVGO: 'AVGO',
 };
 const COINS = { btc: 'bitcoin', eth: 'ethereum', bnb: 'binancecoin', sol: 'solana' };
 const UA = { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36', Accept: 'application/json' };
