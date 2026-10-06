@@ -1,0 +1,37 @@
+{
+  "id": "2026-W40",
+  "range": "Hafta 40 · 28 Eylül – 2 Ekim 2026",
+  "headline": "İstihdam çöktü, faizler inmedi: piyasa iki sinyal arasında kaldı",
+  "lede": "Haftanın hikayesi: ABD'de işgücü piyasası beklenenden çok hızlı soğurken, uzun vadeli faizler düşmek yerine yükselmeye devam etti. Hisseler yatay-eksi kapanırken para Asya'ya ve kriptoya kaydı. Türkiye'de BIST100 fon krizinin etkisiyle 12.270'e kadar geriledi.",
+  "kpis": [
+    { "name": "S&P 500", "chg": -0.99 },
+    { "name": "Nasdaq", "chg": -0.73 },
+    { "name": "Nikkei 225", "chg": 2.93 },
+    { "name": "Euro Stoxx 50", "chg": -1.79 },
+    { "name": "BIST 100", "chg": -4.88 },
+    { "name": "Brent", "chg": -4.43 },
+    { "name": "Altın", "chg": -1.86 },
+    { "name": "Bitcoin", "chg": 2.62 }
+  ],
+  "days": [
+    { "day": "Sal", "date": "30 Eyl", "title": "Çekirdek PCE beklentiden iyi", "text": "Yıllık %3,0, beklenti %3,3. ADP özel istihdam da 90 binle beklentiyi aştı; piyasa iki karışık sinyal aldı." },
+    { "day": "Çar", "date": "1 Eki", "title": "ISM imalat sınırda", "text": "54,5 ile beklentinin hafif altında; imalat hâlâ büyüme bölgesinde ama ivme kaybediyor." },
+    { "day": "Per", "date": "2 Eki", "title": "İstihdam şoku", "text": "Tarım dışı istihdam 29 bin, beklenti 90 bin. 2 yıllık faiz 10 baz puan düştü, petrol %2,6 geriledi. BIST100 haftayı 12.270 ile dipte kapattı." }
+  ],
+  "winners": [
+    { "name": "Nikkei 225", "v": "+2,93%" },
+    { "name": "Bitcoin", "v": "+2,62%" },
+    { "name": "Ethereum", "v": "+2,22%" }
+  ],
+  "losers": [
+    { "name": "Doğalgaz", "v": "−7,26%" },
+    { "name": "Türkiye (TUR ETF, $)", "v": "−5,44%" },
+    { "name": "BIST 100", "v": "−4,88%" }
+  ],
+  "learned": ["nfp", "pce", "egri", "risk"],
+  "next": [
+    { "when": "7 Eki 21:00", "title": "FOMC tutanakları", "why": "Eylül artırımının perde arkası; ikinci artırıma ne kadar sıcak bakıldığı." },
+    { "when": "14 Eki 15:30", "title": "ABD TÜFE", "why": "Uzun vadeli faizlerin yönü için en kritik veri; önceki %3,4." },
+    { "when": "22 Eki 14:00", "title": "TCMB faiz kararı", "why": "Piyasa 100 baz puan indirim bekliyor; Eylül enflasyonu bu beklentiyi güçlendirdi." }
+  ]
+}
