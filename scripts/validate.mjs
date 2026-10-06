@@ -62,6 +62,20 @@ if (D) {
   if (D.s8?.concept && G && !G.concepts[D.s8.concept]) errors.push(`s8.concept "${D.s8.concept}" sözlükte yok (data/sozluk.json'a ekle)`);
   need(D, 'news', arr(3), 'en az 3 haber');
 
+  // neden-sonuç zincirleri
+  for (const k of ['s2', 's3', 's4', 's5']) need(D, `${k}.chain`, (v) => Array.isArray(v) && v.length >= 3 && v.length <= 6 && v.every(isStr), '3-6 adımlı metin dizisi olmalı');
+  // NQ bölümü
+  need(D, 'nq.bias', (v) => ['engel', 'notr', 'destek'].includes(v), 'engel | notr | destek olmalı');
+  need(D, 'nq.paragraphs', arr(1), 'boş');
+  need(D, 'nq.tailwinds', arr(1), 'boş');
+  need(D, 'nq.headwinds', arr(1), 'boş');
+  need(D, 'nq.vol_times', arr(1), 'boş');
+  // iki görüş
+  need(D, 's7.views.topic', isStr, 'boş');
+  need(D, 's7.views.bull', arr(1), 'en az 1 boğa görüşü');
+  need(D, 's7.views.bear', arr(1), 'en az 1 ayı görüşü');
+  for (const side of ['bull', 'bear']) each(D.s7?.views?.[side], `s7.views.${side}`, (x, p) => { if (!isStr(x.text)) errors.push(`${p}.text boş`); });
+
   // faizler
   need(D, 'faizler.curve', arr(4), 'eğri eksik');
   each(D.faizler?.curve, 'faizler.curve', (c, p) => { if (!isNum(c.now) || !isNum(c.m1)) errors.push(`${p} now/m1 sayı olmalı`); });
@@ -137,6 +151,10 @@ if (latest?.week) {
     const W = read(`data/weekly/${latest.week}.json`);
     if (W) for (const k of ['range', 'headline', 'lede']) if (!isStr(W[k])) errors.push(`weekly.${k} boş`);
     each(W?.kpis, 'weekly.kpis', (k, p) => { if (!isNum(k.chg)) errors.push(`${p}.chg sayı olmalı`); });
+    if (W?.deep) {
+      if (!isStr(W.deep.title) || !Array.isArray(W.deep.paragraphs) || !W.deep.paragraphs.length) errors.push('weekly.deep title/paragraphs eksik');
+      each(W.deep.long_term?.assets, 'weekly.deep.long_term.assets', (a, p) => { if (!['olumlu', 'notr', 'olumsuz'].includes(a.view)) errors.push(`${p}.view olumlu|notr|olumsuz olmalı`); });
+    }
   }
 }
 

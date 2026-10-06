@@ -162,6 +162,12 @@
     "name": "Enerji",
     "chg": -0.52
    }
+  ],
+  "chain": [
+   "Petrol geriledi",
+   "Enflasyon beklentisi azaldı",
+   "10Y faiz zirveden döndü",
+   "Teknoloji ve kamu hizmetleri yükseldi"
   ]
  },
  "s3": {
@@ -194,6 +200,12 @@
   "paragraphs": [
    "Avrupa hafif yükselişte: STOXX 600 %0,5, DAX %0,3 arttı. Euro Bölgesi perakende satışları yıllıkta %0,8 ile %1,0 beklentinin altında kaldı; Eylül TÜFE'sinin %3,8 ile beklentinin (%3,6) üzerinde gelmesiyle birlikte ECB'nin hem büyüme hem enflasyon baskısı arasında sıkıştığı görülüyor. Euro pazartesi çok aylık dibini görmüştü; Fransa-Almanya tahvil farkı daralınca toparlandı.",
    "Asya'da teknoloji liderliğinde Nikkei %1,1 ve Hang Seng %1,0 yükseldi; Çin anakara borsaları Altın Hafta tatili nedeniyle kapalı. KOSPI ise yarı iletken hisselerindeki yabancı satışıyla %0,9 düştü: yılbaşından %65 artmış bir endekste kâr satışı beklenen bir tepki."
+  ],
+  "chain": [
+   "Euro Bölgesi'nde tüketim zayıf, enflasyon inatçı",
+   "ECB iki ateş arasında",
+   "Euro baskı altında",
+   "Avrupa hisseleri ABD'nin gerisinde"
   ]
  },
  "s4": {
@@ -232,6 +244,12 @@
   "paragraphs": [
    "Petrol üç seans üst üste geriledi: Kuveyt üretimi artırdı, Suudi Arabistan Hürmüz üzerinden daha fazla sevk etti ve Körfez akışı savaş öncesi seviyenin %81'inin üzerine çıktı. Ancak Husilerin Rabigh rafinerisine saldırısı ve ABD stratejik rezervinin 1982'den beri en düşük seviyede olması düşüşü sınırlıyor. Petrol düşünce faiz primi de azaldığı için 10 yıllık %5,26'ya indi.",
    "Dolar endeksi 102'de hafif geriledi; altın %0,8, Bitcoin %0,6 yükseldi. Altın bir ayda hâlâ %6,4 aşağıda: yüksek reel faiz altının cazibesini baskılıyor."
+  ],
+  "chain": [
+   "Körfez petrol akışı toparlandı",
+   "Brent 100 $ altına indi",
+   "Faizdeki enflasyon primi azaldı",
+   "Altın ve Bitcoin nefes aldı"
   ]
  },
  "s5": {
@@ -270,6 +288,12 @@
   "paragraphs": [
    "Bugünkü BIST ve TCMB verisi alınamadı; yerel rakamlar son bilinen değerlerdir. ABD'de işlem gören TUR ETF'i %0,9 düşerek yabancının Türkiye'ye iştahının zayıf kaldığını gösteriyor: bir ayda %12 geriledi. Dolar/TL %0,12 artışla 49,17'de; kontrollü değer kaybı sürüyor.",
    "Petroldeki düşüş Türkiye için iyi haber: enerji ithalatçısı olduğu için Brent'in 98 dolara inmesi cari açığı ve enflasyonu rahatlatır. Eylül TÜFE'si %29,73 ile beklentinin altında kaldığından 22 Ekim'deki PPK'da indirim beklentisi güçlü; küresel risk ise 10 yıllık ABD faizinin %5,3 civarında kalması."
+  ],
+  "chain": [
+   "Brent düştü",
+   "Türkiye'nin enerji faturası hafifler",
+   "Cari açık ve enflasyon baskısı azalır",
+   "TCMB'nin indirim alanı genişler"
   ]
  },
  "s6": {
@@ -385,7 +409,40 @@
  "s7": {
   "likely": "Yüksek faiz ile güçlü kârlar arasında yatay-yukarı bir seyir. Petrol gevşedikçe faiz üzerindeki baskı azalır ama %5'in üzerindeki uzun vade hisselerin yükselişini sınırlar; yön 14 Ekim TÜFE'sine kadar net olmaz.",
   "alternative": "Tutanaklar şahin çıkarsa veya petrol yeniden 100 doları aşarsa 10 yıllık faiz %5,40'ı görür; dar tabanlı teknoloji rallisi sert düzeltir.",
-  "signal": "ABD 10 yıllık faizi ve Brent: faizin %5,30'un altında, Brent'in 100 doların altında kalması rahatlamayı; ikisinin birden yukarı dönmesi düzeltme riskini gösterir."
+  "signal": "ABD 10 yıllık faizi ve Brent: faizin %5,30'un altında, Brent'in 100 doların altında kalması rahatlamayı; ikisinin birden yukarı dönmesi düzeltme riskini gösterir.",
+  "views": {
+   "topic": "Faiz %5'in üzerindeyken hisse rallisi sürer mi?",
+   "bull": [
+    {
+     "text": "Kârlar faizi yenebilir: kâr beklentileri ve şirket rehberlikleri olağanüstü güçlü; kâr yeterince hızlı büyürse yüksek faizin değerlemeye etkisi dengelenir.",
+     "who": "Fidelity (Jurrien Timmer), Siebert Financial",
+     "url": "https://app.bigdata.com/documents/37883D70B0F7241CAF72AA91DDF0F64C?cnum=5"
+    },
+    {
+     "text": "Zemin sağlam: yapay zekâ yatırımları, yarı iletken talebi, hisse geri alımları ve büyüyen ekonomi yükselişi destekliyor.",
+     "who": "Tigress Financial (Ivan Feinseth)",
+     "url": "https://app.bigdata.com/documents/37C3F8CD171DC711871D97413D41EC77?cnum=2"
+    }
+   ],
+   "bear": [
+    {
+     "text": "Risk primi kalmadı: S&P'nin kâr getirisi 10 yıllık tahville eşit. Yatırımcı sadece 1 puan ek prim isterse F/K 19'dan 16'ya iner; bu, hiçbir şey olmadan yaklaşık %16 düşüş demek.",
+     "who": "Siebert Financial",
+     "url": "https://app.bigdata.com/documents/49FB1B3BFDD888A8C4C1FC3B77ABA5B1?cnum=9"
+    },
+    {
+     "text": "Tahvil piyasası uyarıyor: 10 yıllık %6'ya çıkarsa ralli çöker; faiz yükselişine oynayan pozisyonlar 9 ayın zirvesinde.",
+     "who": "Franklin Templeton (Chris Garrity)",
+     "url": "https://app.bigdata.com/documents/8E38F3858EE3E7F26D77750981E9EF99?cnum=3"
+    },
+    {
+     "text": "Büyük teknoloji borca muhtaç: yapay zekâ harcamaları nakit akışını aştı, borçlanma artacak; bu da faize hassasiyeti büyütüyor.",
+     "who": "Bloomberg Intelligence",
+     "url": "https://app.bigdata.com/documents/8E38F3858EE3E7F26D77750981E9EF99?cnum=3"
+    }
+   ],
+   "split": "İki taraf aynı denkleme bakıyor: hisse değeri, kârın faizle iskonto edilmiş hâli. Boğalar payın (kâr) paydadan (faiz) hızlı büyüyeceğine, ayılar paydanın daha da yükseleceğine bahis oynuyor. Kimin haklı çıkacağını önce 14 Ekim enflasyon verisi, sonra 3. çeyrek bilançolarındaki şirket beklentileri gösterecek."
+  }
  },
  "s8": {
   "concept": "vadeprimi",
@@ -2274,5 +2331,67 @@
    }
   ]
  },
- "sources": "Bigdata.com (fiyatlar FMP, takvim, haberler; ABD getiri eğrisi 5 Eki kapanışı). Borsa MCP bu çalıştırmada erişilemedi; BIST, TCMB, TR tahvil, kripto dominans ve korku endeksi son bilinen değerlerdir. Rakamlar 16:41 (TSİ) anlık görüntüsüdür."
+ "sources": "Bigdata.com (fiyatlar FMP, takvim, haberler; ABD getiri eğrisi 5 Eki kapanışı). Borsa MCP bu çalıştırmada erişilemedi; BIST, TCMB, TR tahvil, kripto dominans ve korku endeksi son bilinen değerlerdir. Rakamlar 16:41 (TSİ) anlık görüntüsüdür.",
+ "nq": {
+  "bias": "notr",
+  "paragraphs": [
+   "Nasdaq 100 için bugün iki güçlü rüzgâr ters yönden esiyor. Bir yanda kârlar: yapay zekâ yatırımları ve yarı iletken talebi sürdükçe analistler büyük teknoloji şirketlerinin kâr beklentilerini yukarı çekiyor. Öbür yanda faiz: 10 yıllık tahvil çeyrek asrın zirvesine yakın, ve NQ'yu oluşturan şirketlerin değeri büyük ölçüde yıllar sonraki kârlarına dayandığı için [[faiz|faiz yükselişi]] onları endeksin geri kalanından daha sert vurur.",
+   "Bugün faizin hafifçe geri çekilmesi teraziyi kısa süreliğine yukarı yönden yana eğdi. Ama denge kırılgan: Fed tutanakları ya da 14 Ekim enflasyon verisi faizi yeniden yukarı iterse, bu yükseliş en hızlı NQ'da geri verilir. Bu yüzden makronun yönü şimdilik nötr."
+  ],
+  "tailwinds": [
+   {
+    "title": "Faiz zirveden döndü",
+    "note": "Petrolün gerilemesiyle 10 yıllık faiz biraz soluklandı; büyüme hisselerinin iskonto yükü hafifledi."
+   },
+   {
+    "title": "Kâr ivmesi",
+    "note": "Kâr beklentileri yukarı revize ediliyor; yapay zekâ yatırımları ve yarı iletken talebi sürüyor."
+   },
+   {
+    "title": "Fed artırım korkusu azaldı",
+    "note": "Zayıf istihdam sonrası Ekim'de faiz artırımı ihtimali %20'nin altına indi."
+   }
+  ],
+  "headwinds": [
+   {
+    "title": "Hisse risk primi kalmadı",
+    "note": "S&P'nin kâr getirisi 10 yıllık tahville aynı seviyede; risksiz tahvil aynı getiriyi verirken hisse taşımanın cazibesi azalıyor."
+   },
+   {
+    "title": "Dar tabanlı yükseliş",
+    "note": "Endeksi az sayıda büyük teknoloji şirketi taşıyor; biri tökezlerse NQ hızlı düşer."
+   },
+   {
+    "title": "Büyük teknolojinin borç ihtiyacı",
+    "note": "Yapay zekâ harcamaları bazı devlerin serbest nakit akışını eksiye çevirdi; yüksek faize hassasiyetleri arttı."
+   }
+  ],
+  "vol_times": [
+   {
+    "time": "16:05",
+    "title": "Fed Williams konuşması",
+    "note": "Faiz yolu hakkında ipucu",
+    "impact": "mid"
+   },
+   {
+    "time": "16:30",
+    "title": "ABD açılışı",
+    "note": "İlk 15 dakikada hacim ve oynaklık en yüksek",
+    "impact": "session"
+   },
+   {
+    "time": "17:45",
+    "title": "Fed Bowman konuşması",
+    "note": "Şahin bir üye; artırım vurgusu faizi iter",
+    "impact": "mid"
+   },
+   {
+    "time": "Çar 21:00",
+    "title": "FOMC tutanakları",
+    "note": "Haftanın en büyük oynaklık riski",
+    "impact": "high"
+   }
+  ],
+  "watch": "10 yıllık faiz %5,30'un üzerine dönerse NQ üzerindeki baskı yeniden artar; altında kalması bugünkü toparlanmayı destekler."
+ }
 }

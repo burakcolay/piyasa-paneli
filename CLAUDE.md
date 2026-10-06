@@ -26,6 +26,8 @@ scripts/validate.mjs       veri kontrolü
 3. `data/daily/index.json` listesine bugünü ekle, `data/latest.json`'daki `date`'i güncelle.
 4. `s8.concept` yeni bir kavramsa `data/sozluk.json`'a ekle (aynı alanlar: name, cat, learned, def, analogy, chain[], quote, rule, related[]).
 5. Cuma günleri: `data/weekly/<hafta>.json` yaz, `weekly/index.json`'a ekle, `latest.json`'daki `week`'i güncelle.
+   **Cumartesi:** günlük dosya yazma. Sadece o haftanın dosyasına `deep` (derin konu + uzun vade) ekle, doğrula, commit et.
+   **Pazar:** hiçbir şey yapma, hemen bitir.
 6. `node scripts/validate.mjs` çalıştır. Hata varsa düzelt, tekrar çalıştır. Geçmeden commit yapma.
 7. `main` dalına commit + push. Mesaj: `veri: YYYY-MM-DD`.
 
@@ -79,6 +81,33 @@ Kötü (rakam sıralaması):
 
 Bu kural `summary`, `s1`-`s7` paragrafları, `turkiye.reading`, `kripto.reading` ve tüm `*_note` alanları için geçerli. Kart ve tablolar (`cards`, `kpis`, `tickers`, `macro`, tablolar) rakam taşımaya devam eder.
 
+## Öğrenme parçaları
+
+**Neden-sonuç zinciri (`chain`)** — `s2`, `s3`, `s4`, `s5` her gün 3-6 adımlık bir zincir taşır. Her adım kısa bir ifade (en fazla ~6 kelime), rakamsız. Zincir o bölümün asıl hikâyesini baştan sona gösterir: `["Petrol geriledi", "Enflasyon beklentisi azaldı", "10Y faiz zirveden döndü", "Teknoloji yükseldi"]`. Paragraf bu halkaları tek tek açıklar.
+
+**NQ için makro rüzgâr (`nq`)** — Burak NQ (Nasdaq 100 vadelisi) işlem yapıyor; yüksek zaman diliminde yön (bias) kurup 1 dakikalıkta giriyor. Bu bölüm makronun Nasdaq 100'e etkisini anlatır, **al/sat sinyali vermez**, seviye/hedef/stop yazmaz.
+- `bias`: `destek` (makro NQ lehine), `notr` (karışık), `engel` (makro NQ aleyhine). Ana belirleyiciler: 10Y faiz yönü, dolar, büyük teknoloji haberleri/bilançoları, risk iştahı, Fed beklentisi.
+- `paragraphs`: 1-2 paragraf; neden bu yön, denge nerede kırılır.
+- `tailwinds` / `headwinds`: 2-4'er madde `{title, note}`.
+- `vol_times`: bugün (ve yakın günlerdeki büyük olaylar) TSİ saatleriyle `{time, title, note, impact}`. ABD açılışını (16:30) her zaman ekle.
+- `watch`: bugün izlenecek tek şey, tek cümle.
+
+**İki görüş (`s7.views`)** — günün ana tartışma konusunda boğa ve ayı tarafının argümanları. Bigdata.com'da 1 arama yap (strateji/analist görüşleri, son 1 hafta, haber + araştırma). Her madde `{text, who, url}`: `who` kurum/kişi, `url` Bigdata sonucunun adresi. Uydurma kaynak yazma; bulamazsan o maddeyi koyma. `split`: iki taraf neden ayrışıyor ve kimin haklı olduğunu hangi veri gösterecek.
+
+**Cumartesi derin konu (`weekly.deep`)** — haftanın en önemli olayını uzun anlat: neden oldu, arkasındaki mekanizma, tarihte benzeri, kimi nasıl etkiliyor, ileride ne olabilir. 5-8 paragraf, yorum kuralı geçerli. Yapı:
+```
+"deep": {
+  "title": "...", "chain": ["...", "..."], "paragraphs": ["..."],
+  "sources": [{ "name": "...", "url": "..." }],
+  "long_term": {
+    "cycle": "Geç döngü / yavaşlama / resesyon / toparlanma / genişleme",
+    "paragraphs": ["Ekonomik döngünün neresindeyiz, neden"],
+    "assets": [{ "name": "ABD hisseleri", "view": "olumlu|notr|olumsuz", "note": "neden" }]
+  }
+}
+```
+`assets`: ABD hisseleri, Türk hisseleri, ABD tahvilleri, TL mevduat, altın, dolar, Bitcoin. Bu bir yatırım tavsiyesi değil, "bu ortamda bu varlık sınıfını hangi rüzgârlar etkiliyor" analizidir.
+
 ## Günlük JSON şeması (özet)
 
 | Alan | İçerik |
@@ -87,10 +116,11 @@ Bu kural `summary`, `s1`-`s7` paragrafları, `turkiye.reading`, `kripto.reading`
 | `tickers[]` | `{name, value, chg, tone}` üst şerit, 10 gösterge |
 | `summary` | `{headline, lede, paragraphs[], read_min}` Claude'un günlük özeti |
 | `s1` | `{mood: risk_off|temkinli|risk_on, mood_note, changes[{tag, tone: same|good|bad|new, text}], themes[3]{title,text}}` |
-| `s2` | `{paragraphs[], sectors[{name, chg}]}` ABD + S&P sektörleri |
-| `s3`, `s4`, `s5` | `{cards[{label, value, sub, tone}], paragraphs[]}` Avrupa-Asya / para-faiz-emtia / Türkiye |
+| `s2` | `{chain[], paragraphs[], sectors[{name, chg}]}` ABD + S&P sektörleri |
+| `s3`, `s4`, `s5` | `{chain[], cards[{label, value, sub, tone}], paragraphs[]}` Avrupa-Asya / para-faiz-emtia / Türkiye |
 | `s6` | `{paragraph, today[{time "SS:DD", title, detail, impact: high|mid|low|session}], week[{when,title,expect}], earnings[{ticker,when}]}` |
-| `s7` | `{likely, alternative, signal}` |
+| `s7` | `{likely, alternative, signal, views{topic, bull[{text,who,url}], bear[...], split}}` |
+| `nq` | `{bias: destek|notr|engel, paragraphs[], tailwinds[{title,note}], headwinds[...], vol_times[{time,title,note,impact}], watch}` |
 | `s8` | `{concept, title, paragraphs[], rule}` günün dersi |
 | `news[]` | `{date, region, title, why}` |
 | `faizler` | `{kpis[], curve[{tenor, now, m1}], curve_note, fed{rate, rate_note, next_meeting, pricing, paragraph}, speakers[{when, who}]}` |

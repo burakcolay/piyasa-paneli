@@ -7,7 +7,19 @@ const MOODS = {
   risk_on: { name: 'Risk iştahı', color: '#0B7A47', idx: 2 },
 };
 const IMPACT = { high: '#B42318', mid: '#C98A12', low: '#8A90A0', session: '#8A90A0' };
-const TOC = ['Büyük resim', 'ABD', 'Avrupa ve Asya', 'Para, faiz, emtia', 'Türkiye', 'Önümüzdeki günler', 'Benim okumam', 'Günün dersi'];
+const TOC = [['s1', 'Büyük resim'], ['s2', 'ABD'], ['nq', 'NQ için makro rüzgâr'], ['s3', 'Avrupa ve Asya'], ['s4', 'Para, faiz, emtia'], ['s5', 'Türkiye'], ['s6', 'Önümüzdeki günler'], ['s7', 'Benim okumam'], ['s8', 'Günün dersi']];
+const NUM = Object.fromEntries(TOC.map(([id], i) => [id, i + 1]));
+const BIAS = {
+  engel: { name: 'Engelleyici', color: '#B42318', idx: 0 },
+  notr: { name: 'Nötr', color: '#B7791F', idx: 1 },
+  destek: { name: 'Destekleyici', color: '#0B7A47', idx: 2 },
+};
+
+// Neden-sonuç zinciri: ["Petrol düştü", "Enflasyon beklentisi azaldı", ...]
+function chainRow(list) {
+  if (!list?.length) return '';
+  return `<div class="cause" aria-label="Neden-sonuç zinciri">${list.map((x, i) => `${i ? '<span class="arr" aria-hidden="true">→</span>' : ''}<span class="step">${esc(x)}</span>`).join('')}</div>`;
+}
 
 // [[id|metin]] -> tıklanabilir terim
 function withTerms(text) {
@@ -28,6 +40,50 @@ function istanbulDate() {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Istanbul' }).format(new Date());
 }
 const toMin = (t) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+
+function nqSection(N, n) {
+  const b = BIAS[N.bias] || BIAS.notr;
+  const item = (x) => `<div class="list-row"><div><b>${esc(x.title)}</b><small>${esc(x.note)}</small></div></div>`;
+  return `<section class="sec" id="nq">${secHead(n, 'NQ için makro rüzgâr', '<span class="small muted">Nasdaq 100 · bugün</span>')}
+    <div class="row">
+      <div class="mood">
+        <span class="eyebrow">Makronun yönü</span>
+        <div class="state"><span class="dot" style="background:${b.color}"></span><span class="name">${esc(b.name)}</span></div>
+        <div class="bar" aria-hidden="true">${[0, 1, 2].map((i) => `<span style="${i === b.idx ? 'background:' + b.color : ''}"></span>`).join('')}</div>
+        <div class="scale"><span>Engelleyici</span><span>Nötr</span><span>Destekleyici</span></div>
+      </div>
+      <div style="flex:2 1 380px;display:flex;flex-direction:column;gap:10px">
+        ${map(N.paragraphs, (p) => `<p>${withTerms(p)}</p>`)}
+      </div>
+    </div>
+    <div class="grid" style="--min:280px;gap:16px">
+      <div class="wind up-wind"><span class="eyebrow">Destekleyenler</span>${map(N.tailwinds, item)}</div>
+      <div class="wind down-wind"><span class="eyebrow">Baskılayanlar</span>${map(N.headwinds, item)}</div>
+    </div>
+    <div class="grid" style="--min:300px;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span class="eyebrow">Volatilite saatleri · TSİ</span>
+        ${map(N.vol_times, (e) => `<div class="event"><span class="t">${esc(e.time)}</span><span class="d" style="background:${IMPACT[e.impact] || IMPACT.low}"></span><div><b>${esc(e.title)}</b><small>${esc(e.note || '')}</small></div></div>`)}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px"><span class="eyebrow">US100 · canlı, son 1 ay</span><div class="tv" id="tv-nq"></div></div>
+    </div>
+    ${N.watch ? `<p class="note"><strong>Bugün neye bak:</strong> ${esc(N.watch)}</p>` : ''}
+    <span class="xs muted">Al/sat sinyali değildir; HTF bias'ını kurarken makro arka planı hesaba katman içindir.</span>
+  </section>`;
+}
+
+function viewsBox(V) {
+  if (!V) return '';
+  const side = (list) => map(list, (x) => `<li><span>${esc(x.text)}</span>${x.who ? `<small>${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.who)}</a>` : esc(x.who)}</small>` : ''}</li>`);
+  return `<div class="views">
+    <div class="head-row"><span class="eyebrow">İki görüş</span><b class="small">${esc(V.topic)}</b></div>
+    <div class="grid" style="--min:260px;gap:12px">
+      <div class="side bull"><span class="eyebrow">Boğa: yükseliş bekleyenler</span><ul>${side(V.bull)}</ul></div>
+      <div class="side bear"><span class="eyebrow">Ayı: düşüş bekleyenler</span><ul>${side(V.bear)}</ul></div>
+    </div>
+    ${V.split ? `<p class="note"><strong>Neden ayrışıyorlar:</strong> ${esc(V.split)}</p>` : ''}
+  </div>`;
+}
 
 async function main() {
   const ctx = await loadDay();
@@ -55,10 +111,10 @@ async function main() {
     ${paras(S.paragraphs, 'body')}
     <span class="xs muted">Yazılar ${esc(D.updated)} fiyatlarıyla yazıldı; üstteki şerit ve fiyat kartları canlı.</span>
     <span class="small muted" style="padding-top:4px;border-top:1px solid var(--line-soft)">Aşağıda yazının tamamı, anlatım sırasına göre 8 bölüme ayrılmış halde.</span>
-    <nav class="toc" aria-label="Anlatım sırası">${TOC.map((t, i) => `<a href="#s${i + 1}"><b>${i + 1}</b> ${esc(t)}</a>`).join('')}</nav>
+    <nav class="toc" aria-label="Anlatım sırası">${TOC.filter(([id]) => id !== 'nq' || D.nq).map(([id, t]) => `<a href="#${id}"><b>${NUM[id]}</b> ${esc(t)}</a>`).join('')}</nav>
   </section>`;
 
-  const s1 = `<section class="sec" id="s1">${secHead(1, 'Büyük resim')}
+  const s1 = `<section class="sec" id="s1">${secHead(NUM.s1, 'Büyük resim')}
     <div class="row">
       <div class="mood">
         <span class="eyebrow">Piyasa modu</span>
@@ -75,7 +131,8 @@ async function main() {
     <div class="grid" style="--min:240px;gap:12px">${map(D.s1.themes, (t) => `<div class="theme"><b>${esc(t.title)}</b><span>${esc(t.text)}</span></div>`)}</div>
   </section>`;
 
-  const s2 = `<section class="sec" id="s2">${secHead(2, 'ABD')}
+  const s2 = `<section class="sec" id="s2">${secHead(NUM.s2, 'ABD')}
+    ${chainRow(D.s2.chain)}
     ${map(D.s2.paragraphs, (p) => `<p>${withTerms(p)}</p>`)}
     <div class="term-slot"></div>
     <div class="grid" style="--min:300px;gap:16px">
@@ -87,6 +144,7 @@ async function main() {
   const simple = (id, n, title, sec, pos = 'before') => {
     const cards = `<div class="grid">${map(sec.cards, (c) => kpi(c, 'soft'))}</div>`;
     return `<section class="sec" id="${id}">${secHead(n, title)}
+      ${chainRow(sec.chain)}
       ${pos === 'before' ? cards + map(sec.paragraphs, (p) => `<p>${withTerms(p)}</p>`) : map(sec.paragraphs, (p) => `<p>${withTerms(p)}</p>`) + cards}
       ${id === 's5' ? '<a class="small" href="turkiye.html">Türkiye sekmesinde detaylar: sektörler, enflasyon, faiz eğrisi →</a>' : ''}
     </section>`;
@@ -94,7 +152,7 @@ async function main() {
 
   const s6d = D.s6;
   const bist = [10 * 60, 18 * 60], us = [16 * 60 + 30, 23 * 60];
-  const s6 = `<section class="sec" id="s6">${secHead(6, 'Önümüzdeki günler')}
+  const s6 = `<section class="sec" id="s6">${secHead(NUM.s6, 'Önümüzdeki günler')}
     <p>${withTerms(s6d.paragraph)}</p>
     <div class="row">
       <div style="flex:1 1 360px;display:flex;flex-direction:column;gap:10px">
@@ -120,20 +178,23 @@ async function main() {
     </div>
   </section>`;
 
-  const s7 = `<section class="sec" id="s7">${secHead(7, 'Benim okumam', '<span class="small muted">önümüzdeki 1-2 hafta</span>')}
+  const s7 = `<section class="sec" id="s7">${secHead(NUM.s7, 'Benim okumam', '<span class="small muted">önümüzdeki 1-2 hafta</span>')}
     <div class="grid" style="--min:260px;gap:12px">
       <div class="scen main"><span class="eyebrow">En olası senaryo</span><span>${esc(D.s7.likely)}</span></div>
       <div class="scen"><span class="eyebrow">Alternatif senaryo</span><span>${esc(D.s7.alternative)}</span></div>
       <div class="scen"><span class="eyebrow">İzlenecek sinyal</span><span>${esc(D.s7.signal)}</span></div>
     </div>
+    ${viewsBox(D.s7.views)}
     <span class="xs muted">Bu bölüm al/sat tavsiyesi değil, piyasa okumasıdır.</span>
   </section>`;
 
-  const s8 = `<section class="sec lesson" id="s8">${secHead(8, 'Günün dersi: ' + D.s8.title)}
-    ${paras(D.s8.paragraphs)}
+  const s8 = `<section class="sec lesson" id="s8">${secHead(NUM.s8, 'Günün dersi: ' + D.s8.title)}
+    ${map(D.s8.paragraphs, (p) => `<p>${withTerms(p)}</p>`)}
     ${D.s8.rule ? `<p class="rule"><strong>Altın kural:</strong> ${esc(D.s8.rule)}</p>` : ''}
     <a class="small" href="sozluk.html${D.s8.concept ? '#' + esc(D.s8.concept) : ''}">Sözlükte aç →</a>
   </section>`;
+
+  const nq = D.nq ? nqSection(D.nq, NUM.nq) : '';
 
   const regions = ['Tümü', ...new Set(D.news.map((n) => n.region))];
   const news = `<section class="card" style="padding:24px">
@@ -144,15 +205,17 @@ async function main() {
   </section>`;
 
   app.innerHTML = tickers + `<main class="wrap narrow">
-    ${summary}${s1}${s2}
-    ${simple('s3', 3, 'Avrupa ve Asya', D.s3)}
-    ${simple('s4', 4, 'Para, faiz ve emtia', D.s4)}
-    ${simple('s5', 5, 'Türkiye', D.s5)}
+    ${summary}${s1}${s2}${nq}
+    ${simple('s3', NUM.s3, 'Avrupa ve Asya', D.s3)}
+    ${simple('s4', NUM.s4, 'Para, faiz ve emtia', D.s4)}
+    ${simple('s5', NUM.s5, 'Türkiye', D.s5)}
     ${s6}${s7}${s8}${news}
     <p class="source">${esc(D.sources || '')} Yatırım tavsiyesi değildir.</p>
   </main>`;
 
   tvMini(document.getElementById('tv-spx'), 'FOREXCOM:SPXUSD', { range: '3M', height: 220 });
+  const tvNq = document.getElementById('tv-nq');
+  if (tvNq) tvMini(tvNq, 'CAPITALCOM:US100', { range: '1M', height: 220 });
   if (!ctx.isOld) startLive();
 
   // Terim açıklamaları

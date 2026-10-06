@@ -1,5 +1,27 @@
 import { shell, loadJSON, fail, esc, map, signed, dateTR } from '../app.js';
 
+const VIEW = { olumlu: ['b-good', 'Olumlu'], notr: ['b-flat', 'Nötr'], olumsuz: ['b-bad', 'Olumsuz'] };
+
+function deepBlock(d) {
+  if (!d) return `<section class="card lesson"><span class="eyebrow dark">Haftanın derin konusu</span><span class="small">Cumartesi sabahı yayınlanır.</span></section>`;
+  const chain = d.chain?.length ? `<div class="cause">${d.chain.map((x, i) => `${i ? '<span class="arr">→</span>' : ''}<span class="step">${esc(x)}</span>`).join('')}</div>` : '';
+  const lt = d.long_term;
+  return `<section class="card deep" style="padding:28px;gap:14px">
+    <span class="eyebrow accent">Haftanın derin konusu</span>
+    <h2>${esc(d.title)}</h2>
+    ${chain}
+    ${map(d.paragraphs, (p) => `<p>${esc(p)}</p>`)}
+    ${d.sources?.length ? `<div class="xs muted">Kaynaklar: ${d.sources.map((x) => x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)}</a>` : esc(x.name)).join(' · ')}</div>` : ''}
+  </section>
+  ${lt ? `<section class="card" style="padding:24px">
+    <span class="eyebrow">Uzun vade</span>
+    ${lt.cycle ? `<div><span class="small muted">Ekonomik döngüde neredeyiz?</span><div style="font-size:20px;font-weight:700">${esc(lt.cycle)}</div></div>` : ''}
+    ${map(lt.paragraphs, (p) => `<p>${esc(p)}</p>`)}
+    ${lt.assets?.length ? `<div>${map(lt.assets, (a) => { const [c, l] = VIEW[a.view] || VIEW.notr; return `<div class="asset-row"><b>${esc(a.name)}</b><span><span class="badge ${c}">${l}</span></span><small class="muted">${esc(a.note)}</small></div>`; })}</div>` : ''}
+    <span class="xs muted">Uzun vadeli bakış, yatırım tavsiyesi değildir.</span>
+  </section>` : ''}`;
+}
+
 async function main() {
   const [latest, weeks, dates] = await Promise.all([
     loadJSON('data/latest.json'), loadJSON('data/weekly/index.json'), loadJSON('data/daily/index.json').catch(() => []),
@@ -23,6 +45,7 @@ async function main() {
           <h1 style="font-size:30px">${esc(W.headline)}</h1>
           <p style="font-size:17px;color:var(--ink-2)">${esc(W.lede)}</p>
         </section>
+        ${deepBlock(W.deep)}
         <div class="grid" style="--min:150px;gap:12px">${map(W.kpis, (k) => `<div class="kpi"><span class="l">${esc(k.name)}</span>
           <span class="v ${k.chg >= 0 ? 'up' : 'down'}">${esc(signed(k.chg))}</span><span class="s muted">haftalık</span></div>`)}</div>
         <section class="card">
