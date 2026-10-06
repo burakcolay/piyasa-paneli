@@ -11,6 +11,8 @@ const YAHOO = {
   gold: 'GC=F', brent: 'BZ=F',
   sx5e: '^STOXX50E', dax: '^GDAXI', n225: '^N225', hsi: '^HSI',
   // NQ devleri (bilanço kartları için)
+  // Risk termometresi
+  dxy: 'DX-Y.NYB', hyg: 'HYG', copper: 'HG=F',
   AAPL: 'AAPL', MSFT: 'MSFT', NVDA: 'NVDA', AMZN: 'AMZN', META: 'META', GOOGL: 'GOOGL', TSLA: 'TSLA', AVGO: 'AVGO',
 };
 const COINS = { btc: 'bitcoin', eth: 'ethereum', bnb: 'binancecoin', sol: 'solana' };

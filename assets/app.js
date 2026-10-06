@@ -280,3 +280,27 @@ export function startLive(onData) {
   setInterval(tick, 60000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
 }
+
+// TradingView gelişmiş grafik (karşılaştırmalı, % ölçek)
+export function tvCompare(el, main, compares, { range = '3M', height = 420 } = {}) {
+  el.innerHTML = '';
+  el.style.height = height + 'px';
+  const box = document.createElement('div');
+  box.className = 'tradingview-widget-container';
+  box.style.height = '100%';
+  const inner = document.createElement('div');
+  inner.className = 'tradingview-widget-container__widget';
+  inner.style.height = '100%';
+  box.appendChild(inner);
+  const s = document.createElement('script');
+  s.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  s.async = true;
+  s.textContent = JSON.stringify({
+    autosize: true, symbol: main, interval: 'D', range, timezone: 'Europe/Istanbul', theme: 'light', style: '2', locale: 'tr',
+    hide_side_toolbar: true, hide_top_toolbar: false, allow_symbol_change: false, save_image: false, withdateranges: true,
+    compareSymbols: compares.map((symbol) => ({ symbol, position: 'SameScale' })),
+  });
+  s.onerror = () => { el.innerHTML = '<div class="tv-fallback">Canlı grafik yüklenemedi.</div>'; };
+  box.appendChild(s);
+  el.appendChild(box);
+}
