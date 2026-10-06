@@ -29,6 +29,16 @@ scripts/validate.mjs       veri kontrolü
 6. `node scripts/validate.mjs` çalıştır. Hata varsa düzelt, tekrar çalıştır. Geçmeden commit yapma.
 7. `main` dalına commit + push. Mesaj: `veri: YYYY-MM-DD`.
 
+## Commit yazarı (Vercel için zorunlu)
+
+Vercel Hobby planı, özel repoda sadece hesap sahibinin yazdığı commit'leri yayına alır. Claude ya da bot adına atılan commit'ler "blocked" olur ve site yenilenmez. Bu yüzden her commit Burak adına atılır:
+
+```
+git -c user.name="Burak Colay" -c user.email="170448628+burakcolay@users.noreply.github.com" commit -m "veri: YYYY-MM-DD"
+```
+
+Doğrudan `main`'e push et. Ayrı dala atıp merge commit ile birleştirme; merge commit'in yazarı bot olur ve yine bloklanır.
+
 ## Yazım kuralları
 
 - Dil Türkçe, sayılar Türk biçimi (`12.395`, `%29,73`, `−0,39%`). Eksi için `−` (U+2212).
