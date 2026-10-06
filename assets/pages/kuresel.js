@@ -1,4 +1,4 @@
-import { shell, loadDay, fail, esc, map, signed, heatBg, num, startLive, tvCompare } from '../app.js';
+import { shell, loadDay, fail, esc, map, signed, heatBg, num, startLive } from '../app.js';
 
 // Risk termometresi: her gösterge günlük değişimine göre +1 (risk iştahı), −1 (risk kaçışı) ya da 0 puan alır.
 const RISK = [
@@ -35,8 +35,8 @@ function thermometer(L) {
     let pt = 0;
     if (v != null) { n++; if (v > x.th) pt = x.on; else if (v < -x.th) pt = -x.on; }
     score += pt;
-    const tag = v == null ? ['–', 'b-flat'] : pt > 0 ? ['Risk iştahı', 'b-good'] : pt < 0 ? ['Risk kaçışı', 'b-bad'] : ['Nötr', 'b-flat'];
-    return `<div class="risk-row"><b>${esc(x.name)}</b><span class="mono small" title="Bugünkü değişim">${v == null ? '–' : esc(signed(v, 2))}</span>
+    const tag = v == null ? ['bekleniyor', 'b-flat'] : pt > 0 ? ['Risk iştahı', 'b-good'] : pt < 0 ? ['Risk kaçışı', 'b-bad'] : ['Nötr', 'b-flat'];
+    return `<div class="risk-row"><b>${esc(x.name)}</b><span class="mono small" title="Bugünkü değişim">${v == null ? 'veri yok' : esc(signed(v, 2))}</span>
       <span class="badge ${tag[1]}">${tag[0]}</span><small>${esc(x.why)}</small></div>`;
   }).join('');
   const st = STATES.find((s) => score >= s.min);
@@ -78,15 +78,6 @@ async function main() {
     </section>
 
     <section class="card">
-      <div class="head-row"><span class="eyebrow">Para nereye akıyor · canlı karşılaştırma</span><span class="small muted">Aynı noktadan başlatılmış % değişim</span></div>
-      <div class="tv" id="tv-compare"></div>
-      <div class="legend xs muted">
-        <span><b>QQQ</b> Nasdaq 100</span><span><b>SPY</b> S&amp;P 500</span><span><b>EWG</b> Almanya</span><span><b>EWJ</b> Japonya</span><span><b>EWY</b> G. Kore</span><span><b>TUR</b> Türkiye ($)</span><span><b>GLD</b> Altın</span>
-      </div>
-      <p class="xs muted">Bölgeler, o ülke borsasını izleyen dolar bazlı ETF'lerle gösteriliyor; böylece hepsi aynı para biriminde karşılaştırılıyor. Üstteki tarih düğmeleriyle 1 ay, 3 ay ya da 1 yıl seçebilirsin.</p>
-    </section>
-
-    <section class="card">
       <div class="head-row"><span class="eyebrow">Performans matrisi</span><span class="small muted">Yeşil yükseliş, kırmızı düşüş · Faizlerde baz puan, artış kırmızı</span></div>
       <div class="tbl-wrap"><table class="heatmap" style="min-width:600px">
         <thead><tr><th style="text-align:left">Varlık</th><th>1 gün</th><th>1 hafta</th><th>1 ay</th><th>Yılbaşından</th></tr></thead>
@@ -106,7 +97,6 @@ async function main() {
     <p class="source">Kaynak: Bigdata.com (FMP) ve Borsa MCP; canlı veriler Yahoo Finance, CoinGecko ve TradingView. Yüzde değişimler; ABD faizleri baz puan.</p>
   </main>`;
 
-  tvCompare(document.getElementById('tv-compare'), 'NASDAQ:QQQ', ['AMEX:SPY', 'AMEX:EWG', 'AMEX:EWJ', 'AMEX:EWY', 'NASDAQ:TUR', 'AMEX:GLD'], { range: '3M', height: 420 });
   if (!ctx.isOld) startLive((L) => { document.getElementById('thermo').innerHTML = thermometer(L); });
 }
 

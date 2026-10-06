@@ -28,22 +28,68 @@ async function getJSON(url, ms = 6000) {
   } finally { clearTimeout(t); }
 }
 
-async function yahoo(key, sym) {
-  const j = await getJSON(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=1d&range=1d`);
-  const m = j?.chart?.result?.[0]?.meta;
-  if (!m || typeof m.regularMarketPrice !== 'number') throw new Error('veri yok');
+function toQuote(key, m) {
+  if (!m || typeof m.regularMarketPrice !== 'number') return null;
   let price = m.regularMarketPrice;
   let prev = m.chartPreviousClose ?? m.previousClose ?? null;
   // Eski usul ^TNX/^TYX 10 ile çarpılmış gelebilir (42,6 = %4,26)
   if ((key === 'us10y' || key === 'us30y') && price > 20) { price /= 10; if (prev) prev /= 10; }
-  return [key, { price, prev, chg: prev ? ((price - prev) / prev) * 100 : null, time: m.regularMarketTime ? m.regularMarketTime * 1000 : null }];
+  return { price, prev, chg: prev ? ((price - prev) / prev) * 100 : null, time: m.regularMarketTime ? m.regularMarketTime * 1000 : null };
+}
+
+// Tek sembol (yedek yol)
+async function yahooOne(key, sym, host = 'query1') {
+  const j = await getJSON(`https://${host}.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=1d&range=1d`);
+  const q = toQuote(key, j?.chart?.result?.[0]?.meta);
+  if (!q) throw new Error('veri yok');
+  return q;
+}
+
+// Toplu istek: tek çağrıda 20 sembole kadar (Yahoo çok sayıda paralel isteği kısıtlıyor)
+async function yahooBatch(entries) {
+  const out = {};
+  for (let i = 0; i < entries.length; i += 20) {
+    const part = entries.slice(i, i + 20);
+    const syms = part.map(([, s]) => s).join(',');
+    try {
+      const j = await getJSON(`https://query1.finance.yahoo.com/v7/finance/spark?symbols=${encodeURIComponent(syms)}&range=1d&interval=1d`, 8000);
+      const list = j?.spark?.result || [];
+      for (const r of list) {
+        const ent = part.find(([, s]) => s === r.symbol);
+        const q = ent && toQuote(ent[0], r.response?.[0]?.meta);
+        if (q) out[ent[0]] = q;
+      }
+    } catch { /* yedek yola düşer */ }
+  }
+  return out;
+}
+
+// Eksik kalanları tek tek, en fazla 4'er paralel ve iki farklı sunucuyla dener
+async function yahooFill(entries, out, errors) {
+  const todo = entries.filter(([k]) => !out[k]);
+  let idx = 0;
+  const worker = async () => {
+    while (idx < todo.length) {
+      const [k, s] = todo[idx++];
+      try { out[k] = await yahooOne(k, s); }
+      catch (e1) {
+        try { out[k] = await yahooOne(k, s, 'query2'); }
+        catch (e2) { errors.push(`${k}: ${e2.message}`); }
+      }
+    }
+  };
+  await Promise.all([worker(), worker(), worker(), worker()]);
 }
 
 module.exports = async (req, res) => {
   const out = { ts: Date.now(), markets: {}, crypto: {}, global: null, fng: null, errors: [] };
 
   const tasks = [
-    ...Object.entries(YAHOO).map(([k, s]) => yahoo(k, s).then(([kk, v]) => { out.markets[kk] = v; }).catch((e) => out.errors.push(`${k}: ${e.message}`))),
+    (async () => {
+      const entries = Object.entries(YAHOO);
+      Object.assign(out.markets, await yahooBatch(entries));
+      await yahooFill(entries, out.markets, out.errors);
+    })(),
     getJSON(`https://api.coingecko.com/api/v3/simple/price?ids=${Object.values(COINS).join(',')}&vs_currencies=usd&include_24hr_change=true&include_market_cap=true`)
       .then((j) => {
         for (const [k, id] of Object.entries(COINS)) {
