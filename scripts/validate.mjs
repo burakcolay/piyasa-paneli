@@ -86,6 +86,7 @@ if (D) {
   each(D.faizler?.curve, 'faizler.curve', (c, p) => { if (!isNum(c.now) || !isNum(c.m1)) errors.push(`${p} now/m1 sayı olmalı`); });
   each(D.faizler?.kpis, 'faizler.kpis', card);
   need(D, 'faizler.fed.rate', isStr, 'boş');
+  need(D, 'faizler.nq_note', isStr, 'NQ için anlamı boş');
 
   // kuresel
   need(D, 'kuresel.groups', arr(1), 'boş');

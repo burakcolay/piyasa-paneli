@@ -110,6 +110,8 @@ Bu kural `summary`, `s1`-`s7` paragrafları, `turkiye.reading`, `kripto.reading`
 - **Bilançonun ertesi sabahı:** `last`'ı yeni sonuçla güncelle (`note`: ne oldu ve hisse/NQ nasıl tepki verdi), `next`'i bir sonraki çeyreğe taşı.
 - Yapı: `{name, about, nq_note, segments{period, items[{name, share}]}, last{period, date, eps{act, est}, rev{act, est}, note}, next{period, date, time, eps_est, rev_est, known[], watch[]}, analysts{buy, hold, sell, target}, sources[{name, url}]}`. Gelirler milyar $. EPS farkı çok büyükse (tek seferlik kalemler) `note`'ta belirt.
 
+**Faiz eğrisinin NQ anlamı (`faizler.nq_note`)** — eğrideki bugünkü hareketin NQ'ya etkisi, 1-2 cümle. Odak 10 yıllık faizin yönü: yükseliyorsa NQ'ya baskı, düşüyorsa destek; neden ve ne zaman değişebilir.
+
 **İki görüş (`s7.views`)** — günün ana tartışma konusunda boğa ve ayı tarafının argümanları. Bigdata.com'da 1 arama yap (strateji/analist görüşleri, son 1 hafta, haber + araştırma). Her madde `{text, who, url}`: `who` kurum/kişi, `url` Bigdata sonucunun adresi. Uydurma kaynak yazma; bulamazsan o maddeyi koyma. `split`: iki taraf neden ayrışıyor ve kimin haklı olduğunu hangi veri gösterecek.
 
 **Cumartesi derin konu (`weekly.deep`)** — haftanın en önemli olayını uzun anlat: neden oldu, arkasındaki mekanizma, tarihte benzeri, kimi nasıl etkiliyor, ileride ne olabilir. 5-8 paragraf, yorum kuralı geçerli. Yapı:
@@ -141,7 +143,7 @@ Bu kural `summary`, `s1`-`s7` paragrafları, `turkiye.reading`, `kripto.reading`
 | `nq` | `{bias: destek|notr|engel, paragraphs[], tailwinds[{title,note}], headwinds[...], vol_times[{time,title,note,impact}], watch, earnings[{ticker,name,date,time}]}` |
 | `s8` | `{concept, title, paragraphs[], rule}` günün dersi |
 | `news[]` | `{date, region, title, why}` |
-| `faizler` | `{kpis[], curve[{tenor, now, m1}], curve_note, fed{rate, rate_note, next_meeting, pricing, paragraph}, speakers[{when, who}]}` |
+| `faizler` | `{kpis[], curve[{tenor, now, m1}], curve_note, nq_note, fed{rate, rate_note, next_meeting, pricing, paragraph}, speakers[{when, who}]}` |
 | `kuresel` | `{groups[{name, unit: pct|bp, rows[{name, d1, w1, m1, ytd}]}], note}` |
 | `turkiye` | `{kpis[], reading{headline, paragraphs[]}, bist{title, change_label, tone, highlight?{from, label}, points[{d, v}]}, sectors[{name, chg}], sectors_note, cpi{last, labels[], values[], note}, rates{policy, bonds[{tenor, v}], cards[], note}, macro[{name, period, actual, cons, prev, note, tone}], upcoming[{when, name}], lesson{title, paragraphs[], rule}, source}` |
 | `kripto` | `{kpis[{code,label,value,sub,tone}], fng{now, yesterday, week}, reading{}, dominance{total_label, btc, usdt, total2_label}, dom_cards[{code,text}], levels{range[lo,hi], zone[a,b], items[{name, price, label, kind: past|support|now|resistance|ref|target}], note}, etf[{label, v (milyar $), text}], etf_note, coins[{sym, name, price, d1, w1, m1, m3, ytd, y1}], coins_note, institutional[{v,title,note}], drivers[{tag, tone, title, note}], lesson{}}` |

@@ -22,7 +22,17 @@ async function main() {
           <div class="legend"><span><span style="width:18px;height:3px;background:#1F4FD1;border-radius:2px"></span>Bugün</span><span><span style="width:18px;border-top:2px dashed #8A90A0"></span>1 ay önce</span></div>
         </div>
         ${yieldCurve(F.curve)}
-        <p class="note"><strong>Grafik ne söylüyor:</strong> ${esc(F.curve_note)}</p>
+        <p class="note"><strong>Grafik bugün ne söylüyor:</strong> ${esc(F.curve_note)}</p>
+        ${F.nq_note ? `<p class="note nq-note"><strong>NQ için anlamı:</strong> ${esc(F.nq_note)}</p>` : ''}
+        <details class="explain" open>
+          <summary>Bu grafik nedir, nasıl okunur?</summary>
+          <p><b>Ne gösteriyor:</b> ABD devletinin farklı vadelerde borçlanırken ödediği faiz. Soldan sağa vade uzar: 1 ay, 3 ay, 1 yıl, 2 yıl … 30 yıl. Mavi çizgi bugün, kesikli gri çizgi 1 ay önce.</p>
+          <p><b>Normal hâli:</b> Eğri soldan sağa yükselir. Arkadaşına 1 ay için borç verirken az, 10 yıl için verirken daha çok faiz istersin; süre uzadıkça belirsizlik artar.</p>
+          <p><b>İki uç farklı şey anlatır:</b> Sol uç (2 yıllık) piyasanın Fed'den ne beklediğini gösterir; Fed artırım yapacak diye düşünülürse yükselir. Sağ uç (10 ve 30 yıllık) uzun vadeli enflasyon korkusunu ve ABD'nin borç yükü endişesini gösterir.</p>
+          <p><b>Şekiller:</b> <i>Dikleşme</i> (sağ uç daha hızlı yükselir): enflasyon ya da borç korkusu. <i>Yatıklaşma</i> (iki uç birbirine yaklaşır): ekonomi yavaşlıyor beklentisi. <i>Ters eğri</i> (sol uç sağdan yüksek): piyasa faiz indirimi ve yavaşlama bekliyor; tarihsel olarak resesyon habercisi.</p>
+          <p><b>Mavi çizgi griden yukarıdaysa</b> ABD'nin borçlanma maliyeti son bir ayda artmış demektir; aşağıdaysa düşmüştür.</p>
+          <p><b>NQ için tek kural:</b> En önemli nokta 10 yıllık faiz. NQ şirketlerinin değeri yıllar sonraki kârlarına dayanır; 10 yıllık yükselince o kârların bugünkü değeri düşer. 10 yıllık sert yükseliyorsa NQ'da yükseliş yönünde önünde rüzgâr, düşüyorsa arkanda rüzgâr var.</p>
+        </details>
       </section>
       <aside class="card" style="flex:1 1 280px">
         <span class="eyebrow">Vadeler</span>
