@@ -9,8 +9,8 @@
    "tone": "up"
   },
   {
-   "name": "Nasdaq",
-   "value": "27.641,05",
+   "name": "Nasdaq 100",
+   "value": "31.264,00",
    "chg": "▲ %0,60",
    "tone": "up"
   },
@@ -418,7 +418,7 @@
   {
    "date": "5 Eki",
    "region": "ABD",
-   "title": "Nasdaq 27.477 ile rekor kapanış yaptı",
+   "title": "Nasdaq Bileşik 27.477 ile rekor kapanış yaptı",
    "why": "Faiz zirvedeyken teknoloji kârları hisseleri taşıyor; yükseliş dar tabanlı."
   },
   {
@@ -586,11 +586,11 @@
       "ytd": 14.14
      },
      {
-      "name": "Nasdaq",
+      "name": "Nasdaq 100",
       "d1": 0.6,
-      "w1": 2.86,
-      "m1": 4.28,
-      "ytd": 18.93
+      "w1": 2.5,
+      "m1": 5.82,
+      "ytd": 23.82
      },
      {
       "name": "Dow Jones",
