@@ -91,6 +91,7 @@ Bu kural `summary`, `s1`-`s7` paragrafları, `turkiye.reading`, `kripto.reading`
 - `tailwinds` / `headwinds`: 2-4'er madde `{title, note}`.
 - `vol_times`: bugün (ve yakın günlerdeki büyük olaylar) TSİ saatleriyle `{time, title, note, impact}`. ABD açılışını (16:30) her zaman ekle.
 - `watch`: bugün izlenecek tek şey, tek cümle.
+- `earnings`: NQ'yu en çok oynatan şirketlerin sıradaki bilanço tarihleri `{ticker, name, date: "YYYY-MM-DD", time: "before"|"after"}` (açılış öncesi / kapanış sonrası). Liste: AAPL, MSFT, NVDA, AMZN, META, GOOGL, TSLA, AVGO. Bigdata.com `corporate_calendar` (earnings-call) ile çek; tarihi geçenleri bir sonraki çeyreğinkiyle güncelle. Entity ID'ler: AAPL D8442A, MSFT 228D42, NVDA E09E2B, AMZN 0157B1, META 12E454, GOOGL 4A6F00, TSLA DD3BB1, AVGO 09DE1F. Takvim saati ABD kapanışından (23:00 TSİ) sonraysa `after`.
 
 **İki görüş (`s7.views`)** — günün ana tartışma konusunda boğa ve ayı tarafının argümanları. Bigdata.com'da 1 arama yap (strateji/analist görüşleri, son 1 hafta, haber + araştırma). Her madde `{text, who, url}`: `who` kurum/kişi, `url` Bigdata sonucunun adresi. Uydurma kaynak yazma; bulamazsan o maddeyi koyma. `split`: iki taraf neden ayrışıyor ve kimin haklı olduğunu hangi veri gösterecek.
 
@@ -120,7 +121,7 @@ Bu kural `summary`, `s1`-`s7` paragrafları, `turkiye.reading`, `kripto.reading`
 | `s3`, `s4`, `s5` | `{chain[], cards[{label, value, sub, tone}], paragraphs[]}` Avrupa-Asya / para-faiz-emtia / Türkiye |
 | `s6` | `{paragraph, today[{time "SS:DD", title, detail, impact: high|mid|low|session}], week[{when,title,expect}], earnings[{ticker,when}]}` |
 | `s7` | `{likely, alternative, signal, views{topic, bull[{text,who,url}], bear[...], split}}` |
-| `nq` | `{bias: destek|notr|engel, paragraphs[], tailwinds[{title,note}], headwinds[...], vol_times[{time,title,note,impact}], watch}` |
+| `nq` | `{bias: destek|notr|engel, paragraphs[], tailwinds[{title,note}], headwinds[...], vol_times[{time,title,note,impact}], watch, earnings[{ticker,name,date,time}]}` |
 | `s8` | `{concept, title, paragraphs[], rule}` günün dersi |
 | `news[]` | `{date, region, title, why}` |
 | `faizler` | `{kpis[], curve[{tenor, now, m1}], curve_note, fed{rate, rate_note, next_meeting, pricing, paragraph}, speakers[{when, who}]}` |

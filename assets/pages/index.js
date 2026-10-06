@@ -41,7 +41,7 @@ function istanbulDate() {
 }
 const toMin = (t) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
 
-function nqSection(N, n) {
+function nqSection(N, n, D) {
   const b = BIAS[N.bias] || BIAS.notr;
   const item = (x) => `<div class="list-row"><div><b>${esc(x.title)}</b><small>${esc(x.note)}</small></div></div>`;
   return `<section class="sec" id="nq">${secHead(n, 'NQ için makro rüzgâr', '<span class="small muted">Nasdaq 100 · bugün</span>')}
@@ -67,9 +67,38 @@ function nqSection(N, n) {
       </div>
       <div style="display:flex;flex-direction:column;gap:8px"><span class="eyebrow">US100 · canlı, son 1 ay</span><div class="tv" id="tv-nq"></div></div>
     </div>
+    ${earningsBlock(N.earnings, D.date)}
     ${N.watch ? `<p class="note"><strong>Bugün neye bak:</strong> ${esc(N.watch)}</p>` : ''}
     <span class="xs muted">Al/sat sinyali değildir; HTF bias'ını kurarken makro arka planı hesaba katman içindir.</span>
   </section>`;
+}
+
+// NQ'yu oynatan dev şirketlerin bilançoları
+const TR_MON = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
+const TR_DAY = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
+function earningsBlock(list, today) {
+  if (!list?.length) return '';
+  const t0 = Date.parse(today + 'T00:00:00Z');
+  const rows = [...list].sort((a, b) => a.date.localeCompare(b.date)).map((e) => {
+    const t = Date.parse(e.date + 'T00:00:00Z');
+    const days = Math.round((t - t0) / 864e5);
+    if (days < -1) return '';
+    const dt = new Date(t);
+    const label = `${dt.getUTCDate()} ${TR_MON[dt.getUTCMonth()]} ${TR_DAY[dt.getUTCDay()]}`;
+    const after = e.time !== 'before';
+    const next = new Date(t + 864e5 * (dt.getUTCDay() === 5 ? 3 : 1));
+    const impact = after ? `NQ'ya etkisi: ${next.getUTCDate()} ${TR_MON[next.getUTCMonth()]} açılışı` : 'NQ\'ya etkisi: aynı gün açılış';
+    const when = days === 0 ? (after ? 'bu gece' : 'bugün') : days === 1 ? 'yarın' : days < 0 ? 'dün gece' : `${days} gün sonra`;
+    const hot = days >= -1 && days <= 1;
+    return `<div class="earn ${hot ? 'hot' : ''}"><div class="top"><b class="mono">${esc(e.ticker)}</b><span>${esc(e.name)}</span>
+      <span class="mono small">${label}</span><span class="small ${hot ? 'down' : 'muted'}" style="text-align:right;font-weight:${hot ? 600 : 400}">${when}</span></div>
+      <small class="muted">${after ? 'Kapanış sonrası' : 'Açılış öncesi'} · ${impact}</small></div>`;
+  }).join('');
+  return `<div style="display:flex;flex-direction:column;gap:6px">
+    <span class="eyebrow">NQ devlerinin bilançoları</span>
+    ${rows}
+    <span class="xs muted">Kapanış sonrası açıklanan bilançoda ilk tepki gece seansında gelir; NQ ertesi sabah boşluklu açılabilir.</span>
+  </div>`;
 }
 
 function viewsBox(V) {
@@ -194,7 +223,7 @@ async function main() {
     <a class="small" href="sozluk.html${D.s8.concept ? '#' + esc(D.s8.concept) : ''}">Sözlükte aç →</a>
   </section>`;
 
-  const nq = D.nq ? nqSection(D.nq, NUM.nq) : '';
+  const nq = D.nq ? nqSection(D.nq, NUM.nq, D) : '';
 
   const regions = ['Tümü', ...new Set(D.news.map((n) => n.region))];
   const news = `<section class="card" style="padding:24px">

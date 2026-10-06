@@ -2392,6 +2392,56 @@
     "impact": "high"
    }
   ],
-  "watch": "10 yıllık faiz %5,30'un üzerine dönerse NQ üzerindeki baskı yeniden artar; altında kalması bugünkü toparlanmayı destekler."
+  "watch": "10 yıllık faiz %5,30'un üzerine dönerse NQ üzerindeki baskı yeniden artar; altında kalması bugünkü toparlanmayı destekler.",
+  "earnings": [
+   {
+    "ticker": "TSLA",
+    "name": "Tesla",
+    "date": "2026-10-21",
+    "time": "after"
+   },
+   {
+    "ticker": "META",
+    "name": "Meta",
+    "date": "2026-10-28",
+    "time": "after"
+   },
+   {
+    "ticker": "MSFT",
+    "name": "Microsoft",
+    "date": "2026-10-28",
+    "time": "after"
+   },
+   {
+    "ticker": "GOOGL",
+    "name": "Alphabet",
+    "date": "2026-10-28",
+    "time": "after"
+   },
+   {
+    "ticker": "AAPL",
+    "name": "Apple",
+    "date": "2026-10-29",
+    "time": "after"
+   },
+   {
+    "ticker": "AMZN",
+    "name": "Amazon",
+    "date": "2026-10-29",
+    "time": "after"
+   },
+   {
+    "ticker": "NVDA",
+    "name": "Nvidia",
+    "date": "2026-11-18",
+    "time": "after"
+   },
+   {
+    "ticker": "AVGO",
+    "name": "Broadcom",
+    "date": "2026-12-10",
+    "time": "after"
+   }
+  ]
  }
 }

@@ -70,6 +70,11 @@ if (D) {
   need(D, 'nq.tailwinds', arr(1), 'boş');
   need(D, 'nq.headwinds', arr(1), 'boş');
   need(D, 'nq.vol_times', arr(1), 'boş');
+  need(D, 'nq.earnings', arr(1), 'NQ devlerinin bilanço takvimi boş');
+  each(D.nq?.earnings, 'nq.earnings', (e, p) => {
+    if (!isStr(e.ticker) || !/^\d{4}-\d{2}-\d{2}$/.test(e.date || '')) errors.push(`${p} ticker/date (YYYY-MM-DD) eksik`);
+    if (!['before', 'after'].includes(e.time)) errors.push(`${p}.time before|after olmalı`);
+  });
   // iki görüş
   need(D, 's7.views.topic', isStr, 'boş');
   need(D, 's7.views.bull', arr(1), 'en az 1 boğa görüşü');
