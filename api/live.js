@@ -1,18 +1,20 @@
 // Canlı fiyatlar. Vercel sunucu fonksiyonu: /api/live
-// Kaynaklar: Yahoo Finance (endeks, döviz, emtia, BIST ~15 dk gecikmeli),
+// Kaynaklar: CNBC (endeks, döviz, emtia, BIST ~15 dk gecikmeli, hisseler),
 // CoinGecko (kripto fiyat ve piyasa değeri), alternative.me (Korku & Açgözlülük).
-// Sonuç CDN'de 60 sn saklanır; kaynaklardan biri çökerse o kısım boş döner, gerisi çalışır.
+// Sonuç CDN'de 2 dk saklanır; kaynaklardan biri çökerse o kısım boş döner, gerisi çalışır.
 
-const YAHOO = {
-  spx: '^GSPC', ndx: '^NDX', dji: '^DJI', vix: '^VIX',
-  us10y: '^TNX', us30y: '^TYX',
-  xu100: 'XU100.IS', xu030: 'XU030.IS',
-  usdtry: 'TRY=X', eurtry: 'EURTRY=X', eurusd: 'EURUSD=X',
-  gold: 'GC=F', brent: 'BZ=F',
-  sx5e: '^STOXX50E', dax: '^GDAXI', n225: '^N225', hsi: '^HSI',
-  // NQ devleri (bilanço kartları için)
+// Endeks, döviz, emtia, BIST ve hisseler: CNBC'nin herkese açık fiyat servisi (tek istekte hepsi).
+// Not: Yahoo ve Stooq, Vercel sunucularından gelen istekleri engelliyor (429/404); CNBC çalışıyor.
+const CNBC = {
+  spx: '.SPX', ndx: '.NDX', dji: '.DJI', vix: '.VIX',
+  us10y: 'US10Y', us30y: 'US30Y',
+  xu100: '.XU100', xu030: '.XU030',
+  usdtry: 'TRY=', eurtry: 'EURTRY=', eurusd: 'EUR=',
+  gold: 'XAU=', brent: '@LCO.1',
+  sx5e: '.STOXX50E', dax: '.GDAXI', n225: '.N225', hsi: '.HSI',
   // Risk termometresi
-  dxy: 'DX-Y.NYB', hyg: 'HYG', copper: 'HG=F',
+  dxy: '.DXY', hyg: 'HYG', copper: '@HG.1',
+  // NQ devleri (bilanço kartları için)
   AAPL: 'AAPL', MSFT: 'MSFT', NVDA: 'NVDA', AMZN: 'AMZN', META: 'META', GOOGL: 'GOOGL', TSLA: 'TSLA', AVGO: 'AVGO',
 };
 const COINS = { btc: 'bitcoin', eth: 'ethereum', bnb: 'binancecoin', sol: 'solana' };
@@ -28,87 +30,30 @@ async function getJSON(url, ms = 6000) {
   } finally { clearTimeout(t); }
 }
 
-function toQuote(key, m) {
-  if (!m || typeof m.regularMarketPrice !== 'number') return null;
-  let price = m.regularMarketPrice;
-  let prev = m.chartPreviousClose ?? m.previousClose ?? null;
-  // Eski usul ^TNX/^TYX 10 ile çarpılmış gelebilir (42,6 = %4,26)
-  if ((key === 'us10y' || key === 'us30y') && price > 20) { price /= 10; if (prev) prev /= 10; }
-  return { price, prev, chg: prev ? ((price - prev) / prev) * 100 : null, time: m.regularMarketTime ? m.regularMarketTime * 1000 : null };
-}
+const toNum = (s) => { const n = parseFloat(String(s ?? '').replace(/[,%+]/g, '')); return Number.isFinite(n) ? n : null; };
 
-// Tek sembol (yedek yol)
-async function yahooOne(key, sym, host = 'query1') {
-  const j = await getJSON(`https://${host}.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=1d&range=1d`);
-  const q = toQuote(key, j?.chart?.result?.[0]?.meta);
-  if (!q) throw new Error('veri yok');
-  return q;
-}
-
-// Toplu istek: tek çağrıda 20 sembole kadar (Yahoo çok sayıda paralel isteği kısıtlıyor)
-async function yahooBatch(entries) {
-  const out = {};
-  for (let i = 0; i < entries.length; i += 20) {
-    const part = entries.slice(i, i + 20);
-    const syms = part.map(([, s]) => s).join(',');
-    try {
-      const j = await getJSON(`https://query1.finance.yahoo.com/v7/finance/spark?symbols=${encodeURIComponent(syms)}&range=1d&interval=1d`, 8000);
-      const list = j?.spark?.result || [];
-      for (const r of list) {
-        const ent = part.find(([, s]) => s === r.symbol);
-        const q = ent && toQuote(ent[0], r.response?.[0]?.meta);
-        if (q) out[ent[0]] = q;
-      }
-    } catch { /* yedek yola düşer */ }
-  }
-  return out;
-}
-
-// Stooq: tek istekte tüm semboller (CSV, anahtar gerektirmez, ~15 dk gecikmeli)
-const STOOQ = {
-  spx: '^spx', ndx: '^ndx', dji: '^dji', vix: '^vix',
-  us10y: '10usy.b', us30y: '30usy.b',
-  usdtry: 'usdtry', eurtry: 'eurtry', eurusd: 'eurusd',
-  gold: 'xauusd', brent: 'cb.f',
-  dax: '^dax', n225: '^nkx', hsi: '^hsi',
-  dxy: 'dx.f', hyg: 'hyg.us', copper: 'hg.f',
-  AAPL: 'aapl.us', MSFT: 'msft.us', NVDA: 'nvda.us', AMZN: 'amzn.us', META: 'meta.us', GOOGL: 'googl.us', TSLA: 'tsla.us', AVGO: 'avgo.us',
-};
-
-async function stooq(out, errors) {
-  const syms = Object.values(STOOQ).join('+');
-  const ctl = new AbortController();
-  const t = setTimeout(() => ctl.abort(), 8000);
+async function cnbc(out, errors) {
+  const syms = Object.values(CNBC).join('|');
+  const url = `https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols=${encodeURIComponent(syms)}&requestMethod=itv&noform=1&partnerId=2&fund=1&exthrs=1&output=json&events=1`;
   try {
-    const r = await fetch(`https://stooq.com/q/l/?s=${encodeURIComponent(syms).replace(/%2B/g, '+')}&f=sd2t2ohlcp&h&e=csv`, { headers: UA, signal: ctl.signal });
-    if (!r.ok) throw new Error(`${r.status}`);
-    const lines = (await r.text()).trim().split(/\r?\n/);
-    const head = lines.shift().split(',').map((h) => h.trim().toLowerCase());
-    const iS = head.indexOf('symbol'), iC = head.indexOf('close'), iP = head.findIndex((h) => h.startsWith('prev'));
-    const bySym = Object.fromEntries(Object.entries(STOOQ).map(([k, v]) => [v.toUpperCase(), k]));
-    for (const ln of lines) {
-      const c = ln.split(',');
-      const key = bySym[(c[iS] || '').toUpperCase()];
-      const price = parseFloat(c[iC]), prev = iP >= 0 ? parseFloat(c[iP]) : NaN;
-      if (!key || !Number.isFinite(price)) continue;
-      out[key] = { price, prev: Number.isFinite(prev) ? prev : null, chg: Number.isFinite(prev) && prev ? ((price - prev) / prev) * 100 : null, time: null, src: 'stooq' };
+    const j = await getJSON(url, 8000);
+    const list = j?.FormattedQuoteResult?.FormattedQuote || [];
+    const byCode = Object.fromEntries(Object.entries(CNBC).map(([k, v]) => [v, k]));
+    for (const q of list) {
+      const key = byCode[q.symbol];
+      const price = toNum(q.last), prev = toNum(q.previous_day_closing);
+      if (!key || price == null) continue;
+      out[key] = { price, prev, chg: prev ? ((price - prev) / prev) * 100 : toNum(q.change_pct), time: q.last_time ? Date.parse(q.last_time) : null };
     }
-  } catch (e) { errors.push(`stooq: ${e.message}`); }
-  finally { clearTimeout(t); }
+  } catch (e) { errors.push(`cnbc: ${e.message}`); }
+  for (const k of Object.keys(CNBC)) if (!out[k]) errors.push(`${k}: yok`);
 }
 
 module.exports = async (req, res) => {
-  if (String(req.url || '').includes('probe=1')) return require('./probe.js')(req, res);
   const out = { ts: Date.now(), markets: {}, crypto: {}, global: null, fng: null, errors: [] };
 
   const tasks = [
-    (async () => {
-      // Önce Stooq (tek istek), eksik kalanlar Yahoo toplu istekle (en fazla 2 çağrı)
-      await stooq(out.markets, out.errors);
-      const missing = Object.entries(YAHOO).filter(([k]) => !out.markets[k]);
-      if (missing.length) Object.assign(out.markets, await yahooBatch(missing));
-      for (const [k] of Object.entries(YAHOO)) if (!out.markets[k]) out.errors.push(`${k}: yok`);
-    })(),
+    cnbc(out.markets, out.errors),
     getJSON(`https://api.coingecko.com/api/v3/simple/price?ids=${Object.values(COINS).join(',')}&vs_currencies=usd&include_24hr_change=true&include_market_cap=true`)
       .then((j) => {
         for (const [k, id] of Object.entries(COINS)) {

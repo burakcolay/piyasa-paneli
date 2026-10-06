@@ -94,7 +94,7 @@ async function main() {
         <p><b>NQ için:</b> Nasdaq 100 satırını S&amp;P 500 ve Dow ile kıyasla. Nasdaq diğerlerinden çok daha iyiyse yükseliş teknolojiye dayanıyor demektir: güçlü ama dar tabanlı, haberlere hassas.</p>
       </details>
     </section>
-    <p class="source">Kaynak: Bigdata.com (FMP) ve Borsa MCP; canlı veriler Yahoo Finance, CoinGecko ve TradingView. Yüzde değişimler; ABD faizleri baz puan.</p>
+    <p class="source">Kaynak: Bigdata.com (FMP) ve Borsa MCP; canlı veriler CNBC ve CoinGecko. Yüzde değişimler; ABD faizleri baz puan.</p>
   </main>`;
 
   if (!ctx.isOld) startLive((L) => { document.getElementById('thermo').innerHTML = thermometer(L); });
