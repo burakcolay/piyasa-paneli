@@ -64,21 +64,37 @@ async function yahooBatch(entries) {
   return out;
 }
 
-// Eksik kalanları tek tek, en fazla 4'er paralel ve iki farklı sunucuyla dener
-async function yahooFill(entries, out, errors) {
-  const todo = entries.filter(([k]) => !out[k]);
-  let idx = 0;
-  const worker = async () => {
-    while (idx < todo.length) {
-      const [k, s] = todo[idx++];
-      try { out[k] = await yahooOne(k, s); }
-      catch (e1) {
-        try { out[k] = await yahooOne(k, s, 'query2'); }
-        catch (e2) { errors.push(`${k}: ${e2.message}`); }
-      }
+// Stooq: tek istekte tüm semboller (CSV, anahtar gerektirmez, ~15 dk gecikmeli)
+const STOOQ = {
+  spx: '^spx', ndx: '^ndx', dji: '^dji', vix: '^vix',
+  us10y: '10usy.b', us30y: '30usy.b',
+  usdtry: 'usdtry', eurtry: 'eurtry', eurusd: 'eurusd',
+  gold: 'xauusd', brent: 'cb.f',
+  dax: '^dax', n225: '^nkx', hsi: '^hsi',
+  dxy: 'dx.f', hyg: 'hyg.us', copper: 'hg.f',
+  AAPL: 'aapl.us', MSFT: 'msft.us', NVDA: 'nvda.us', AMZN: 'amzn.us', META: 'meta.us', GOOGL: 'googl.us', TSLA: 'tsla.us', AVGO: 'avgo.us',
+};
+
+async function stooq(out, errors) {
+  const syms = Object.values(STOOQ).join('+');
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), 8000);
+  try {
+    const r = await fetch(`https://stooq.com/q/l/?s=${encodeURIComponent(syms).replace(/%2B/g, '+')}&f=sd2t2ohlcp&h&e=csv`, { headers: UA, signal: ctl.signal });
+    if (!r.ok) throw new Error(`${r.status}`);
+    const lines = (await r.text()).trim().split(/\r?\n/);
+    const head = lines.shift().split(',').map((h) => h.trim().toLowerCase());
+    const iS = head.indexOf('symbol'), iC = head.indexOf('close'), iP = head.findIndex((h) => h.startsWith('prev'));
+    const bySym = Object.fromEntries(Object.entries(STOOQ).map(([k, v]) => [v.toUpperCase(), k]));
+    for (const ln of lines) {
+      const c = ln.split(',');
+      const key = bySym[(c[iS] || '').toUpperCase()];
+      const price = parseFloat(c[iC]), prev = iP >= 0 ? parseFloat(c[iP]) : NaN;
+      if (!key || !Number.isFinite(price)) continue;
+      out[key] = { price, prev: Number.isFinite(prev) ? prev : null, chg: Number.isFinite(prev) && prev ? ((price - prev) / prev) * 100 : null, time: null, src: 'stooq' };
     }
-  };
-  await Promise.all([worker(), worker(), worker(), worker()]);
+  } catch (e) { errors.push(`stooq: ${e.message}`); }
+  finally { clearTimeout(t); }
 }
 
 module.exports = async (req, res) => {
@@ -86,9 +102,11 @@ module.exports = async (req, res) => {
 
   const tasks = [
     (async () => {
-      const entries = Object.entries(YAHOO);
-      Object.assign(out.markets, await yahooBatch(entries));
-      await yahooFill(entries, out.markets, out.errors);
+      // Önce Stooq (tek istek), eksik kalanlar Yahoo toplu istekle (en fazla 2 çağrı)
+      await stooq(out.markets, out.errors);
+      const missing = Object.entries(YAHOO).filter(([k]) => !out.markets[k]);
+      if (missing.length) Object.assign(out.markets, await yahooBatch(missing));
+      for (const [k] of Object.entries(YAHOO)) if (!out.markets[k]) out.errors.push(`${k}: yok`);
     })(),
     getJSON(`https://api.coingecko.com/api/v3/simple/price?ids=${Object.values(COINS).join(',')}&vs_currencies=usd&include_24hr_change=true&include_market_cap=true`)
       .then((j) => {
@@ -122,7 +140,7 @@ module.exports = async (req, res) => {
     out.markets.gramgold = { price, prev, chg: prev ? ((price - prev) / prev) * 100 : null, time: g.time };
   }
 
-  res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+  res.setHeader('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=600');
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.status(200).send(JSON.stringify(out));
 };
