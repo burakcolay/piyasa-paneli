@@ -237,3 +237,15 @@ svg.chart text.halo { paint-order: stroke; stroke: #fff; stroke-width: 4px; stro
   .kpi .v { font-size: 17px; }
   .day { grid-template-columns: 56px 1fr; gap: 10px; }
 }
+
+/* ---------- canlı fiyatlar ---------- */
+i.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #12A150; margin-right: 5px; vertical-align: 1px; animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+.tick.is-live .n::after { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #12A150; margin-left: 5px; vertical-align: 1px; }
+.live-line { font-size: 11px; color: var(--muted); line-height: 1.35; margin-top: 2px; }
+.live-line:empty { display: none; }
+.live-line span { opacity: .85; }
+.live-stamp { max-width: 1280px; margin: 0 auto; padding: 0 24px 8px; font-size: 11px; color: var(--muted); }
+.live-stamp.inline { padding: 0; margin: 0; }
+@media (max-width: 640px) { .live-stamp { padding: 0 16px 8px; } }
+@media (prefers-reduced-motion: reduce) { i.dot { animation: none; } }

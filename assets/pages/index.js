@@ -1,4 +1,4 @@
-import { shell, loadDay, loadJSON, fail, esc, map, kpi, paras, dateTR, toneClass, tvMini } from '../app.js';
+import { shell, loadDay, loadJSON, fail, esc, map, kpi, paras, dateTR, toneClass, tvMini, liveKeyFor, startLive } from '../app.js';
 import { sectorHeat } from '../charts.js';
 
 const MOODS = {
@@ -43,14 +43,17 @@ async function main() {
   const mood = MOODS[D.s1.mood] || MOODS.temkinli;
   const S = D.summary;
 
-  const tickers = `<div class="ticker-bar"><div class="inner">${map(D.tickers, (t) => `
-    <div class="tick"><span class="n">${esc(t.name)}</span><span class="v">${esc(t.value)}</span><span class="c ${toneClass(t.tone)}">${esc(t.chg)}</span></div>`)}</div></div>`;
+  const tickers = `<div class="ticker-bar"><div class="inner">${map(D.tickers, (t) => {
+    const lk = liveKeyFor(t.name, t.value);
+    return `<div class="tick" ${lk ? `data-live="${lk}" data-snap="${esc(t.value)}"` : ''}><span class="n">${esc(t.name)}</span><span class="v">${esc(t.value)}</span><span class="c ${toneClass(t.tone)}">${esc(t.chg)}</span></div>`;
+  })}</div><div class="live-stamp" data-live-stamp hidden></div></div>`;
 
   const summary = `<section class="card lead summary" aria-label="Günün özeti">
     <div class="head-row"><span class="eyebrow accent">Claude'un günlük özeti</span><span class="mono xs muted">${esc(dateTR(date, false))} ${esc(D.updated)} · okuma ~${S.read_min || 5} dk</span></div>
     <h1>${esc(S.headline)}</h1>
     <p class="lede">${esc(S.lede)}</p>
     ${paras(S.paragraphs, 'body')}
+    <span class="xs muted">Yazılar ${esc(D.updated)} fiyatlarıyla yazıldı; üstteki şerit ve fiyat kartları canlı.</span>
     <span class="small muted" style="padding-top:4px;border-top:1px solid var(--line-soft)">Aşağıda yazının tamamı, anlatım sırasına göre 8 bölüme ayrılmış halde.</span>
     <nav class="toc" aria-label="Anlatım sırası">${TOC.map((t, i) => `<a href="#s${i + 1}"><b>${i + 1}</b> ${esc(t)}</a>`).join('')}</nav>
   </section>`;
@@ -150,6 +153,7 @@ async function main() {
   </main>`;
 
   tvMini(document.getElementById('tv-spx'), 'FOREXCOM:SPXUSD', { range: '3M', height: 220 });
+  if (!ctx.isOld) startLive();
 
   // Terim açıklamaları
   app.addEventListener('click', (e) => {

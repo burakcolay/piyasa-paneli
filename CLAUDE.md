@@ -42,6 +42,8 @@ Doğrudan `main`'e push et. Ayrı dala atıp merge commit ile birleştirme; merg
 ## Yazım kuralları
 
 - Nasdaq her yerde **Nasdaq 100** (^NDX, Burak'ın takip ettiği NQ vadelisinin endeksi) olarak yazılır; Nasdaq Bileşik (^IXIC) kullanma. Şeritteki adı `Nasdaq 100`.
+- Kripto coin tablosu sadece BTC, ETH, BNB, SOL. XRP, ADA, DOGE, LINK, AVAX, LTC ekleme (Burak çıkardı).
+- Gösterge adlarını değiştirme (`S&P 500`, `Nasdaq 100`, `BIST 100`, `USD/TRY`, `Ons altın`, `Gram altın`, `Brent`, `BTC`, `TOTAL`, `BTC.D` vb.): site canlı fiyatı bu adlardan eşleştiriyor.
 - Fiyatlar rutinin çalıştığı andaki anlık değerdir; `updated` alanına o saati yaz.
 - Dil Türkçe, sayılar Türk biçimi (`12.395`, `%29,73`, `−0,39%`). Eksi için `−` (U+2212).
 - `tone`: `up` (yeşil), `down` (kırmızı), `flat` (gri); tablolarda `good` / `bad` / `flat`. Ton, okuyucu için iyi mi kötü mü olduğuna göre seçilir (ör. enflasyon beklentiden düşükse `good`).

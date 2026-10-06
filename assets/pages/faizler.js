@@ -1,4 +1,4 @@
-import { shell, loadDay, fail, esc, map, kpi, num } from '../app.js';
+import { shell, loadDay, fail, esc, map, kpi, num, startLive } from '../app.js';
 import { yieldCurve } from '../charts.js';
 
 async function main() {
@@ -13,6 +13,7 @@ async function main() {
   });
 
   app.innerHTML = `<main class="wrap">
+    <div class="live-stamp inline" data-live-stamp hidden></div>
     <div class="grid" style="--min:200px;gap:12px">${map(F.kpis, (k) => kpi(k, 'big'))}</div>
 
     <div class="row">
@@ -45,6 +46,7 @@ async function main() {
     </div>
     <p class="source">Kaynak: Bigdata.com (faiz verisi FMP, takvim FXStreet). 1 ay önceki eğri, aylık değişimden hesaplanmıştır.</p>
   </main>`;
+  if (!ctx.isOld) startLive();
 }
 
 main().catch(fail);

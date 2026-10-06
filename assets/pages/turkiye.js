@@ -1,4 +1,4 @@
-import { shell, loadDay, fail, esc, map, kpi, paras, lessonBox, num } from '../app.js';
+import { shell, loadDay, fail, esc, map, kpi, paras, lessonBox, num, startLive } from '../app.js';
 import { lineChart, hbars, bondCurve } from '../charts.js';
 
 async function main() {
@@ -10,6 +10,7 @@ async function main() {
   const tone = (t) => (t === 'good' ? 't-good' : t === 'bad' ? 't-bad' : 't-flat');
 
   app.innerHTML = `<main class="wrap">
+    <div class="live-stamp inline" data-live-stamp hidden></div>
     <div class="grid" style="--min:140px">${map(T.kpis, (k) => kpi(k))}</div>
 
     <section class="card lead">
@@ -63,6 +64,7 @@ async function main() {
     ${lessonBox(T.lesson, 'Türkiye dersi')}
     <p class="source">Kaynak: ${esc(T.source)} Yatırım tavsiyesi değildir.</p>
   </main>`;
+  if (!ctx.isOld) startLive();
 }
 
 main().catch(fail);
