@@ -49,8 +49,35 @@ Doğrudan `main`'e push et. Ayrı dala atıp merge commit ile birleştirme; merg
 - `tone`: `up` (yeşil), `down` (kırmızı), `flat` (gri); tablolarda `good` / `bad` / `flat`. Ton, okuyucu için iyi mi kötü mü olduğuna göre seçilir (ör. enflasyon beklentiden düşükse `good`).
 - Sayı alanları (`chg`, `d1`, `w1`, `m1`, `ytd`, `values`, `points[].v`, `curve[].now/m1`, `price`) gerçek sayıdır, metin değil; site biçimlendirir.
 - Paragraf içinde sözlük terimine bağlantı: `[[nfp|Tarım dışı istihdamın]]` (id `sozluk.json`'da olmalı).
-- Dolgu cümlesi yok. Her cümle bir bilgi ya da bir neden-sonuç taşımalı. Önce ABD, sonra Avrupa/Asya, para/emtia, kısa Türkiye.
+- Dolgu cümlesi yok. Önce ABD, sonra Avrupa/Asya, para/emtia, kısa Türkiye.
 - `s7` (Benim okumam) gerçekçi olmalı: en olası senaryo, alternatif, izlenecek tek sinyal. Al/sat tavsiyesi verme.
+
+## Yorum nasıl yazılır (en önemli kural)
+
+Burak rakamları şeritte, kartlarda ve tablolarda zaten görüyor; bir iki kez görünce aklında kalıyor. Yazının işi rakamı tekrar etmek değil, **rakamın ne anlama geldiğini** anlatmak. Burak bu metni kendine sesli anlatarak öğreniyor.
+
+**Rakam kuralı**
+- Paragraf başına en fazla 1-2 rakam, o da sadece anlatının dayanağıysa: bir eşik (%5 faiz), bir rekor, beklentiden büyük bir sapma.
+- "S&P %0,5, Nasdaq %0,6 arttı, Dow %0,4..." gibi sıralamalar yasak. Hareketi kelimeyle söyle: "teknoloji öncülüğünde yükseldi", "sert düştü", "yatay".
+- Aynı rakamı iki bölümde tekrarlama.
+
+**Her bölüm şu sırayla düşünülür**
+1. **Ne oldu?** Tek cümle, rakamsız ya da tek rakamla.
+2. **Neden oldu?** Asıl sebep ve arkasındaki mekanizma: kim alıyor, kim satıyor, neyi fiyatlıyorlar.
+3. **Zincir:** Bu hareket başka neyi etkiliyor? (petrol → enflasyon beklentisi → faiz → teknoloji hisseleri → gelişen piyasalar ve TL)
+4. **Dünle kıyas:** Dünkü okumamızı teyit etti mi, çürüttü mü? Hikâye değişiyor mu?
+5. **Piyasa ne bekliyor, sen ne görüyorsun:** Fiyatlanan senaryo ile riskler arasındaki fark. Belirsizse açıkça "belirsiz" de.
+6. **Bundan sonra neye bakmalı:** Bu hikâyeyi bozacak ya da güçlendirecek tek şey.
+
+**Örnek**
+
+Kötü (rakam sıralaması):
+> Wall Street teknoloji öncülüğünde yükseldi: S&P 500 %0,5, Nasdaq %0,6 arttı; Nasdaq pazartesi rekor kapanışı yaptı. Hisseler 10 yıllık faizin 24 yılın zirvesinde olmasına rağmen yükseliyor, çünkü şirket kârları çeyreklik %25'in üzerinde büyüyor.
+
+İyi (yorum):
+> Wall Street'te yükselişi yine teknoloji taşıdı ve Nasdaq rekor tazeledi. Asıl dikkat çekici olan, bunun tahvil faizleri çeyrek asrın zirvesindeyken olması. Normalde bu kadar yüksek faiz hisseleri aşağı çeker, çünkü gelecekteki kârın bugünkü değerini düşürür. Şu an bu çekimi kârların güçlü büyümesi dengeliyor; yatırımcı "faiz yüksek ama kâr daha hızlı artıyor" diye düşünüyor. Bu denge kırılgan: kâr büyümesinin yavaşladığı ilk çeyrekte faizin baskısı birden hissedilir. Bu yüzden önümüzdeki bilanço sezonunda kârın kendisinden çok şirketlerin gelecek çeyrek beklentilerine bakmak gerekiyor.
+
+Bu kural `summary`, `s1`-`s7` paragrafları, `turkiye.reading`, `kripto.reading` ve tüm `*_note` alanları için geçerli. Kart ve tablolar (`cards`, `kpis`, `tickers`, `macro`, tablolar) rakam taşımaya devam eder.
 
 ## Günlük JSON şeması (özet)
 
