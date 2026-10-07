@@ -170,6 +170,25 @@ async function openCompany(tk) {
   bg.querySelector('.close').focus();
 }
 
+// Gün ortası (18:00) güncellemesi
+function middayBlock(M, morningBias) {
+  if (!M) return '';
+  const b = BIAS[M.nq?.bias];
+  const mb = BIAS[morningBias];
+  const biasLine = b ? `<div class="mid-bias"><span class="small muted">NQ makro yönü</span>
+      <span>${mb && mb !== b ? `<s class="muted">${esc(mb.name)}</s> → ` : ''}<b style="color:${b.color}">${esc(b.name)}</b></span>
+      ${M.nq.note ? `<small>${esc(M.nq.note)}</small>` : ''}</div>` : '';
+  return `<section class="card midday" aria-label="Gün ortası güncellemesi">
+    <div class="head-row"><span class="eyebrow" style="color:#8A5A00">Gün ortası güncellemesi · ${esc(M.time || '18:00')}</span><span class="xs muted">sabah yazısının üzerine</span></div>
+    <h2>${esc(M.headline)}</h2>
+    ${M.changes?.length ? `<div style="display:flex;flex-direction:column;gap:8px"><span class="eyebrow">Sabahtan bu yana</span>${map(M.changes, (c) => `<div class="change"><span class="tag tag-${esc(c.tone)}">${esc(c.tag)}</span><span>${esc(c.text)}</span></div>`)}</div>` : ''}
+    ${map(M.paragraphs, (p) => `<p>${withTerms(p)}</p>`)}
+    ${biasLine}
+    ${M.tonight?.length ? `<div style="display:flex;flex-direction:column;gap:4px"><span class="eyebrow">Bu akşam ve gece</span>
+      ${map(M.tonight, (e) => `<div class="event"><span class="t">${esc(e.time)}</span><span class="d" style="background:${IMPACT[e.impact] || IMPACT.mid}"></span><div><b>${esc(e.title)}</b><small>${esc(e.note || '')}</small></div></div>`)}</div>` : ''}
+  </section>`;
+}
+
 function viewsBox(V) {
   if (!V) return '';
   const side = (list) => map(list, (x) => `<li><span>${esc(x.text)}</span>${x.who ? `<small>${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.who)}</a>` : esc(x.who)}</small>` : ''}</li>`);
@@ -303,7 +322,7 @@ async function main() {
   </section>`;
 
   app.innerHTML = tickers + `<main class="wrap narrow">
-    ${summary}${s1}${s2}${nq}
+    ${middayBlock(D.midday, D.nq?.bias)}${summary}${s1}${s2}${nq}
     ${simple('s3', NUM.s3, 'Avrupa ve Asya', D.s3)}
     ${simple('s4', NUM.s4, 'Para, faiz ve emtia', D.s4)}
     ${simple('s5', NUM.s5, 'Türkiye', D.s5)}

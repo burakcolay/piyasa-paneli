@@ -149,6 +149,15 @@ if (G) {
   }
 }
 
+// Gün ortası (18:00) güncellemesi, varsa
+if (D?.midday) {
+  const M = D.midday;
+  if (!isStr(M.headline)) errors.push('midday.headline boş');
+  if (!Array.isArray(M.paragraphs) || !M.paragraphs.length) errors.push('midday.paragraphs boş');
+  each(M.changes, 'midday.changes', (c, p) => { if (!['same', 'good', 'bad', 'new'].includes(c.tone)) errors.push(`${p}.tone same|good|bad|new olmalı`); });
+  if (M.nq && !['engel', 'notr', 'destek'].includes(M.nq.bias)) errors.push('midday.nq.bias engel|notr|destek olmalı');
+}
+
 // NQ devleri şirket kartları
 const CO = read('data/companies.json');
 if (CO) {
