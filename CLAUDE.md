@@ -32,27 +32,6 @@ scripts/validate.mjs       veri kontrolü
 6. `node scripts/validate.mjs` çalıştır. Hata varsa düzelt, tekrar çalıştır. Geçmeden commit yapma.
 7. `main` dalına commit + push. Mesaj: `veri: YYYY-MM-DD`.
 
-## Gün ortası güncellemesi (hafta içi 18:00 TSİ)
-
-Ayrı bir rutin. **Sabahki dosyayı yeniden yazmaz**; sadece bugünün dosyasına `midday` alanını ekler. Fiyatlar sitede zaten canlı, bu yüzden rakam güncellemek yok; iş yorumu güncellemek.
-
-1. `data/daily/<bugün>.json`'u oku (sabahın okuması, `nq.bias`, `s7`, `nq.vol_times`). Dosya yoksa sabah rutini çalışmamıştır: hiçbir şey yapma, bitir.
-2. Veri: Bigdata.com `bigdata_market_tearsheet` (1 çağrı), bugünün ekonomik takvimi (açıklanan veriler ve sonuçları), en fazla 2 haber araması (ABD seansı, varsa büyük şirket/Fed haberi). BIST kapanışı için Borsa MCP'de tek çağrı (XU100).
-3. `midday` yaz:
-```
-"midday": {
-  "time": "18:00",
-  "headline": "Sabahtan bu yana olan en önemli şey, tek cümle",
-  "changes": [{ "tag": "−0,8%", "tone": "same|good|bad|new", "text": "..." }],
-  "paragraphs": ["2-3 paragraf: 1) sabahki okuma tuttu mu, ne değişti ve neden; 2) ABD açılışının ilk saatleri ve NQ'nun tepkisi; 3) Avrupa ve BIST kapanışı kısaca"],
-  "nq": { "bias": "destek|notr|engel", "note": "Sabahtan değiştiyse neden, değişmediyse neyin teyit ettiği" },
-  "tonight": [{ "time": "21:00", "title": "...", "note": "...", "impact": "high|mid|low" }]
-}
-```
-   Yorum kuralları geçerli: rakam sıralama yok, neden-sonuç anlat. `changes` 2-4 madde.
-4. `node scripts/validate.mjs`, sonra commit (Burak adına) ve push. Mesaj: `veri: YYYY-MM-DD 18:00`.
-5. Bildirim: başlık + NQ yönü (değiştiyse "nötr → engelleyici" gibi).
-
 ## Commit yazarı (Vercel için zorunlu)
 
 Vercel Hobby planı, özel repoda sadece hesap sahibinin yazdığı commit'leri yayına alır. Claude ya da bot adına atılan commit'ler "blocked" olur ve site yenilenmez. Bu yüzden her commit Burak adına atılır:
@@ -163,7 +142,6 @@ Bu kural `summary`, `s1`-`s7` paragrafları, `turkiye.reading`, `kripto.reading`
 | `s7` | `{likely, alternative, signal, views{topic, bull[{text,who,url}], bear[...], split}}` |
 | `nq` | `{bias: destek|notr|engel, paragraphs[], tailwinds[{title,note}], headwinds[...], vol_times[{time,title,note,impact}], watch, earnings[{ticker,name,date,time}]}` |
 | `s8` | `{concept, title, paragraphs[], rule}` günün dersi |
-| `midday` | Sadece 18:00 rutini ekler: `{time, headline, changes[], paragraphs[], nq{bias, note}, tonight[]}` |
 | `news[]` | `{date, region, title, why}` |
 | `faizler` | `{kpis[], curve[{tenor, now, m1}], curve_note, nq_note, fed{rate, rate_note, next_meeting, pricing, paragraph}, speakers[{when, who}]}` |
 | `kuresel` | `{groups[{name, unit: pct|bp, rows[{name, d1, w1, m1, ytd}]}], note}` · Risk termometresi canlıdır, rutin yazmaz. |
