@@ -456,6 +456,44 @@
   ],
   "rule": "Endeks rekordayken hisselerin çoğu ve küçük şirketler geride kalıyorsa yükseliş kırılgandır: rekora değil, kaç hissenin eşlik ettiğine bak."
  },
+ "midday": {
+  "time": "18:00",
+  "headline": "Hisseler sabahki rekordan geri çekildi; Brent 101 doları yeniden aştı",
+  "changes": [
+   {
+    "tag": "YENİ",
+    "tone": "bad",
+    "text": "S&P 500 ve Nasdaq sabah rekorlarını vermek zorunda kaldı; Fed tutanaklarının beklentisi öğleden sonra satışları tetikledi"
+   },
+   {
+    "tag": "BIST −%2,16",
+    "tone": "bad",
+    "text": "BIST 100 kapanışa yaklaşırken %2,16 düştü; sanayi ve holding sektörleri sabahkı iniş trendini sürdürüyor"
+   },
+   {
+    "tag": "+%1,2",
+    "tone": "bad",
+    "text": "Brent petrol %1,18 yükseldi ve 101,77 dolara ulaştı; enflasyon ve faiz endişesi geri geldi"
+   }
+  ],
+  "paragraphs": [
+   "Sabahta Wall Street rekorlarla açılan gün, öğleden sonra tersine döndü. S&P 500 ve Nasdaq 100 her ikisi de düştü: yatırımcı, bu akşam 21:00'de yayınlanacak Fed tutanaklarından Aralık artırımı vurgusu görmesi halinde faiz ve vade priminin geri geleceğini biliyor. Bugün ek bir faktör, petrol fiyatının yeniden 100 doların üzerine sıçraması: Brent 101 doları aştı, çünkü Körfez tedariki beklentiler kadar hızlı toparlansa da, Husilerin saldırıları sürüyor ve Orta Doğu dışındaki arz artışı 2027'ye kaymaya devam ediyor.",
+   "Türkiye'de BIST 100 bu baskının tam ortasında kapanmaya hazırlanıyor. Sabahki düşüşün ötesine geçerek %2,16 daha geriledi; satış seçici olmayı sürdürüyor (sanayi ve holdingler en sert düşüyor). Petrol, dolar ve faiz riski birbirini besliyor: Brent'in yükselişi cari açık ve enflasyonun Türkiye için ne anlama geldiği iken, Fed tutanaklarında şahin sesi kesilmeyecek gibi görünüyor. TCMB'nin 22 Ekim'deki faiz indirimi hikâyesi, bu akşamki tutanaklara kadar sınanıyor.",
+   "Zincirleme reaksiyon: petrol → enflasyon primi → faiz, faiz → hisse talebi, hisse → EM para. Tutanaklar bu zincirin hangi halasında tutulduğunu gösterecek. Brent'in 102 doları görmesi durumunda — hisse ve para cephesinde yeni dalgalar olur."
+  ],
+  "nq": {
+   "bias": "engel",
+   "note": "Sabahta nötr/destek karışık iken, Brent petrolün yükselişi makro ortamı engel tarafına çekti. 10Y faizin %5,30'u tutup tutmaması kritik."
+  },
+  "tonight": [
+   {
+    "time": "21:00",
+    "title": "FOMC tutanakları (Eylül)",
+    "note": "Aralık artırımı vurgusu Aralık fiyatlamasını kilitler; şahin ses faiz ve vadeyi yeniden yukarı çeker",
+    "impact": "high"
+   }
+  ]
+ },
  "news": [
   {
    "date": "6 Eki",
