@@ -1,89 +1,260 @@
 {
-  "categories": ["Faizler", "Merkez bankaları", "Makro veriler", "Piyasa psikolojisi", "Türkiye", "Kripto"],
+  "categories": [
+    "Faizler",
+    "Merkez bankaları",
+    "Makro veriler",
+    "Piyasa psikolojisi",
+    "Türkiye",
+    "Kripto"
+  ],
   "concepts": {
     "faiz": {
-      "name": "Faiz ve hisse ilişkisi", "cat": "Faizler", "learned": "2026-10-04",
+      "name": "Faiz ve hisse ilişkisi",
+      "cat": "Faizler",
+      "learned": "2026-10-04",
       "def": "Faizler yükseldiğinde güvenli getiri (tahvil, mevduat) cazipleşir ve gelecekteki kârların bugünkü değeri düşer; bu yüzden hisseler, özellikle büyüme hisseleri, baskılanır.",
       "analogy": "Bankadaki faiz %2 iken riskli bir işe yatırım yaparsın; faiz %10 olunca aynı riske girmek için çok daha büyük bir getiri beklersin.",
-      "chain": ["Faiz artar", "Tahvil getirisi cazipleşir", "Para hisseden tahvile kayar", "Gelecekteki kâr bugüne daha düşük değerle iskonto edilir", "Büyüme hisseleri en sert düşer"],
+      "chain": [
+        "Faiz artar",
+        "Tahvil getirisi cazipleşir",
+        "Para hisseden tahvile kayar",
+        "Gelecekteki kâr bugüne daha düşük değerle iskonto edilir",
+        "Büyüme hisseleri en sert düşer"
+      ],
       "quote": "ABD 10 yıllık faizi bir ayda 45 baz puan arttı, %5,24'te; hisse değerlemelerini baskılıyor.",
       "rule": "Uzun vadeli faiz yükselirken hisse rallisi sürdürülemez; önce faize bak.",
-      "related": ["egri", "sahin"]
+      "related": [
+        "egri",
+        "sahin"
+      ]
     },
     "egri": {
-      "name": "Verim eğrisi", "cat": "Faizler", "learned": "2026-10-06",
+      "name": "Verim eğrisi",
+      "cat": "Faizler",
+      "learned": "2026-10-06",
       "def": "Aynı devletin farklı vadeli tahvil faizlerinin yan yana çizilmiş hali. Normalde uzun vade daha yüksek faiz verir. Uzun vade kısa vadeden ne kadar yüksekse eğri o kadar diktir; tersine dönmesi tarihsel olarak resesyon ya da faiz indirimi sinyalidir.",
       "analogy": "Arkadaşına 1 ay için borç verirken az, 10 yıl için verirken daha çok faiz istersin; çünkü süre uzadıkça belirsizlik artar.",
-      "chain": ["Kısa vade Fed beklentisini yansıtır", "Uzun vade enflasyon ve büyüme beklentisini yansıtır", "Eğri tersine döner (kısa > uzun)", "Piyasa gelecekte faiz indirimi ve yavaşlama bekliyor"],
+      "chain": [
+        "Kısa vade Fed beklentisini yansıtır",
+        "Uzun vade enflasyon ve büyüme beklentisini yansıtır",
+        "Eğri tersine döner (kısa > uzun)",
+        "Piyasa gelecekte faiz indirimi ve yavaşlama bekliyor"
+      ],
       "quote": "Eğri bir ayda bütünüyle yukarı kaydı ve uzun ucu daha çok yükseldi (dikleşme).",
       "rule": "Eğri dikleşirken uzun ucun yükselmesi enflasyon korkusudur, kısa ucun düşmesi Fed indirimi beklentisidir; hangisi olduğuna bak.",
-      "related": ["faiz", "sahin", "reel"]
+      "related": [
+        "faiz",
+        "sahin",
+        "reel"
+      ]
     },
     "sahin": {
-      "name": "Şahin ve güvercin", "cat": "Merkez bankaları", "learned": "2026-10-04",
+      "name": "Şahin ve güvercin",
+      "cat": "Merkez bankaları",
+      "learned": "2026-10-04",
       "def": "Şahin: enflasyonla mücadeleyi öne koyan, faizi yüksek tutmaya meyilli duruş. Güvercin: büyüme ve istihdamı öne koyan, faiz indirimine meyilli duruş.",
       "analogy": "Şahin, ateşi tamamen düşmeden ilacı kesmeyen doktor; güvercin, hasta yorulmasın diye dozu erken azaltan doktor.",
-      "chain": ["Fed şahin konuşur", "Faiz indirimi beklentisi azalır", "2 yıllık faiz ve dolar yükselir", "Hisse ve altın baskılanır"],
+      "chain": [
+        "Fed şahin konuşur",
+        "Faiz indirimi beklentisi azalır",
+        "2 yıllık faiz ve dolar yükselir",
+        "Hisse ve altın baskılanır"
+      ],
       "quote": "Piyasa yön için yarınki Fed tutanaklarını bekliyor.",
       "rule": "Fed'in ne yaptığından çok, piyasanın beklediğinden ne kadar farklı yaptığı fiyatı hareket ettirir.",
-      "related": ["faiz", "nfp"]
+      "related": [
+        "faiz",
+        "nfp"
+      ]
     },
     "nfp": {
-      "name": "Tarım dışı istihdam (NFP)", "cat": "Makro veriler", "learned": "2026-10-06",
+      "name": "Tarım dışı istihdam (NFP)",
+      "cat": "Makro veriler",
+      "learned": "2026-10-06",
       "def": "ABD'de tarım dışı sektörlerde bir ayda eklenen iş sayısı. Fed'in istihdam görevini ölçtüğü ana veri; genelde her ayın ilk cuması 15:30 TSİ'de açıklanır. Beklentiden çok düşük gelmesi faiz indirimi ihtimalini artırır.",
       "analogy": "Bir şirketin aylık satış raporu gibi: beklenenden çok düşükse yönetim önlem almaya başlar.",
-      "chain": ["NFP beklentinin çok altında", "Ekonomi soğuyor", "Fed indirim ihtimali artar", "2 yıllık faiz düşer, dolar zayıflar"],
+      "chain": [
+        "NFP beklentinin çok altında",
+        "Ekonomi soğuyor",
+        "Fed indirim ihtimali artar",
+        "2 yıllık faiz düşer, dolar zayıflar"
+      ],
       "quote": "Tarım dışı istihdamın 90 bin beklentiye karşı 29 binde kalması işgücü piyasasında soğumanın hızlandığını gösterdi.",
       "rule": "NFP günü 15:30 civarında volatilite ilk dakikalarda patlar.",
-      "related": ["pce", "sahin"]
+      "related": [
+        "pce",
+        "sahin"
+      ]
     },
     "pce": {
-      "name": "Çekirdek PCE", "cat": "Makro veriler", "learned": "2026-10-06",
+      "name": "Çekirdek PCE",
+      "cat": "Makro veriler",
+      "learned": "2026-10-06",
       "def": "Gıda ve enerji hariç kişisel tüketim harcamaları fiyat endeksi. Fed'in %2 enflasyon hedefini izlediği asıl ölçüt.",
       "analogy": "TÜFE bir mağazanın vitrin fiyatı, PCE ise insanların gerçekte sepetlerine koydukları ürünlerin fiyatı gibi.",
-      "chain": ["Çekirdek PCE beklentiden düşük", "Enflasyon soğuyor", "Fed'in gevşeme alanı artar"],
+      "chain": [
+        "Çekirdek PCE beklentiden düşük",
+        "Enflasyon soğuyor",
+        "Fed'in gevşeme alanı artar"
+      ],
       "quote": "Çekirdek PCE enflasyonunun da beklentinin altında gelmesi Fed'in Ekim'de bir artırım daha yapma ihtimalini düşürdü.",
       "rule": "Fed TÜFE'yi değil çekirdek PCE'yi hedefler; ikisi ayrışırsa PCE'ye bak.",
-      "related": ["nfp", "sahin"]
+      "related": [
+        "nfp",
+        "sahin"
+      ]
     },
     "risk": {
-      "name": "Risk iştahı (risk-on / risk-off)", "cat": "Piyasa psikolojisi", "learned": "2026-10-05",
+      "name": "Risk iştahı (risk-on / risk-off)",
+      "cat": "Piyasa psikolojisi",
+      "learned": "2026-10-05",
       "def": "Yatırımcıların riskli varlıklara (hisse, kripto, gelişmekte olan piyasalar) mı yoksa güvenli limanlara (tahvil, altın, dolar, yen) mı yöneldiğini anlatan genel ruh hali.",
       "analogy": "Hava güneşliyken herkes denize açılır; fırtına haberi gelince tekneler limana döner.",
-      "chain": ["Risk-off", "VIX yükselir", "Altın, dolar, yen güçlenir", "Gelişmekte olan piyasalar ve TL baskılanır"],
+      "chain": [
+        "Risk-off",
+        "VIX yükselir",
+        "Altın, dolar, yen güçlenir",
+        "Gelişmekte olan piyasalar ve TL baskılanır"
+      ],
       "quote": "Piyasa modu: Temkinli.",
       "rule": "VIX, altın ve dolar aynı anda yükseliyorsa piyasa risk-off modundadır.",
-      "related": ["vix"]
+      "related": [
+        "vix"
+      ]
     },
     "vix": {
-      "name": "VIX", "cat": "Piyasa psikolojisi", "learned": "2026-10-05",
+      "name": "VIX",
+      "cat": "Piyasa psikolojisi",
+      "learned": "2026-10-05",
       "def": "S&P 500 opsiyonlarından hesaplanan, önümüzdeki 30 gün için beklenen oynaklık. \"Korku endeksi\" olarak bilinir.",
       "analogy": "Sigorta primi gibi: fırtına beklentisi artınca herkes sigorta almak ister, prim yükselir.",
-      "chain": ["Belirsizlik artar", "Yatırımcılar koruma (put opsiyonu) alır", "Opsiyon fiyatları ve VIX yükselir"],
+      "chain": [
+        "Belirsizlik artar",
+        "Yatırımcılar koruma (put opsiyonu) alır",
+        "Opsiyon fiyatları ve VIX yükselir"
+      ],
       "quote": "VIX düşük ama piyasa yön için Fed tutanaklarını bekliyor.",
       "rule": "15 altı aşırı rahatlık, 20 üstü tedirginlik, 30 üstü panik.",
-      "related": ["risk"]
+      "related": [
+        "risk"
+      ]
     },
     "reel": {
-      "name": "Reel faiz", "cat": "Türkiye", "learned": "2026-10-06",
+      "name": "Reel faiz",
+      "cat": "Türkiye",
+      "learned": "2026-10-06",
       "def": "Faizden enflasyonun çıkarılmasıyla bulunan gerçek getiri. Türkiye'de %37 politika faizi ve %29,7 enflasyonla reel faiz yaklaşık 7 puan pozitif.",
       "analogy": "Bankada parana %37 faiz alıyorsun ama fiyatlar %30 artıyorsa, gerçekte zenginleşme oranın sadece %7'dir.",
-      "chain": ["Reel faiz pozitif", "TL'de tutmak cazip", "Dolara kaçış yavaşlar", "Enflasyon düştükçe TCMB faizi indirebilir"],
+      "chain": [
+        "Reel faiz pozitif",
+        "TL'de tutmak cazip",
+        "Dolara kaçış yavaşlar",
+        "Enflasyon düştükçe TCMB faizi indirebilir"
+      ],
       "quote": "Politika faizi %37 olduğu için reel faiz yaklaşık 7 puan pozitif.",
       "rule": "TCMB'nin indirim hızını enflasyonun düşüş hızı belirler; enflasyon faizden hızlı düşerse indirim gelir.",
-      "related": ["egri", "faiz"]
+      "related": [
+        "egri",
+        "faiz"
+      ]
     },
     "dominans": {
-      "name": "Dominans (BTC.D ve USDT.D)", "cat": "Kripto", "learned": "2026-10-06",
+      "name": "Dominans (BTC.D ve USDT.D)",
+      "cat": "Kripto",
+      "learned": "2026-10-06",
       "def": "Bir coinin toplam kripto piyasa değerindeki payı. BTC.D Bitcoin'in payı, USDT.D ise stablecoin'de bekleyen nakdin payıdır.",
       "analogy": "Bir pasta düşün: BTC.D Bitcoin'in dilimi, USDT.D kasada bekleyen nakdin dilimi.",
-      "chain": ["BTC.D yükselir", "Para altcoin'lerden Bitcoin'e kaçar", "USDT.D yükselir", "Yatırımcılar nakde geçiyor, korku artıyor"],
+      "chain": [
+        "BTC.D yükselir",
+        "Para altcoin'lerden Bitcoin'e kaçar",
+        "USDT.D yükselir",
+        "Yatırımcılar nakde geçiyor, korku artıyor"
+      ],
       "quote": "BTC.D %59 civarında, yani altcoin'lere geniş bir para akışı yok.",
       "rule": "USDT.D yükselirken kripto rallisi zayıftır; USDT.D düşerken ve TOTAL2 yükselirken altcoin'lere para giriyordur.",
-      "related": ["risk"]
+      "related": [
+        "risk"
+      ]
     },
-    "vadeprimi": {"name": "Vade primi (term premium)", "cat": "Faizler", "learned": "2026-10-06", "def": "Uzun vadeli tahvil alan yatırımcının, parasını uzun süre kilitleme ve enflasyon ile borç belirsizliği için kısa vadeye göre istediği ek getiridir.", "analogy": "Arkadaşına parayı bir haftalığına ödünç verirsen faiz istemezsin; on yıllığına verirsen hem enflasyon hem de ödenmeme riski için ekstra istersin. Bu ekstra, vade primidir.", "chain": ["Enflasyon veya borç arzı endişesi artar", "Yatırımcı uzun tahvil için daha yüksek prim ister", "10 yıllık faiz Fed faizinden bağımsız yükselir", "Hisse değerlemeleri ve borçlanma maliyetleri baskılanır"], "quote": "Zayıf istihdama rağmen 10 yıllık faiz %5,31 ile 2002'den bu yana en yükseğe çıktı; petrol gerileyince 5 baz puan düştü.", "rule": "Kısa faiz düşerken uzun faiz yükseliyorsa sorun Fed beklentisinde değil vade primindedir; enflasyon ve borç arzı haberlerine bak.", "related": ["egri", "faiz"]},
-    "piyasa-genisligi": {"name":"Piyasa genişliği (breadth)","cat":"Piyasa psikolojisi","learned":"2026-10-07","def":"Bir endeksin yükselişine kaç hissenin katıldığını ölçen kavram. Endeks birkaç dev hisseyle rekor kırarken çoğu hisse geride kalıyorsa genişlik düşüktür.","analogy":"Sınıf ortalaması yükselmiş ama bunu üç öğrencinin 100 alması sağlamışsa, sınıfın geneli iyileşmiş sayılmaz.","chain":["Birkaç dev hisse yükselir","Endeks rekor kırar","Çoğu hisse geride kalır","Yükseliş dar tabanlı olur","Faiz artınca hızla geri verilir"],"quote":"S&P 500 rekor kırarken üyelerinin %58'i zirvesinin en az %20 altında; Russell 2000 geriledi.","rule":"Endeks rekordayken hisselerin çoğu ve küçük şirketler geride kalıyorsa yükseliş kırılgandır: rekora değil, kaç hissenin eşlik ettiğine bak.","related":["risk","faiz"]},
-    "tahvil-ihalesi": {"name": "Hazine ihalesi (tahvil ihalesi)", "cat": "Faizler", "learned": "2026-10-08", "def": "Devletin borç almak için tahvilleri açık artırmayla alıcılara satması. İhalede çıkan faiz, piyasanın o gün devlete borç vermek için istediği bedeldir; talep zayıfsa devlet daha yüksek faiz öder.", "analogy": "Evini satıyorsun: açık eve çok kişi gelirse fiyat yükselir, kimse gelmezse indirim yaparsın. İhale devletin satış günü.", "chain": ["Hazine borç satar", "Alıcılar faiz teklif eder", "Talep güçlüyse faiz düşer", "Talep zayıfsa faiz yükselir", "Diğer tahviller yeni faize uyar"], "quote": "10 yıllık ABD tahvil ihalesine aracı kurum dışı yatırımcılar beklentiden fazla teklif verdi; faiz 24 yılın zirvesinden geri döndü.", "rule": "Faiz yükselirken tahvil ihalesine bak: talep güçlüyse yükseliş yorulur, zayıfsa faiz daha da yukarı gider.", "related": ["faiz", "vadeprimi", "egri"]}
+    "vadeprimi": {
+      "name": "Vade primi (term premium)",
+      "cat": "Faizler",
+      "learned": "2026-10-06",
+      "def": "Uzun vadeli tahvil alan yatırımcının, parasını uzun süre kilitleme ve enflasyon ile borç belirsizliği için kısa vadeye göre istediği ek getiridir.",
+      "analogy": "Arkadaşına parayı bir haftalığına ödünç verirsen faiz istemezsin; on yıllığına verirsen hem enflasyon hem de ödenmeme riski için ekstra istersin. Bu ekstra, vade primidir.",
+      "chain": [
+        "Enflasyon veya borç arzı endişesi artar",
+        "Yatırımcı uzun tahvil için daha yüksek prim ister",
+        "10 yıllık faiz Fed faizinden bağımsız yükselir",
+        "Hisse değerlemeleri ve borçlanma maliyetleri baskılanır"
+      ],
+      "quote": "Zayıf istihdama rağmen 10 yıllık faiz %5,31 ile 2002'den bu yana en yükseğe çıktı; petrol gerileyince 5 baz puan düştü.",
+      "rule": "Kısa faiz düşerken uzun faiz yükseliyorsa sorun Fed beklentisinde değil vade primindedir; enflasyon ve borç arzı haberlerine bak.",
+      "related": [
+        "egri",
+        "faiz"
+      ]
+    },
+    "piyasa-genisligi": {
+      "name": "Piyasa genişliği (breadth)",
+      "cat": "Piyasa psikolojisi",
+      "learned": "2026-10-07",
+      "def": "Bir endeksin yükselişine kaç hissenin katıldığını ölçen kavram. Endeks birkaç dev hisseyle rekor kırarken çoğu hisse geride kalıyorsa genişlik düşüktür.",
+      "analogy": "Sınıf ortalaması yükselmiş ama bunu üç öğrencinin 100 alması sağlamışsa, sınıfın geneli iyileşmiş sayılmaz.",
+      "chain": [
+        "Birkaç dev hisse yükselir",
+        "Endeks rekor kırar",
+        "Çoğu hisse geride kalır",
+        "Yükseliş dar tabanlı olur",
+        "Faiz artınca hızla geri verilir"
+      ],
+      "quote": "S&P 500 rekor kırarken üyelerinin %58'i zirvesinin en az %20 altında; Russell 2000 geriledi.",
+      "rule": "Endeks rekordayken hisselerin çoğu ve küçük şirketler geride kalıyorsa yükseliş kırılgandır: rekora değil, kaç hissenin eşlik ettiğine bak.",
+      "related": [
+        "risk",
+        "faiz"
+      ]
+    },
+    "tahvil-ihalesi": {
+      "name": "Hazine ihalesi (tahvil ihalesi)",
+      "cat": "Faizler",
+      "learned": "2026-10-08",
+      "def": "Devletin borç almak için tahvilleri açık artırmayla alıcılara satması. İhalede çıkan faiz, piyasanın o gün devlete borç vermek için istediği bedeldir; talep zayıfsa devlet daha yüksek faiz öder.",
+      "analogy": "Evini satıyorsun: açık eve çok kişi gelirse fiyat yükselir, kimse gelmezse indirim yaparsın. İhale devletin satış günü.",
+      "chain": [
+        "Hazine borç satar",
+        "Alıcılar faiz teklif eder",
+        "Talep güçlüyse faiz düşer",
+        "Talep zayıfsa faiz yükselir",
+        "Diğer tahviller yeni faize uyar"
+      ],
+      "quote": "10 yıllık ABD tahvil ihalesine aracı kurum dışı yatırımcılar beklentiden fazla teklif verdi; faiz 24 yılın zirvesinden geri döndü.",
+      "rule": "Faiz yükselirken tahvil ihalesine bak: talep güçlüyse yükseliş yorulur, zayıfsa faiz daha da yukarı gider.",
+      "related": [
+        "faiz",
+        "vadeprimi",
+        "egri"
+      ]
+    },
+    "run-rate": {
+      "name": "Yıllıklandırılmış gelir (run-rate)",
+      "cat": "Piyasa psikolojisi",
+      "learned": "2026-10-09",
+      "def": "Şirketin son dönemdeki gelirini bir yıla çevirerek bulduğu tahmini yıllık gelir. Gerçekleşmiş gelir değildir; bugünkü tempo sürerse ne olacağını gösterir ve hızla büyüyen şirketlerde genellikle iyimser çıkar.",
+      "analogy": "Maratonun ilk beş kilometresini hızlı koşan birinin bitiş süresini aynı tempoyla hesaplaması gibi: tempo sürerse doğru, yorulursa yanlış.",
+      "chain": [
+        "Şirket son ayın gelirini bir yıla çevirir",
+        "Rakam büyüme hikâyesini destekler",
+        "Hesaba ortak geliri girerse brüt rakam şişer",
+        "Net rakam açıklanınca beklenti düşer",
+        "Hisse fiyatı yeniden fiyatlanır"
+      ],
+      "quote": "OpenAI'ın yatırımcılara bildirdiği yıllık gelir hızı yaklaşık 50 milyar dolar çıktı; piyasada dolaşan rakam 70 milyara yakındı ve çip hisseleri sert düştü.",
+      "rule": "Run-rate duyunca önce gerçekleşen mi tahmin mi, brüt mü net mi diye sor.",
+      "related": [
+        "piyasa-genisligi",
+        "risk"
+      ]
+    }
   }
 }

@@ -1,3 +1,12 @@
 [
-  { "id": "2026-W40", "label": "Hafta 40", "title": "İstihdam çöktü, faizler inmedi" }
+  {
+    "id": "2026-W40",
+    "label": "Hafta 40",
+    "title": "İstihdam çöktü, faizler inmedi"
+  },
+  {
+    "id": "2026-W41",
+    "label": "Hafta 41",
+    "title": "Faiz zirveyi gördü, ardından yapay zekâ gelirine şüphe düştü"
+  }
 ]

@@ -1,0 +1,117 @@
+{
+  "id": "2026-W41",
+  "range": "Hafta 41 · 5 – 9 Ekim 2026",
+  "headline": "Faiz zirveyi gördü, ardından yapay zekâ gelirine şüphe düştü: rekor kısa sürdü",
+  "lede": "Hafta rekorla başladı; S&P 500 salı günü ilk kez 7.800'ün üzerinde kapattı. Çarşamba Fed tutanakları 10 yıllık faizi 2002'den beri en yüksek seviyeye taşıdı, perşembe ise OpenAI'ın gelir hızına dair haber çip hisselerini vurdu. Perşembe kapanışına göre endeksler yatay, Avrupa ve Bitcoin zayıf; Türkiye'de BIST 100 çarşamba çalkalandı ama haftayı neredeyse yatay tamamlıyor.",
+  "kpis": [
+    {
+      "name": "S&P 500",
+      "chg": 0.56
+    },
+    {
+      "name": "Nasdaq 100",
+      "chg": -0.27
+    },
+    {
+      "name": "Nikkei 225",
+      "chg": 0.54
+    },
+    {
+      "name": "Euro Stoxx 50",
+      "chg": -1.43
+    },
+    {
+      "name": "BIST 100",
+      "chg": -0.46
+    },
+    {
+      "name": "Brent",
+      "chg": -0.15
+    },
+    {
+      "name": "Altın",
+      "chg": -0.22
+    },
+    {
+      "name": "Bitcoin",
+      "chg": -2.48
+    }
+  ],
+  "days": [
+    {
+      "day": "Pzt",
+      "date": "5 Eki",
+      "title": "Türkiye enflasyonu beklentiden iyi",
+      "text": "Eylül TÜFE'si %29,73 ile beklentinin altında kaldı ve BIST 100 %1,42 yükseldi. ABD'de ISM hizmet PMI'ı beklentiye yakın, ödenen fiyatlar yüksek geldi."
+    },
+    {
+      "day": "Sal",
+      "date": "6 Eki",
+      "title": "S&P 500 7.800'ü aştı",
+      "text": "Teknoloji öncülüğünde endeksler rekor kapanış yaptı. Almanya sanayi siparişleri %10,6 çöktü; Avrupa ayrışmaya başladı."
+    },
+    {
+      "day": "Çar",
+      "date": "7 Eki",
+      "title": "Şahin tutanaklar, faiz 2002'den beri zirvede",
+      "text": "Fed üyelerinin çoğu yıl sonuna kadar bir artırım daha uygun buluyor. 10 yıllık faiz gün içinde %5,36'yı görüp güçlü ihaleyle %5,28'e döndü; BIST 100 %2,03 düştü."
+    },
+    {
+      "day": "Per",
+      "date": "8 Eki",
+      "title": "OpenAI gelir haberi çipleri vurdu",
+      "text": "Yıllık gelir hızı duyurulandan yaklaşık 20 milyar dolar düşük çıktı; çip endeksi %3,4, Nasdaq 100 %1,4 düştü. Trump'ın seçim öncesi saldırı olmayacağı açıklamasıyla faiz %5,22'ye indi; Brent 104 dolara çıkıp geri çekildi."
+    }
+  ],
+  "winners": [
+    {
+      "name": "Bovespa (Brezilya)",
+      "v": "+7,34%"
+    },
+    {
+      "name": "ABD enerji sektörü",
+      "v": "+3,85%"
+    },
+    {
+      "name": "ABD temel tüketim sektörü",
+      "v": "+3,59%"
+    }
+  ],
+  "losers": [
+    {
+      "name": "Solana",
+      "v": "−9,11%"
+    },
+    {
+      "name": "Ethereum",
+      "v": "−8,58%"
+    },
+    {
+      "name": "KOSPI (Kore)",
+      "v": "−5,39%"
+    }
+  ],
+  "learned": [
+    "piyasa-genisligi",
+    "vadeprimi",
+    "tahvil-ihalesi",
+    "run-rate"
+  ],
+  "next": [
+    {
+      "when": "13 Eki",
+      "title": "Bilanço sezonu başlıyor",
+      "why": "JPMorgan ve UnitedHealth; yapay zekâ harcaması şüphesinin sürüp sürmediğini ve tüketici sağlığını gösterecek ilk bilançolar."
+    },
+    {
+      "when": "14 Eki 15:30",
+      "title": "ABD TÜFE",
+      "why": "Aralık artırımının kesinleşip kesinleşmeyeceğini belirleyecek ana veri; önceki %3,4."
+    },
+    {
+      "when": "22 Eki 14:00",
+      "title": "TCMB faiz kararı",
+      "why": "Piyasa 100 baz puan indirim bekliyor; sanayi üretimi ve küresel faiz kararın yönünü etkiler."
+    }
+  ]
+}
