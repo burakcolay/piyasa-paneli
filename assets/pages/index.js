@@ -206,7 +206,7 @@ async function main() {
     <div class="head-row"><span class="eyebrow accent">Claude'un günlük özeti</span><span class="mono xs muted">${esc(dateTR(date, false))} ${esc(D.updated)} · okuma ~${S.read_min || 5} dk</span></div>
     <h1>${esc(S.headline)}</h1>
     <p class="lede">${esc(S.lede)}</p>
-    ${paras(S.paragraphs, 'body')}
+    ${map(S.paragraphs, (p) => `<p class="body">${withTerms(p)}</p>`)}
     <span class="xs muted">Yazılar ${esc(D.updated)} fiyatlarıyla yazıldı; üstteki şerit ve fiyat kartları canlı.</span>
     <span class="small muted" style="padding-top:4px;border-top:1px solid var(--line-soft)">Aşağıda yazının tamamı, anlatım sırasına göre bölümlere ayrılmış halde.</span>
     <nav class="toc" aria-label="Anlatım sırası">${TOC.filter(([id]) => id !== 'nq' || D.nq).map(([id, t]) => `<a href="#${id}"><b>${NUM[id]}</b> ${esc(t)}</a>`).join('')}</nav>

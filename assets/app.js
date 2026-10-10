@@ -127,7 +127,8 @@ export function kpi(k, cls = '') {
 }
 
 export function paras(list, cls = '') {
-  return map(list, (p) => `<p class="${cls}">${esc(p)}</p>`);
+  // [[id|metin]] işaretini düz metne çevir (terim kutusu olmayan sayfalar için)
+  return map(list, (p) => `<p class="${cls}">${esc(String(p).replace(/\[\[[^|\]]+\|([^\]]+)\]\]/g, '$1'))}</p>`);
 }
 
 export function lessonBox(l, eyebrow) {
