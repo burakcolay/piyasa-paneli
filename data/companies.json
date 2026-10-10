@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-06",
+ "updated": "2026-10-10",
  "companies": {
   "TSLA": {
    "name": "Tesla",
@@ -53,10 +53,10 @@
     ]
    },
    "analysts": {
-    "buy": 34,
-    "hold": 33,
+    "buy": 35,
+    "hold": 32,
     "sell": 15,
-    "target": 440.93
+    "target": 441.36
    },
    "sources": [
     {
@@ -333,8 +333,8 @@
     "time": "after"
    },
    "analysts": {
-    "buy": 84,
-    "hold": 9,
+    "buy": 85,
+    "hold": 8,
     "sell": 1,
     "target": 328.71
    }

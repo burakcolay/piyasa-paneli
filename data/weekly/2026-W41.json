@@ -113,5 +113,95 @@
       "title": "TCMB faiz kararı",
       "why": "Piyasa 100 baz puan indirim bekliyor; sanayi üretimi ve küresel faiz kararın yönünü etkiler."
     }
-  ]
+  ],
+  "deep": {
+    "title": "Faiz 2002'den beri zirvede: hisseler uzun faizle, yapay zekâ kârı hesabıyla yarışıyor",
+    "chain": [
+      "Petrol ve enflasyon yükseldi",
+      "Fed faiz artırmaya başladı",
+      "Uzun vadeli faiz 24 yılın zirvesine çıktı",
+      "Gelecek kârın bugünkü değeri düştü",
+      "Yapay zekâ gelirine şüphe baskıyı artırdı"
+    ],
+    "paragraphs": [
+      "Bu haftanın asıl hikâyesi tek bir günün haberi değil, iki hikâyenin aynı yerde buluşması. Birincisi tahvil piyasasında: ABD 10 yıllık faizi çarşamba günü 2002'den beri ilk kez %5,35'in üzerine çıktı. İkincisi hisse piyasasında: perşembe günü OpenAI'ın gelir hızının beklenenden düşük olduğu haberi çip hisselerini vurdu. İlk bakışta ilgisiz görünüyorlar, ama ikisi de aynı soruya cevap arıyor: bugün ödenen yüksek fiyatları gelecekteki kâr haklı çıkarabilecek mi?",
+      "Faizin neden bu kadar yükseldiğini anlamak için zincire baştan bakmak gerekiyor. İran savaşı petrolü ve dolayısıyla enflasyonu yukarı itti. Enflasyon beş yıldır hedefin üzerinde seyrettiği için Fed eylülde 2023'ten beri ilk kez faiz artırdı, çarşamba günü yayımlanan tutanaklar da üyelerin çoğunun yıl sonuna kadar bir artırım daha istediğini gösterdi. Piyasa şimdi aralıkta artırımı büyük ölçüde fiyatlıyor. Kısa vadeli faiz yükselince uzun vadeli faiz de onunla birlikte, hatta onun önünde gidiyor, çünkü yatırımcı 10 yıl boyunca enflasyonun yüksek kalma riskine karşı daha fazla getiri istiyor. Bu ek getiriye [[vadeprimi|vade primi]] deniyor ve bu hafta genişleyen kısım tam olarak o.",
+      "Hisse senedi bir tahvil gibi düşünülebilir: bugün ödenen fiyat, gelecekte gelecek kârların bugüne indirilmiş toplamı. İndirimde kullanılan oran yükselince, aynı kâr bugün daha az değerli görünür. Üstelik risksiz getiri %5'in üstündeyken hisse almak için ekstra bir prim istemek gerekir; teknoloji gibi kârının büyük kısmı uzak gelecekte beklenen sektörler bu hesaptan en çok etkilenir. Bu yüzden uzun faizin çıkışı, hisse piyasasının üzerindeki görünmez tavan gibi çalışıyor.",
+      "Tarihte bu tabloya en yakın örnekler 1994 ve 2023. 1994'te Fed faizi hızla artırınca tahvil piyasası bir yıl içinde sert çöktü, hisseler ise sadece dalgalandı ve sonra toparlandı. 2023 sonbaharında 10 yıllık faiz %5'e değdiğinde endeksler yaklaşık %10 geriledi, faiz düşmeye başlayınca da güçlü bir yükseliş geldi. İki durumda da ortak nokta, hisselerin faizin kendisinden çok faizin hızından rahatsız olması. Bugünkü fark şu: faiz bu kez yeni bir zirveye çıktı, ama endeksler hâlâ rekor civarında. Yani piyasa faizin yüksekliğini şimdilik kârın hızıyla dengeliyor.",
+      "Perşembe günkü OpenAI haberi tam da bu dengenin zayıf noktasına dokundu. Şirketin eylül sonu itibarıyla yıllık gelir hızı ([[run-rate|run-rate]]) 50 milyar dolara yakın çıktı, daha önce konuşulan rakam yaklaşık 70 milyardı. Şirket tarafı eski rakamın ortaklıklardan gelen brüt geliri de içerdiğini söylüyor; yani fark kısmen sayım yönteminden kaynaklanıyor olabilir. Ama piyasa için rakamdan çok sorulan soru önemli oldu. Çip, bulut ve elektrik altyapısına yapılan dev harcamaların arkasında bu tür şirketlerin yarın büyük gelir yapacağı varsayımı var. Gelir hızı beklenenden yavaş görünürse, harcamayı yapanlar kadar harcamanın borçla finanse edilmesi de sorgulanıyor. Broadcom ve Oracle'ın çip alımı için on milyarlarca dolarlık finansman aradığı haberleri aynı güne denk gelince, %5'in üzerindeki faizde bu borcun maliyeti de hesaba girdi.",
+      "Burada iki hikâyenin birleşme noktası ortaya çıkıyor: yüksek faiz yapay zekâ yatırımının geri dönüş eşiğini yükseltiyor, yapay zekâ gelirindeki her hayal kırıklığı da faiz yüksekken hisselerin ödediği primi savunmayı zorlaştırıyor. İkisi tek başına yönetilebilir; birlikte ise birbirini besliyor. Haftanın sonunda piyasanın tepkisi bu yüzden iki yönlü kaldı: çip hisseleri satıldı, ama endeksin geri kalanı, özellikle sağlık, enerji ve temel tüketim, düşüşü karşıladı. Para teknolojiden çıkıp savunmacı sektörlere kaydı; bu bir panik değil, bir yeniden dağılım.",
+      "Karşı görüş de ciddiye alınmalı. Bazı strateji uzmanları, faizin nominal büyümenin altında kaldığı sürece sorun olmadığını, yani yüksek faizin ekonomik gücün işareti olduğunu savunuyor; perşembe günkü 10 yıllık ihalede yabancı merkez bankalarının dahil olduğu dolaylı alıcıların payının çok yüksek çıkması da talebin kuruduğu tezini zayıflatıyor. Öte yandan 30 yıllık ihalede talep daha zayıf geldi ve uzun uçtaki fiyatlama kırılgan duruyor. Bu fark önemli: kısa ve orta vadede alıcı var, ama çok uzun vadeli borca yatırımcı ek getiri istiyor.",
+      "Bundan sonra neye bakmalı? İki şey belirleyici. Birincisi 14 Ekim'deki ABD enflasyon verisi: beklentinin üzerinde gelirse aralık artırımı kesinleşir ve uzun faiz yeniden zirveyi zorlar; altında gelirse faiz soluk alır ve teknoloji rahatlar. İkincisi bilanço sezonu: bu ay Microsoft, Alphabet, Amazon ve Meta'nın yatırım harcaması ve bulut gelirleri hakkında söyleyeceği, OpenAI haberinin tek seferlik bir gürültü mü yoksa harcama-gelir dengesindeki ilk çatlak mı olduğunu gösterecek."
+    ],
+    "sources": [
+      {
+        "name": "CNBC – 10 yıllık faiz 2002 zirvesinde",
+        "url": "https://app.bigdata.com/documents/D0539D13D27688F820C6486D55A82F0C?cnum=1"
+      },
+      {
+        "name": "Finwire – 10 yıllık ihale",
+        "url": "https://app.bigdata.com/documents/E2AD7EB28FE487E56708247543A64059?cnum=1"
+      },
+      {
+        "name": "MT Newswires – 30 yıllık ihale ve Fed fiyatlaması",
+        "url": "https://app.bigdata.com/documents/5FDA36EF07EDC67F6E5C867379BEE488?cnum=3"
+      },
+      {
+        "name": "Benzinga – Bianco ve Yardeni görüşü",
+        "url": "https://app.bigdata.com/documents/6F79E28538A0E99E43B6F8C716C7F174?cnum=1"
+      },
+      {
+        "name": "Morningstar – OpenAI geliri ve çip hisseleri",
+        "url": "https://app.bigdata.com/documents/5AF1110DE4B2F8CD456B1146D3A7630F?cnum=1"
+      },
+      {
+        "name": "Alliance News – gelir farkının açıklaması",
+        "url": "https://app.bigdata.com/documents/9695E945781708A29232249A28963EAA?cnum=2"
+      }
+    ],
+    "long_term": {
+      "cycle": "Geç döngü (enflasyonist)",
+      "paragraphs": [
+        "Ekonomi geç döngü evresinde görünüyor: büyüme sürüyor, ama enflasyon yüksek kaldığı için merkez bankası fren yerine gaz kesmeyi, hatta frene basmayı seçiyor. Bu evrenin klasik özelliği, para politikasının sıkılaşırken şirket kârlarının hâlâ güçlü olması; yani yavaşlamanın işaretleri önce finansman maliyetinde ve en kırılgan kesimlerde görünüyor. Küçük şirketlerin endekste geride kalması ve teknolojinin tek başına taşıması bu görüntüyle uyumlu.",
+        "Bu aşamada senaryoyu belirleyen şey faizin yönü. Enflasyon petrolle birlikte gerilerse faiz inebilir ve döngü uzar. Petrol yüksek kalır ve Fed artırmaya devam ederse, gecikmeli etki ekonomiye 2027'ye doğru yavaşlama olarak yansıyabilir. İkisinin de olasılığı yüksek, bu yüzden belirsizliği saklamamak gerekiyor."
+      ],
+      "assets": [
+        {
+          "name": "ABD hisseleri",
+          "view": "notr",
+          "note": "Kâr büyümesi güçlü, ama %5'in üzerindeki faiz değerleme primini sınırlıyor; çip ve bulut tarafı gelir kanıtı bekliyor."
+        },
+        {
+          "name": "Türk hisseleri",
+          "view": "notr",
+          "note": "Enflasyonun gerilemesi ve beklenen faiz indirimi destek, küresel faizin yüksekliği ve gelişen piyasalardan çıkış riski baskı."
+        },
+        {
+          "name": "ABD tahvilleri",
+          "view": "notr",
+          "note": "Getiri yıllardır görülmeyen düzeyde cazip, ama enflasyon ve ek faiz artırımı riski fiyat kaybı ihtimalini canlı tutuyor."
+        },
+        {
+          "name": "TL mevduat",
+          "view": "olumlu",
+          "note": "Reel getiri enflasyon gerilediği sürece pozitif; indirim döngüsü başlarsa getiri zamanla düşer ve kur riski sürer."
+        },
+        {
+          "name": "Altın",
+          "view": "notr",
+          "note": "Yüksek reel faiz altını baskılıyor, ama jeopolitik risk ve enflasyon korkusu aşağıyı sınırlıyor."
+        },
+        {
+          "name": "Dolar",
+          "view": "olumlu",
+          "note": "Fed'in artırım yönlü duruşu ve yüksek faiz farkı doları destekliyor; Avrupa'nın zayıflığı bu desteği artırıyor."
+        },
+        {
+          "name": "Bitcoin",
+          "view": "olumsuz",
+          "note": "Yüksek reel faiz ve risk iştahındaki dalgalanma kripto için olumsuz rüzgâr; haftalık kayıp bu duyarlılığı gösteriyor."
+        }
+      ]
+    }
+  }
 }
