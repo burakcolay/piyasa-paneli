@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20 }
+        with: { node-version: 22 }
       - name: Veriyi çek
         run: |
           MODE="${{ github.event.inputs.mode }}"
@@ -29,8 +29,12 @@ jobs:
           if [ -z "$MODE" ]; then [ "$(date -u +%u)" = "6" ] && MODE=all || MODE=daily; fi
           node scripts/us/build.mjs "$MODE"
       - name: Commit (Burak adına, Vercel için)
+        if: always()
         run: |
+          git config user.name "Burak Colay"
+          git config user.email "170448628+burakcolay@users.noreply.github.com"
           git add pro/data/us
           git diff --cached --quiet && exit 0
-          git -c user.name="Burak Colay" -c user.email="170448628+burakcolay@users.noreply.github.com" commit -m "veri: ABD $(date -u +%F)"
-          git pull --rebase origin main && git push origin HEAD:main
+          git commit -m "veri: ABD $(date -u +%F)"
+          for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && exit 0; sleep 5; done
+          exit 1

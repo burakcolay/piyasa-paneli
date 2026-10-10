@@ -1,5 +1,5 @@
 // ABD verisi: Nasdaq 100 şirketlerinin finansalları, SEC açıklamaları, yönetici işlemleri, büyük fonların 13F portföyleri, kapanış fiyatları.
-// tetik: ilk tam çalıştırma
+// tetik: 2
 // Kaynaklar: SEC EDGAR (kamu verisi), Wikipedia (endeks listesi), CNBC (fiyat, deneme aşaması).
 // Çalıştır: node scripts/us/build.mjs [daily|all]   (GitHub Actions üzerinde çalışır)
 import fs from 'node:fs/promises';
