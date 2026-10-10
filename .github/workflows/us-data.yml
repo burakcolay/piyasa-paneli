@@ -1,0 +1,32 @@
+name: ABD verisi
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'daily ya da all (finansallar dahil)'
+        default: 'all'
+  schedule:
+    - cron: '30 22 * * 1-5'   # hafta içi 01:30 TSİ: fiyat, açıklamalar, yönetici işlemleri
+    - cron: '0 6 * * 6'       # cumartesi 09:00 TSİ: finansallar dahil tam güncelleme
+permissions:
+  contents: write
+concurrency: us-data
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Veriyi çek
+        run: |
+          MODE="${{ github.event.inputs.mode }}"
+          if [ -z "$MODE" ]; then [ "$(date -u +%u)" = "6" ] && MODE=all || MODE=daily; fi
+          node scripts/us/build.mjs "$MODE"
+      - name: Commit (Burak adına, Vercel için)
+        run: |
+          git add pro/data/us
+          git diff --cached --quiet && exit 0
+          git -c user.name="Burak Colay" -c user.email="170448628+burakcolay@users.noreply.github.com" commit -m "veri: ABD $(date -u +%F)"
+          git pull --rebase origin main && git push origin HEAD:main
