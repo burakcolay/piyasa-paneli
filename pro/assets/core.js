@@ -16,6 +16,19 @@ export const ICON = {
   close: I('<path d="M6 6l12 12M18 6 6 18"/>'),
   plus: I('<path d="M12 5v14M5 12h14"/>'),
   trash: I('<path d="M5 7h14M10 7V5h4v2m-7 0 1 12h8l1-12"/>'),
+  flag: I('<path d="M5 21V4m0 0h11l-2 4 2 4H5"/>'),
+  gold: I('<path d="M4 18h16l-2.5-6h-11zM8.5 12l1.5-4h4l1.5 4"/>'),
+  globe: I('<circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.5 2.5 2.5 13.5 0 16M12 4c-2.5 2.5-2.5 13.5 0 16"/>'),
+  pct: I('<path d="M6 18 18 6"/><circle cx="7.5" cy="7.5" r="2"/><circle cx="16.5" cy="16.5" r="2"/>'),
+  cal: I('<rect x="4" y="5.5" width="16" height="14" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>'),
+  doc: I('<path d="M7 3.5h7l4 4V20.5H7z"/><path d="M14 3.5v4h4M10 12h5M10 15.5h5"/>'),
+  pie: I('<path d="M12 4a8 8 0 1 0 8 8h-8z"/><path d="M15 3.6A8 8 0 0 1 20.4 9H15z"/>'),
+  week: I('<rect x="4" y="5.5" width="16" height="14" rx="2"/><path d="M4 10h16M8 14h2m3 0h2m-7 3h2"/>'),
+  menu: I('<path d="M4 7h16M4 12h16M4 17h16"/>'),
+  play: I('<path d="M8 5.5v13l10.5-6.5z"/>'),
+  stop: I('<rect x="7" y="7" width="10" height="10" rx="1.5"/>'),
+  gear: I('<circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M6 6l1.6 1.6M16.4 16.4 18 18M6 18l1.6-1.6M16.4 7.6 18 6"/>'),
+  ext: I('<path d="M14 5h5v5M19 5l-8 8M10 6H6v12h12v-4"/>'),
 };
 const BELL_OFF = ICON.bell;
 const STAR = ICON.star;
@@ -144,14 +157,15 @@ export function toggleWatch(kind, code) {
 export const ALERT_RULES = {
   stock: [{ id: 'fund-move', label: 'Bir fon ağırlığını 0,5 puandan fazla değiştirirse ya da yeni girerse/çıkarsa' }],
   fund: [{ id: 'new-out', label: 'Fon portföyüne yeni hisse ekler ya da hisse çıkarırsa' }, { id: 'big-move', label: 'Bir hissenin ağırlığını 1 puandan fazla değiştirirse' }],
-  macro: [{ id: 'above', label: 'Eşiğin üstüne çıkarsa' }, { id: 'below', label: 'Eşiğin altına inerse' }],
+  macro: [{ id: 'above', label: 'Fiyat eşiğin üstüne çıkarsa' }, { id: 'below', label: 'Fiyat eşiğin altına inerse' }],
   coin: [{ id: 'funding-high', label: 'Fonlama oranı aşırı yükselirse (%0,03 üstü)' }, { id: 'funding-neg', label: 'Fonlama oranı negatife dönerse' }],
 };
 export function addAlert(a) { const s = store(); s.alerts.push({ id: 'a' + Date.now(), created: new Date().toISOString().slice(0, 10), ...a }); save(); }
 export function removeAlert(id) { const s = store(); s.alerts = s.alerts.filter((x) => x.id !== id); save(); }
 export const hasAlert = (kind, code) => store().alerts.some((a) => a.kind === kind && a.code === code);
 
-export const MACRO_KEYS = { vix: 'VIX', us10y: 'ABD 10 yıllık faiz', usdtry: 'USD/TRY', xu100: 'BIST 100', ndx: 'Nasdaq 100', gold: 'Ons altın', brent: 'Brent' };
+export const MACRO_KEYS = { 'c:btc': 'Bitcoin ($)', 'c:eth': 'Ethereum ($)', usdtry: 'USD/TRY', eurtry: 'EUR/TRY', gramgold: 'Gram altın (₺)', gold: 'Ons altın ($)', xu100: 'BIST 100', ndx: 'Nasdaq 100', spx: 'S&P 500', vix: 'VIX', us10y: 'ABD 10 yıllık faiz', brent: 'Brent ($)', AAPL: 'Apple', MSFT: 'Microsoft', NVDA: 'Nvidia', AMZN: 'Amazon', META: 'Meta', GOOGL: 'Alphabet', TSLA: 'Tesla', AVGO: 'Broadcom' };
+export const liveOf = (L, k) => (!L ? null : String(k).startsWith('c:') ? L.crypto?.[k.slice(2)] : L.markets?.[k]);
 
 /* Alarmları eldeki veriyle değerlendirir → [{alert, hit, text}] */
 export function evalAlerts({ funds, live, crypto } = {}) {
@@ -168,7 +182,7 @@ export function evalAlerts({ funds, live, crypto } = {}) {
       hit = hs.length > 0;
       text = hit ? `${hs.slice(0, 4).map((h) => `${h.t}${h.status === 'new' ? ' (yeni)' : h.status === 'out' ? ' (çıktı)' : ''}`).join(', ')}${hs.length > 4 ? '…' : ''}` : 'Bu ay değişiklik yok';
     } else if (a.kind === 'macro' && live) {
-      const m = live.markets?.[a.code];
+      const m = liveOf(live, a.code);
       if (m) { hit = a.rule === 'above' ? m.price > a.value : m.price < a.value; text = `Şu an ${num(m.price, 2)} · eşik ${num(a.value, 2)}`; }
     } else if (a.kind === 'coin' && crypto) {
       const c = crypto.find((x) => x.code === a.code);
@@ -184,20 +198,54 @@ export function alertTitle(a) {
 }
 
 /* ---------------- kabuk ---------------- */
+export const MARKETS = [
+  { id: 'abd', name: 'ABD borsaları', short: 'ABD', icon: 'stock', desc: 'S&P 500, Nasdaq 100, büyük teknoloji' },
+  { id: 'bist', name: 'Borsa İstanbul', short: 'BIST', icon: 'flag', desc: 'BIST 100, sektörler, fonlar, TCMB' },
+  { id: 'kripto', name: 'Kripto', short: 'Kripto', icon: 'coin', desc: 'Bitcoin, altcoinler, türev piyasası' },
+  { id: 'emtia', name: 'Altın, döviz ve emtia', short: 'Emtia', icon: 'gold', desc: 'Altın, dolar, euro, petrol, gümüş' },
+  { id: 'dunya', name: 'Avrupa ve Asya', short: 'Dünya', icon: 'globe', desc: 'DAX, Stoxx, Nikkei, Hang Seng' },
+  { id: 'faiz', name: 'Faiz ve makro', short: 'Faiz', icon: 'pct', desc: 'Fed, tahvil faizleri, enflasyon, istihdam' },
+];
+export const marketById = (id) => MARKETS.find((m) => m.id === id);
 const NAV = [
   { id: 'bugun', href: 'index.html', label: 'Bugün', icon: 'home' },
+  { id: 'takvim', href: 'takvim.html', label: 'Takvim', icon: 'cal' },
+  { id: 'bilanco', href: 'bilanco.html', label: 'Bilançolar', icon: 'doc' },
+  { id: 'portfoy', href: 'portfoy.html', label: 'Portföyüm', icon: 'pie' },
+  { id: 'takip', href: 'takip.html', label: 'Takip ve alarmlar', icon: 'star' },
+  { id: 'akademi', href: 'akademi.html', label: 'Akademi', icon: 'book' },
+  { id: 'haftalik', href: 'haftalik.html', label: 'Haftalık rapor', icon: 'week' },
+];
+const TOOLS = [
   { id: 'fonlar', href: 'fonlar.html', label: 'Fon hareketleri', icon: 'flow' },
   { id: 'karsilastir', href: 'karsilastir.html', label: 'Fon karşılaştır', icon: 'compare' },
-  { id: 'kripto', href: 'kripto.html', label: 'Kripto türev', icon: 'coin' },
-  { id: 'takip', href: 'takip.html', label: 'Takip ve alarmlar', icon: 'star' },
+  { id: 'turev', href: 'kripto.html', label: 'Kripto türev', icon: 'coin' },
 ];
 const TABS = [
   { id: 'bugun', href: 'index.html', label: 'Bugün', icon: 'home' },
-  { id: 'fonlar', href: 'fonlar.html', label: 'Fonlar', icon: 'flow' },
-  { id: 'kripto', href: 'kripto.html', label: 'Kripto', icon: 'coin' },
-  { id: 'takip', href: 'takip.html', label: 'Takip', icon: 'star' },
-  { id: 'ara', href: '#ara', label: 'Ara', icon: 'search' },
+  { id: 'piyasa', href: 'piyasa.html', label: 'Piyasalar', icon: 'stock' },
+  { id: 'takvim', href: 'takvim.html', label: 'Takvim', icon: 'cal' },
+  { id: 'portfoy', href: 'portfoy.html', label: 'Portföy', icon: 'pie' },
+  { id: 'menu', href: '#menu', label: 'Menü', icon: 'menu' },
 ];
+
+function navHTML(active) {
+  const P = prefs();
+  const mine = P.markets.length ? P.markets.map(marketById).filter(Boolean) : MARKETS;
+  const link = (n) => `<a href="${n.href}" class="${n.id === active ? 'on' : ''}" ${n.id === active ? 'aria-current="page"' : ''}>${ICON[n.icon]}${n.label}</a>`;
+  return `<nav class="nav">
+      ${link(NAV[0])}
+      <div class="nav-h">Piyasalarım <a href="#tercih" data-prefs>düzenle</a></div>
+      ${map(mine, (m) => link({ id: 'm:' + m.id, href: `piyasa.html?m=${m.id}`, label: m.name, icon: m.icon }))}
+      ${mine.length < MARKETS.length ? link({ id: 'piyasa', href: 'piyasa.html', label: 'Tüm piyasalar', icon: 'globe' }) : ''}
+      <div class="nav-h">Araçlar</div>
+      ${map(NAV.slice(1), link)}
+      <div class="nav-h">Derin veri</div>
+      ${map(TOOLS, link)}
+      <div class="sep"></div>
+      <a href="../index.html">${ICON.ext}Eski panel</a>
+    </nav>`;
+}
 
 export function shell(active, { title } = {}) {
   if (title) document.title = `${title} · Piyasa Paneli Pro`;
@@ -208,19 +256,12 @@ export function shell(active, { title } = {}) {
         <span class="brand-mark">${ICON.stock}</span>
         <span><b>Piyasa Paneli</b><small>Pro · demo</small></span>
       </a>
-      <nav class="nav">
-        ${map(NAV, (n) => `<a href="${n.href}" class="${n.id === active ? 'on' : ''}" ${n.id === active ? 'aria-current="page"' : ''}>${ICON[n.icon]}${n.label}</a>`)}
-        <div class="sep"></div>
-        <a href="../index.html">${ICON.book}Günlük analiz</a>
-      </nav>
-      <div class="side-foot">
-        Fon verisi: <span id="foot-period">Eylül 2026</span> portföy raporları<br>
-        Demo sürüm, kişisel kullanım. Yatırım tavsiyesi değildir.
-      </div>
+      ${navHTML(active)}
+      <div class="side-foot">Demo sürüm, kişisel kullanım.<br>Yatırım tavsiyesi değildir.</div>
     </aside>
     <div class="main">
       <header class="top">
-        <button class="search-btn glass" id="open-search" aria-label="Ara">${ICON.search}<span>Hisse, fon ya da coin ara</span><kbd>⌘K</kbd></button>
+        <button class="search-btn glass" id="open-search" aria-label="Ara">${ICON.search}<span>Hisse, fon, coin ya da sayfa ara</span><kbd>⌘K</kbd></button>
         <div class="top-actions">
           <span class="live-pill glass" id="live-pill" hidden><i></i><span></span></span>
           <button class="icon-btn glass" id="open-alerts" aria-label="Alarmlar">${ICON.bell}<span class="dot" id="alert-dot" hidden></span></button>
@@ -230,10 +271,98 @@ export function shell(active, { title } = {}) {
     </div>
   </div>
   <nav class="tabbar glass" aria-label="Alt menü">
-    ${map(TABS, (n) => `<a href="${n.href}" class="${n.id === active ? 'on' : ''}" ${n.id === 'ara' ? 'data-search' : ''}>${ICON[n.icon]}${n.label}</a>`)}
+    ${map(TABS, (n) => `<a href="${n.href}" class="${n.id === active || (n.id === 'piyasa' && String(active).startsWith('m:')) ? 'on' : ''}" ${n.id === 'menu' ? 'data-menu' : ''}>${ICON[n.icon]}${n.label}</a>`)}
   </nav>`;
-  wireGlobal();
+  wireGlobal(active);
   return document.getElementById('content');
+}
+
+function openMenu(active) {
+  const bg = document.createElement('div'); bg.className = 'drawer-bg';
+  const d = document.createElement('aside'); d.className = 'drawer'; d.setAttribute('aria-label', 'Menü');
+  d.innerHTML = `<div class="panel-h"><b style="font-size:18px">Menü</b><button class="icon-btn" style="width:34px;height:34px" data-close aria-label="Kapat">${ICON.close}</button></div>${navHTML(active)}`;
+  document.body.append(bg, d);
+  const close = () => { bg.remove(); d.remove(); };
+  bg.addEventListener('click', close); d.querySelector('[data-close]').addEventListener('click', close);
+}
+
+/* ---------------- tercihler ve ilk giriş ---------------- */
+export function prefs() {
+  const s = store();
+  s.prefs ||= { markets: [], level: '', style: '', onboarded: false };
+  return s.prefs;
+}
+export function savePrefs(p) { store().prefs = { ...prefs(), ...p }; save(); }
+export const LEVELS = [['yeni', 'Yeni başlıyorum', 'Terimleri açıklayarak, sade anlat'], ['orta', 'Biraz biliyorum', 'Temel kavramları biliyorum, yorumu merak ediyorum'], ['ileri', 'Deneyimliyim', 'Kısa ve yoğun; rakam ve seviye görmek istiyorum']];
+export const STYLES = [['uzun', 'Uzun vadeli yatırım', 'Haftalık ve aylık resim, döngü, varlık dağılımı'], ['kisa', 'Kısa vadeli işlem', 'Günün yönü, oynaklık saatleri, vadeli piyasalar'], ['takip', 'Takip ve öğrenme', 'Dünyada ne oluyor, neden oluyor']];
+
+export function openOnboarding(onDone) {
+  const P = prefs();
+  let step = 0; const sel = new Set(P.markets.length ? P.markets : []); let level = P.level, style = P.style;
+  const bg = document.createElement('div'); bg.className = 'palette-bg'; bg.style.alignItems = 'center';
+  const box = document.createElement('div'); box.className = 'palette onb'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Tercihler');
+  bg.appendChild(box); document.body.appendChild(bg);
+  const opt = (on, key, title, sub, icon) => `<button class="onb-opt ${on ? 'on' : ''}" data-k="${key}">${icon ? ICON[icon] : ''}<span><b>${esc(title)}</b><small>${esc(sub)}</small></span></button>`;
+  const render = () => {
+    const steps = [
+      { h: 'Hangi piyasalarla ilgileniyorsun?', p: 'Bugün ekranın ve menün bunlara göre dizilir. Birden fazla seçebilirsin, sonra değiştirebilirsin.', body: map(MARKETS, (m) => opt(sel.has(m.id), m.id, m.name, m.desc, m.icon)), ok: sel.size > 0 },
+      { h: 'Piyasaları ne kadar biliyorsun?', p: 'Yazıların dili ve açıklama sıklığı buna göre ayarlanır.', body: map(LEVELS, ([k, t, d]) => opt(level === k, k, t, d)), ok: !!level },
+      { h: 'Piyasaları nasıl kullanıyorsun?', p: 'Öne çıkan bölümler buna göre değişir.', body: map(STYLES, ([k, t, d]) => opt(style === k, k, t, d)), ok: !!style },
+    ];
+    const S = steps[step];
+    box.innerHTML = `<div class="onb-in">
+      <div class="onb-dots">${steps.map((_, i) => `<i class="${i <= step ? 'on' : ''}"></i>`).join('')}</div>
+      <h2>${S.h}</h2><p class="ink2">${S.p}</p>
+      <div class="onb-grid ${step === 0 ? 'two' : ''}">${S.body}</div>
+      <div class="onb-foot">${step > 0 ? '<button class="btn" data-back>Geri</button>' : '<span></span>'}<button class="btn primary" data-next ${S.ok ? '' : 'disabled'}>${step < 2 ? 'Devam' : 'Panelimi kur'}</button></div>
+    </div>`;
+  };
+  box.addEventListener('click', (e) => {
+    const o = e.target.closest('.onb-opt');
+    if (o) { const k = o.dataset.k; if (step === 0) { sel.has(k) ? sel.delete(k) : sel.add(k); } else if (step === 1) level = k; else style = k; render(); return; }
+    if (e.target.closest('[data-back]')) { step--; render(); return; }
+    if (e.target.closest('[data-next]')) {
+      if (step < 2) { step++; render(); return; }
+      savePrefs({ markets: MARKETS.map((m) => m.id).filter((id) => sel.has(id)), level, style, onboarded: true });
+      bg.remove(); onDone ? onDone() : location.reload();
+    }
+  });
+  render();
+}
+
+/* ---------------- TradingView widget ve sesli dinleme ---------------- */
+// Ücretsiz TradingView widget'ı: el içine gömülür. Atıf (logo/link) widget'ın kendisinde kalır.
+export function tvWidget(el, name, config, height) {
+  if (!el) return;
+  el.classList.add('tv-box'); if (height) el.style.height = height + 'px';
+  el.innerHTML = '<div class="tradingview-widget-container" style="height:100%;width:100%"><div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div></div>';
+  const s = document.createElement('script');
+  s.src = `https://s3.tradingview.com/external-embedding/embed-widget-${name}.js`; s.async = true;
+  s.text = JSON.stringify({ locale: 'tr', colorTheme: 'light', isTransparent: true, width: '100%', height: '100%', ...config });
+  el.firstChild.appendChild(s);
+}
+export function lazyTV(el, name, config, height) {
+  if (!el) return;
+  if (!('IntersectionObserver' in window)) return tvWidget(el, name, config, height);
+  el.style.minHeight = (height || 220) + 'px';
+  const io = new IntersectionObserver((es) => { if (es[0].isIntersecting) { io.disconnect(); tvWidget(el, name, config, height); } }, { rootMargin: '200px' });
+  io.observe(el);
+}
+
+// Sesli dinle: tarayıcının kendi Türkçe sesiyle (ücretsiz)
+let speaking = null;
+export function speakBtn(id, label = 'Sesli dinle') { return `<button class="btn" data-speak="${id}">${ICON.play}<span>${label}</span></button>`; }
+function stopSpeak() { try { speechSynthesis.cancel(); } catch {} document.querySelectorAll('[data-speak].on').forEach((b) => { b.classList.remove('on'); b.innerHTML = `${ICON.play}<span>Sesli dinle</span>`; }); speaking = null; }
+function speak(btn) {
+  if (!('speechSynthesis' in window)) { toast('Tarayıcın sesli okumayı desteklemiyor'); return; }
+  if (speaking === btn) { stopSpeak(); return; }
+  stopSpeak();
+  const src = document.getElementById(btn.dataset.speak); if (!src) return;
+  const text = src.innerText.replace(/\s+/g, ' ').replace(/%(\d)/g, 'yüzde $1').replace(/−/g, 'eksi ');
+  const voices = speechSynthesis.getVoices(); const v = voices.find((x) => /^tr/i.test(x.lang));
+  const chunks = text.match(/[^.!?]+[.!?]*/g) || [text];
+  chunks.forEach((c, i) => { const u = new SpeechSynthesisUtterance(c.trim()); u.lang = 'tr-TR'; if (v) u.voice = v; u.rate = 1.02; if (i === chunks.length - 1) u.onend = stopSpeak; speechSynthesis.speak(u); });
+  speaking = btn; btn.classList.add('on'); btn.innerHTML = `${ICON.stop}<span>Durdur</span>`;
 }
 
 export function fail(e) {
@@ -281,7 +410,8 @@ async function buildIndex() {
   if (searchIndex) return searchIndex;
   const F = await loadFunds().catch(() => null);
   const items = [];
-  NAV.forEach((n) => items.push({ g: 'Sayfalar', k: n.label, s: '', href: n.href }));
+  NAV.concat(TOOLS).forEach((n) => items.push({ g: 'Sayfalar', k: n.label, s: '', href: n.href }));
+  MARKETS.forEach((m) => items.push({ g: 'Sayfalar', k: m.name, s: m.desc, href: `piyasa.html?m=${m.id}` }));
   items.push({ g: 'Sayfalar', k: 'Günlük analiz', s: 'Sabah yazısı ve makro panel', href: '../index.html' });
   (F?.stocks || []).filter((s) => s.n_funds > 0).forEach((s) => items.push({ g: 'Hisseler', k: s.t, s: `${s.name} · ${s.n_funds} fonda`, href: `hisse.html?s=${s.t}` }));
   (F?.funds || []).forEach((f) => items.push({ g: 'Fonlar', k: f.code, s: f.name, href: `fon.html?f=${f.code}` }));
@@ -335,8 +465,21 @@ async function openAlerts() {
   bg.addEventListener('click', close); d.querySelector('[data-close]').addEventListener('click', close);
   document.addEventListener('keydown', function k(e) { if (e.key === 'Escape') { close(); document.removeEventListener('keydown', k); } });
 }
+// Tarayıcı bildirimi: sayfa açıkken tetiklenen alarm için günde bir kez (ücretsiz, sunucusuz)
+function notifyHits(ctx) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+  const day = new Date().toISOString().slice(0, 10);
+  let seen = {}; try { seen = JSON.parse(localStorage.getItem('pro-notified') || '{}'); } catch {}
+  for (const { a, hit, text } of evalAlerts(ctx)) {
+    if (!hit || seen[a.id] === day) continue;
+    try { new Notification(`Alarm: ${alertTitle(a).what}`, { body: text, tag: a.id }); } catch {}
+    seen[a.id] = day;
+  }
+  try { localStorage.setItem('pro-notified', JSON.stringify(seen)); } catch {}
+}
 export async function refreshAlertDot(ctx) {
   const n = evalAlerts(ctx).filter((r) => r.hit).length;
+  notifyHits(ctx);
   const dot = document.getElementById('alert-dot'); if (!dot) return;
   dot.hidden = !n; dot.textContent = n;
 }
@@ -348,12 +491,23 @@ export function setLivePill(L) {
   p.querySelector('span').textContent = `Canlı · ${new Date(L.ts).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`;
 }
 
-function wireGlobal() {
+/* okuma serisi: paneli açtığın günler */
+export function activeDays() { try { return JSON.parse(localStorage.getItem('pro-days') || '[]'); } catch { return []; } }
+function markDay() {
+  const d = new Date().toISOString().slice(0, 10), a = activeDays();
+  if (!a.includes(d)) { a.push(d); try { localStorage.setItem('pro-days', JSON.stringify(a.slice(-120))); } catch {} }
+}
+
+function wireGlobal(active) {
+  markDay();
   document.getElementById('open-search').addEventListener('click', openSearch);
   document.getElementById('open-alerts').addEventListener('click', openAlerts);
   document.addEventListener('keydown', (e) => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openSearch(); } else if (e.key === '/' && !/input|textarea|select/i.test(document.activeElement.tagName)) { e.preventDefault(); openSearch(); } });
   document.addEventListener('click', (e) => {
     const s = e.target.closest('[data-search]'); if (s) { e.preventDefault(); openSearch(); return; }
+    const mn = e.target.closest('[data-menu]'); if (mn) { e.preventDefault(); openMenu(active); return; }
+    const pr = e.target.closest('[data-prefs]'); if (pr) { e.preventDefault(); document.querySelector('.drawer-bg')?.click(); openOnboarding(); return; }
+    const sp = e.target.closest('[data-speak]'); if (sp) { e.preventDefault(); speak(sp); return; }
     const w = e.target.closest('[data-watch]');
     if (w) {
       e.preventDefault(); e.stopPropagation();
@@ -373,6 +527,7 @@ function wireGlobal() {
   window.addEventListener('scroll', hidePop, { passive: true });
   loadNotes().then((n) => registerTerms(n.terms)).catch(() => {});
   loadSozluk().then((s) => registerTerms(s.concepts || {})).catch(() => {});
+  window.addEventListener('pagehide', stopSpeak);
   loadFunds().then((f) => { const el = document.getElementById('foot-period'); if (el && f.period) { const [y, m] = f.period.split('-'); el.textContent = `${['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'][+m - 1]} ${y}`; } }).catch(() => {});
 }
 

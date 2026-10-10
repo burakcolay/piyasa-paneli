@@ -33,11 +33,11 @@ async function main() {
       </div>
 
       <section class="panel glass">
-        <div class="panel-h"><h2>Alarmlar</h2><span class="small muted">Demo: bu tarayıcıda saklanır, bildirim gitmez</span></div>
+        <div class="panel-h"><h2>Alarmlar</h2>${'Notification' in window && Notification.permission !== 'granted' ? '<button class="btn" id="notif">Tarayıcı bildirimlerini aç</button>' : '<span class="small muted">Sayfa açıkken tetiklenen alarm bildirim olarak gelir</span>'}</div>
         <div class="rows">${res.length ? map(res, ({ a, hit, text }) => { const t = alertTitle(a); return `<div class="row"><span class="chip ${hit ? 'warn' : ''}" style="min-width:92px;justify-content:center">${hit === true ? 'Tetiklendi' : hit === false ? 'Sakin' : 'Veri bekleniyor'}</span><div class="main-c"><b>${esc(t.what)}</b><small style="white-space:normal">${esc(t.rule)}${a.value != null ? ` (${num(a.value, 2)})` : ''} · ${esc(text)}</small></div><button class="watch" data-del="${a.id}" title="Alarmı sil" aria-label="Alarmı sil">${ICON.trash}</button></div>`; }) : '<p class="small muted">Henüz alarm yok.</p>'}</div>
         <form id="add" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-top:6px;border-top:1px solid var(--hair)">
           <b class="small" style="margin-right:4px">Yeni alarm</b>
-          <select class="sel" name="kind" aria-label="Alarm türü"><option value="stock">Hisse</option><option value="fund">Fon</option><option value="macro">Makro gösterge</option><option value="coin">Coin</option></select>
+          <select class="sel" name="kind" aria-label="Alarm türü"><option value="stock">Hisse</option><option value="fund">Fon</option><option value="macro">Fiyat seviyesi</option><option value="coin">Coin</option></select>
           <select class="sel" name="code" aria-label="Neyi izleyelim"></select>
           <select class="sel" name="rule" aria-label="Koşul"></select>
           <input class="inp" name="value" type="number" step="any" placeholder="Eşik" style="width:100px" hidden aria-label="Eşik değeri">
@@ -46,6 +46,7 @@ async function main() {
       </section>
     </div>`;
 
+    document.getElementById('notif')?.addEventListener('click', async () => { const r = await Notification.requestPermission(); toast(r === 'granted' ? 'Bildirimler açıldı' : 'Bildirim izni verilmedi'); render(); });
     const form = document.getElementById('add');
     const fill = () => {
       const k = form.kind.value;

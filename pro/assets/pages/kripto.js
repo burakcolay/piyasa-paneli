@@ -1,6 +1,6 @@
 import { shell, fail, esc, map, num, pct, tone, loadCrypto, readCoin, watchBtn, qm, term, addAlert, hasAlert, toast, ICON, refreshAlertDot, loadFunds, loadLive, setLivePill } from '../core.js';
 
-const app = shell('kripto', { title: 'Kripto türev' });
+const app = shell('turev', { title: 'Kripto türev' });
 const usd = (v) => (v >= 1e9 ? `${num(v / 1e9, 2)} mr $` : `${num(v / 1e6, 0)} mn $`);
 
 function spark(vals) {
