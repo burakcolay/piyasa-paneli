@@ -1,4 +1,4 @@
-import { shell, fail, esc, map, heatBg } from '../app.js';
+import { shell, fail, esc, map, heatBg, loadDay } from '../app.js';
 import { n, pct, pctv, tone, usd, loadUS, q, watched, toggleWatch, star } from '../us.js';
 
 const app = shell('hisseler');
@@ -48,6 +48,7 @@ async function main() {
       <div class="chips" id="pre">${map(PRESETS, ([k, l]) => `<button class="chip" data-p="${k}">${l}</button>`)}</div>
       <div class="frow"><input class="inp" id="q" placeholder="Şirket ara" aria-label="Şirket ara"><span class="xs muted" id="cnt"></span></div>
     </section>
+    <a class="card go-card" href="bilancolar.html"><div><span class="eyebrow accent">Bilanço takvimi</span><b>NQ devlerinin bilançoları</b><span class="muted small" id="next-earn">Tarihler, beklentiler, son bilanço sürprizleri ve analist görüşleri</span></div><span class="go">→</span></a>
     <section class="card">
       <div class="head-row"><span class="eyebrow">Sektörler bugün</span><span class="xs muted">piyasa değeriyle ağırlıklı · tıkla, o sektörün hisseleri listelensin</span></div>
       <div class="sec-tiles" id="secs"></div>
@@ -80,5 +81,13 @@ async function main() {
   qi.value = st.q;
   qi.addEventListener('input', () => { st.q = qi.value; draw(); });
   draw();
+  // Bilanço kartına sıradaki bilançoyu yaz
+  loadDay().then(({ data }) => {
+    const E = (data.nq?.earnings || []).filter((e) => e.date >= data.date).sort((a, b) => a.date.localeCompare(b.date));
+    if (!E.length) return;
+    const d = new Date(E[0].date + 'T12:00:00');
+    const days = Math.round((Date.parse(E[0].date) - Date.parse(data.date)) / 864e5);
+    document.getElementById('next-earn').textContent = `Sıradaki: ${E[0].ticker}, ${d.getDate()} ${['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'][d.getMonth()]} (${days === 0 ? 'bugün' : days === 1 ? 'yarın' : days + ' gün sonra'}) · ${E.length} şirketin tarihi belli`;
+  }).catch(() => {});
 }
 main().catch(fail);

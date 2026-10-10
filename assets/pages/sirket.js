@@ -31,7 +31,7 @@ const kpi = (l, v, s = '', cls = '') => `<div class="kpi"><span class="l">${l}</
 
 async function main() {
   const [c, F, TR, U] = await Promise.all([loadUS(`co/${T}.json`), loadUS('funds.json').catch(() => null), loadUS('tr.json').catch(() => ({})), loadUS('universe.json').catch(() => null)]);
-  document.title = `${T} · ${c.name} · Piyasa Paneli`;
+  document.title = `${T} · ${c.name} · Market Intelligence`;
   const about = TR.about?.[T], notes = TR.notes || {}, news = TR.news?.[T] || [];
   const f = c.fin || {}, t = f.ttm || {}, v = c.val || {}, p = c.px || {};
   const A = f.annual || [], Q = f.quarterly || [];

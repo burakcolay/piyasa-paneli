@@ -1,4 +1,4 @@
-# Piyasa Paneli
+# Market Intelligence
 
 Burak'ın kişisel günlük piyasa paneli. Statik site (derleme adımı yok), Vercel'de yayında.
 Sayfalar `data/` altındaki JSON dosyalarını okuyup kendini çizer. **Günlük rutin sadece JSON yazar; HTML/JS'ye dokunmaz.**
@@ -6,7 +6,7 @@ Sayfalar `data/` altındaki JSON dosyalarını okuyup kendini çizer. **Günlük
 ## Dosya düzeni
 
 ```
-index.html, faizler.html, kuresel.html, hisseler.html, sirket.html, kripto.html, turkiye.html, makro.html, haftalik.html, sozluk.html
+index.html, faizler.html, kuresel.html, hisseler.html, sirket.html, bilancolar.html, kripto.html, turkiye.html, makro.html, haftalik.html, sozluk.html
 assets/app.js        ortak: veri yükleme, menü, biçimlendirme
 assets/charts.js     SVG grafikler
 assets/pages/*.js    her sayfanın çizimi

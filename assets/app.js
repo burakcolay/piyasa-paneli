@@ -91,7 +91,7 @@ export function shell(active, { date, dates = [], updated, isOld, latest } = {})
     <header class="site-header">
       <div class="inner">
         <div class="brand-row">
-          <a href="${withDate('index.html')}" class="brand" style="text-decoration:none;color:inherit"><b>Piyasa Paneli</b><span>Günlük küresel piyasa takibi</span></a>
+          <a href="${withDate('index.html')}" class="brand" style="text-decoration:none;color:inherit"><b>Market Intelligence</b><span>Günlük küresel piyasa takibi</span></a>
           ${dateBox}
         </div>
         <nav class="nav" aria-label="Bölümler">${nav}</nav>

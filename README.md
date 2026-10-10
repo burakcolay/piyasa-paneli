@@ -1,6 +1,6 @@
 <div align="center">
 
-# Piyasa Paneli
+# Market Intelligence
 
 **Her sabah kendiliğinden yazılan, rakamı değil anlamını anlatan kişisel piyasa paneli.**
 

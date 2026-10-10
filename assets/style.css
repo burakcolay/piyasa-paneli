@@ -389,3 +389,9 @@ table.us tr.me td { background: var(--accent-soft); }
 .yorum-ul { border-top: 1px solid var(--line-soft); padding-top: 12px; }
 .row3y { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
 .row3y:empty { display: none; }
+.go-card { flex-direction: row; align-items: center; justify-content: space-between; text-decoration: none; color: inherit; }
+.go-card > div { display: flex; flex-direction: column; gap: 2px; }
+.go-card b { font-size: 18px; }
+.go-card .go { font-size: 24px; color: var(--accent); transition: transform .15s; }
+.go-card:hover { border-color: var(--accent); } .go-card:hover .go { transform: translateX(4px); }
+.earn-list { display: flex; flex-direction: column; gap: 6px; }
