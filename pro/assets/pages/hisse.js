@@ -45,7 +45,7 @@ async function main() {
         <span class="greet">Hisse · fon pozisyonları</span>
       </div>
       <div style="display:flex;align-items:center;gap:12px;margin-top:6px;flex-wrap:wrap">
-        <h1 style="margin:0;font-size:40px">${S.t}</h1>${watchBtn('stock', S.t)}
+        <h1 style="margin:0;font-size:30px">${S.t}</h1>${watchBtn('stock', S.t)}
         <span class="ink2" style="font-size:16px">${esc(S.name)}</span>
       </div>
       <p class="lede">${esc(read)}</p>

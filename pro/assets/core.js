@@ -186,7 +186,7 @@ export function evalAlerts({ funds, live, crypto } = {}) {
       if (m) { hit = a.rule === 'above' ? m.price > a.value : m.price < a.value; text = `Şu an ${num(m.price, 2)} · eşik ${num(a.value, 2)}`; }
     } else if (a.kind === 'coin' && crypto) {
       const c = crypto.find((x) => x.code === a.code);
-      if (c) { hit = a.rule === 'funding-high' ? c.funding > 0.03 : c.funding < 0; text = `Fonlama şu an %${num(c.funding, 4)}`; }
+      if (c) { hit = a.rule === 'funding-high' ? c.funding > 0.03 : c.funding < 0; text = `Fonlama şu an ${c.funding < 0 ? "−" : ""}%${num(Math.abs(c.funding), 4)}`; }
     }
     return { a, hit, text };
   });
@@ -213,7 +213,6 @@ const NAV = [
   { id: 'bilanco', href: 'bilanco.html', label: 'Bilançolar', icon: 'doc' },
   { id: 'portfoy', href: 'portfoy.html', label: 'Portföyüm', icon: 'pie' },
   { id: 'takip', href: 'takip.html', label: 'Takip ve alarmlar', icon: 'star' },
-  { id: 'akademi', href: 'akademi.html', label: 'Akademi', icon: 'book' },
   { id: 'haftalik', href: 'haftalik.html', label: 'Haftalık rapor', icon: 'week' },
 ];
 const TOOLS = [
@@ -257,7 +256,7 @@ export function shell(active, { title } = {}) {
         <span><b>Piyasa Paneli</b><small>Pro · demo</small></span>
       </a>
       ${navHTML(active)}
-      <div class="side-foot">Demo sürüm, kişisel kullanım.<br>Yatırım tavsiyesi değildir.</div>
+      <div class="side-foot">Yatırım tavsiyesi değildir.</div>
     </aside>
     <div class="main">
       <header class="top">
@@ -349,21 +348,6 @@ export function lazyTV(el, name, config, height) {
   io.observe(el);
 }
 
-// Sesli dinle: tarayıcının kendi Türkçe sesiyle (ücretsiz)
-let speaking = null;
-export function speakBtn(id, label = 'Sesli dinle') { return `<button class="btn" data-speak="${id}">${ICON.play}<span>${label}</span></button>`; }
-function stopSpeak() { try { speechSynthesis.cancel(); } catch {} document.querySelectorAll('[data-speak].on').forEach((b) => { b.classList.remove('on'); b.innerHTML = `${ICON.play}<span>Sesli dinle</span>`; }); speaking = null; }
-function speak(btn) {
-  if (!('speechSynthesis' in window)) { toast('Tarayıcın sesli okumayı desteklemiyor'); return; }
-  if (speaking === btn) { stopSpeak(); return; }
-  stopSpeak();
-  const src = document.getElementById(btn.dataset.speak); if (!src) return;
-  const text = src.innerText.replace(/\s+/g, ' ').replace(/%(\d)/g, 'yüzde $1').replace(/−/g, 'eksi ');
-  const voices = speechSynthesis.getVoices(); const v = voices.find((x) => /^tr/i.test(x.lang));
-  const chunks = text.match(/[^.!?]+[.!?]*/g) || [text];
-  chunks.forEach((c, i) => { const u = new SpeechSynthesisUtterance(c.trim()); u.lang = 'tr-TR'; if (v) u.voice = v; u.rate = 1.02; if (i === chunks.length - 1) u.onend = stopSpeak; speechSynthesis.speak(u); });
-  speaking = btn; btn.classList.add('on'); btn.innerHTML = `${ICON.stop}<span>Durdur</span>`;
-}
 
 export function fail(e) {
   console.error(e);
@@ -457,7 +441,7 @@ async function openAlerts() {
   const bg = document.createElement('div'); bg.className = 'drawer-bg';
   const d = document.createElement('aside'); d.className = 'drawer'; d.setAttribute('aria-label', 'Alarmlar');
   d.innerHTML = `<div class="panel-h"><h2 style="font-size:20px">Alarmlar</h2><button class="icon-btn" style="width:34px;height:34px" aria-label="Kapat" data-close>${ICON.close}</button></div>
-    <p class="small ink2">Demo: alarmlar bu tarayıcıda saklanır, bildirim gönderilmez. Koşul sağlanınca burada işaretlenir.</p>
+    <p class="small ink2">Koşulu sağlanan alarmlar üstte. Alarmlar bu tarayıcıda saklanır.</p>
     <div class="rows">${res.length ? map(res, ({ a, hit, text }) => { const t = alertTitle(a); return `<div class="row"><span class="chip ${hit === true ? 'warn' : hit === false ? '' : ''}" style="min-width:86px;justify-content:center">${hit === true ? 'Tetiklendi' : hit === false ? 'Sakin' : 'Veri yok'}</span><div class="main-c"><b>${esc(t.what)}</b><small style="white-space:normal">${esc(t.rule)}${a.value != null ? ` (${num(a.value, 2)})` : ''}</small><small style="white-space:normal;color:var(--ink-2)">${esc(text)}</small></div></div>`; }) : '<div class="empty-state"><b>Henüz alarm yok</b><p>Takip ve alarmlar sayfasından ya da bir hisse veya fon sayfasındaki zil düğmesinden ekleyebilirsin.</p></div>'}</div>
     <a class="btn" href="takip.html" style="align-self:flex-start">Alarmları yönet</a>`;
   document.body.append(bg, d);
@@ -491,15 +475,7 @@ export function setLivePill(L) {
   p.querySelector('span').textContent = `Canlı · ${new Date(L.ts).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`;
 }
 
-/* okuma serisi: paneli açtığın günler */
-export function activeDays() { try { return JSON.parse(localStorage.getItem('pro-days') || '[]'); } catch { return []; } }
-function markDay() {
-  const d = new Date().toISOString().slice(0, 10), a = activeDays();
-  if (!a.includes(d)) { a.push(d); try { localStorage.setItem('pro-days', JSON.stringify(a.slice(-120))); } catch {} }
-}
-
 function wireGlobal(active) {
-  markDay();
   document.getElementById('open-search').addEventListener('click', openSearch);
   document.getElementById('open-alerts').addEventListener('click', openAlerts);
   document.addEventListener('keydown', (e) => { if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); openSearch(); } else if (e.key === '/' && !/input|textarea|select/i.test(document.activeElement.tagName)) { e.preventDefault(); openSearch(); } });
@@ -507,7 +483,6 @@ function wireGlobal(active) {
     const s = e.target.closest('[data-search]'); if (s) { e.preventDefault(); openSearch(); return; }
     const mn = e.target.closest('[data-menu]'); if (mn) { e.preventDefault(); openMenu(active); return; }
     const pr = e.target.closest('[data-prefs]'); if (pr) { e.preventDefault(); document.querySelector('.drawer-bg')?.click(); openOnboarding(); return; }
-    const sp = e.target.closest('[data-speak]'); if (sp) { e.preventDefault(); speak(sp); return; }
     const w = e.target.closest('[data-watch]');
     if (w) {
       e.preventDefault(); e.stopPropagation();
@@ -527,7 +502,6 @@ function wireGlobal(active) {
   window.addEventListener('scroll', hidePop, { passive: true });
   loadNotes().then((n) => registerTerms(n.terms)).catch(() => {});
   loadSozluk().then((s) => registerTerms(s.concepts || {})).catch(() => {});
-  window.addEventListener('pagehide', stopSpeak);
   loadFunds().then((f) => { const el = document.getElementById('foot-period'); if (el && f.period) { const [y, m] = f.period.split('-'); el.textContent = `${['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'][+m - 1]} ${y}`; } }).catch(() => {});
 }
 

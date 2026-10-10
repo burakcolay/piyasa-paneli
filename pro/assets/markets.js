@@ -135,7 +135,7 @@ export function tileHTML(id, D, L, m) {
   const S = story(id, D);
   const chain = S.chain?.length ? S.chain : null;
   return `<a class="tile glass" href="piyasa.html?m=${id}">
-    <div class="tile-h">${ICON[m.icon]}${esc(m.name)}<span class="arrow">›</span></div>
+    <div class="tile-h">${ICON[m.icon]}${esc(m.name)}</div>
     <div><div class="big">${esc(big)}</div><div class="sub" style="margin-top:6px"><span class="badge-chg ${tone(chg)}">${chg != null ? pct(chg, 2) : 'sabah'}</span><span>${esc(T.label)}</span></div></div>
     ${momHTML(D, id)}
     ${chain ? whyHTML(chain) : `<div class="why">${esc(S.title || '')}</div>`}

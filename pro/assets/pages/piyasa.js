@@ -1,4 +1,4 @@
-import { shell, fail, esc, map, num, pct, tone, ICON, MARKETS, marketById, prefs, savePrefs, loadDaily, loadLive, setLivePill, refreshAlertDot, withTerms, speakBtn, lazyTV, toast, params, qm } from '../core.js';
+import { shell, fail, esc, map, num, pct, tone, ICON, MARKETS, marketById, prefs, savePrefs, loadDaily, loadLive, setLivePill, refreshAlertDot, withTerms, lazyTV, toast, params, qm } from '../core.js';
 import { story, liveNums, kcardsHTML, TV, NEWS_TV, eventMarkets, scenario, tileHTML, momHTML } from '../markets.js';
 import { lineChart, macroChart, yieldCurve, bondCurve, gauge, fngLabel, levelMap, flowBars, hbars, sectorHeat } from '../../../assets/charts.js';
 import { heatBg, signed } from '../../../assets/app.js';
@@ -61,11 +61,11 @@ function analysis(D, S) {
   const NQ = D.nq, F = D.faizler, K = D.kripto, T = D.turkiye;
   const news = (D.news || []).filter((n) => NEWS_REGION[id]?.includes(n.region));
   let extra = '';
-  if (id === 'abd' && NQ) extra = panel(`Nasdaq 100 makro rüzgârı <span class="chip ${BIAS[NQ.bias]?.[0] || ''}" style="margin-left:6px">${BIAS[NQ.bias]?.[1] || ''}</span>`, `<div class="prose">${paras(NQ.paragraphs)}</div>${F?.nq_note ? `<div class="note"><b>Faiz eğrisinin anlamı:</b> ${withTerms(F.nq_note)}</div>` : ''}`);
+  if (id === 'abd' && NQ) extra = panel(`Nasdaq 100 makro rüzgârı <span class="status ${BIAS[NQ.bias]?.[0] || ''}" style="margin-left:8px;font-weight:500">${BIAS[NQ.bias]?.[1] || ''}</span>`, `<div class="prose">${paras(NQ.paragraphs)}</div>${F?.nq_note ? `<div class="note"><b>Faiz eğrisinin anlamı:</b> ${withTerms(F.nq_note)}</div>` : ''}`);
   if (id === 'faiz') extra = panel('Fed ne düşünüyor', `<div class="prose"><p>${withTerms(F.fed.paragraph || '')}</p></div><p class="small ink2">${withTerms(F.curve_note || '')}</p>`);
   if (id === 'kripto') extra = panel('Seviye haritası nasıl okunur', `<p class="small ink2">${withTerms(K.levels.note)}</p><p class="small ink2">${withTerms(K.etf_note || '')}</p>`);
   if (id === 'bist') extra = panel('Sektör ve faiz notları', `<p class="small ink2">${withTerms(T.sectors_note)}</p><p class="small ink2">${withTerms(T.cpi.note)}</p><p class="small ink2">${withTerms(T.rates.note)}</p>`);
-  return `<section class="panel glass" id="story"><div class="panel-h"><h2>Sabah analizi</h2>${speakBtn('story-text')}</div><div class="prose" id="story-text">${paras(S.paragraphs)}</div></section>
+  return `<section class="panel glass" id="story"><div class="panel-h"><h2>Sabah analizi</h2></div><div class="prose" id="story-text">${paras(S.paragraphs)}</div></section>
     ${extra}
     ${news.length ? panel('Haberler ve neden önemli', `<div class="rows">${map(news, (n) => `<div class="row" style="align-items:flex-start"><span class="xs muted" style="min-width:44px">${esc(n.date)}</span><div class="main-c"><b style="font-weight:500">${esc(n.title)}</b><small style="white-space:normal">${esc(n.why)}</small></div></div>`)}</div>${NEWS_TV[id] ? '<div id="tv-news" style="margin-top:8px"></div>' : ''}`) : ''}
     ${id === 'bist' ? lesson(T.lesson, 'Türkiye dersi') : id === 'kripto' ? lesson(K.lesson, 'Kripto dersi') : ''}`;
@@ -79,7 +79,7 @@ function overview(D, S, L) {
   ].filter((e, i, a) => { const k = (t) => t.replace(/^[^·]+·\s*/, '').replace(/\s*\(.*?\)/g, '').toLocaleLowerCase('tr-TR'); return eventMarkets(e.title).includes(id) && a.findIndex((x) => k(x.title) === k(e.title)) === i; }).slice(0, 4);
   const K = D.kripto, T = D.turkiye, NQ = D.nq;
   const side = id === 'kripto' ? `<div class="mini-stat"><small>Korku ve açgözlülük</small><b>${K.fng.now} · ${esc(fngLabel(K.fng.now)[0])}</b></div><div class="mini-stat"><small>Bitcoin dominansı</small><b>%${num(K.dominance.btc, 1)}</b></div>`
-    : id === 'abd' && NQ ? `<div class="mini-stat"><small>Nasdaq 100 için makro rüzgâr</small><b><span class="chip ${BIAS[NQ.bias]?.[0]}">${BIAS[NQ.bias]?.[1]}</span></b></div>`
+    : id === 'abd' && NQ ? `<div class="mini-stat"><small>Nasdaq 100 için makro rüzgâr</small><b><span class="status ${BIAS[NQ.bias]?.[0]}" style="font-size:16px">${BIAS[NQ.bias]?.[1]}</span></b></div>`
     : id === 'bist' ? `<div class="mini-stat"><small>Enflasyon (yıllık)</small><b>${esc(T.cpi.last)}</b></div><div class="mini-stat"><small>Politika faizi</small><b>%${num(T.rates.policy, 0)}</b></div>`
     : id === 'faiz' ? `<div class="mini-stat"><small>Fed faizi</small><b>${esc(D.faizler.fed.rate)}</b></div><div class="mini-stat"><small>Sıradaki toplantı</small><b>${esc(D.faizler.fed.next_meeting)}</b></div>` : '';
   return `<div class="tiles" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr))">${map(nums, (n) => `<div class="tile glass" style="gap:6px"><div class="tile-h">${esc(n.label)}</div><div class="big" style="font-size:26px">${esc(n.value)}</div><div class="sub"><span class="badge-chg ${n.key === 'vix' || n.key === 'us10y' || n.key === 'us30y' ? tone(-n.chg) : tone(n.chg)}">${n.chg != null ? pct(n.chg, 2) : '—'}</span></div></div>`)}</div>

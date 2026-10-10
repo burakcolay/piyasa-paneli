@@ -54,7 +54,7 @@ async function main() {
     const list = evs.filter((e) => (!onlyMine || e.markets.some((m) => mine.includes(m))) && (!onlyHigh || e.impact === 'high'));
     const groups = {};
     list.forEach((e) => { const k = e.date ? e.date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', weekday: 'long', timeZone: 'Europe/Istanbul' }) : 'Tarihi belirsiz'; (groups[k] ||= []).push(e); });
-    document.getElementById('cal').innerHTML = Object.keys(groups).length ? map(Object.entries(groups), ([g, es]) => `<div class="small muted" style="margin-top:14px;font-weight:500">${esc(g)}</div>${map(es, (e) => {
+    document.getElementById('cal').innerHTML = Object.keys(groups).length ? map(Object.entries(groups), ([g, es]) => `<div class="day-h">${esc(g)}</div>${map(es, (e) => {
       const idx = evs.indexOf(e), past = e.date && e.date < now;
       return `<div class="cal-row" style="${past ? 'opacity:.55' : ''}">
         <span class="when"><span class="imp" style="background:${IMP[e.impact]?.[0] || 'var(--ink-3)'}" title="${IMP[e.impact]?.[1] || ''}"></span>${e.date ? e.date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Istanbul' }) : '—'}</span>

@@ -90,7 +90,7 @@ async function main() {
     <section class="hero glass">
       <span class="greet">${periodLabel(F.period)} okuması</span>
       <h1>${esc(N.funds_headline)}</h1>
-      <div class="prose" style="margin-top:14px">${map(N.funds_paragraphs, (p) => `<p>${esc(p)}</p>`)}</div>
+      <ul class="points" style="margin-top:4px">${map(N.funds_points || [], (p) => `<li>${esc(p)}</li>`)}</ul>
       <div class="stats" style="margin-top:20px">
         <div class="stat"><div class="l">Toplam fon büyüklüğü</div><div class="v">${tl(T.size)}</div><div class="s ${tone(ch)}">${pct(ch)} bir ayda</div></div>
         <div class="stat"><div class="l">Yatırımcı</div><div class="v">${num(T.investors)}</div><div class="s muted">${T.funds} fonda</div></div>
@@ -120,6 +120,7 @@ async function main() {
       <section class="panel glass c5"><div class="panel-h"><h2>Portföy şirketleri</h2></div>${companyTable(F)}</section>
     </div>
 
+    <section class="panel"><div class="panel-h"><h2>Ayın analizi</h2></div><div class="prose">${map(N.funds_paragraphs, (p) => `<p>${esc(p)}</p>`)}</div></section>
     <p class="foot-note">${esc(F.method)} ${esc(F.source)} Endeks fonları: ${F.funds.filter((f) => f.type === 'endeks').map((f) => f.code).join(', ')}. Yatırım tavsiyesi değildir.</p>
   </div>`;
 

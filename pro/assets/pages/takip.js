@@ -28,7 +28,7 @@ async function main() {
           <div class="panel-h"><h2>Fonlar</h2></div>
           ${funds.length ? `<div class="rows">${map(funds, (f) => `<div class="row">${watchBtn('fund', f.code)}<a class="main-c" href="fon.html?f=${f.code}" style="color:inherit;text-decoration:none"><b>${f.code}</b><small>${esc(f.company)} · ${tl(f.size)}</small></a><div class="end"><b class="${tone(f.r1m)}">${pct(f.r1m)}</b><small class="muted">1 ay</small></div></div>`)}</div>` : empty('fon')}
           <div class="panel-h" style="margin-top:6px"><h2>Coinler</h2></div>
-          ${coins.length ? `<div class="rows">${map(coins, (c) => `<div class="row">${watchBtn('coin', c.code)}<a class="main-c" href="kripto.html#${c.code}" style="color:inherit;text-decoration:none"><b>${c.code}</b><small>${c.price ? `$${num(c.price, c.price < 1000 ? 2 : 0)} · fonlama %${num(c.funding, 4)}` : 'Kripto sayfasında canlı veri'}</small></a><div class="end">${c.chg != null ? `<b class="${tone(c.chg)}">${pct(c.chg, 2)}</b><small class="muted">24 saat</small>` : ''}</div></div>`)}</div>` : empty('coin')}
+          ${coins.length ? `<div class="rows">${map(coins, (c) => `<div class="row">${watchBtn('coin', c.code)}<a class="main-c" href="kripto.html#${c.code}" style="color:inherit;text-decoration:none"><b>${c.code}</b><small>${c.price ? `$${num(c.price, c.price < 1000 ? 2 : 0)} · fonlama ${c.funding < 0 ? "−" : ""}%${num(Math.abs(c.funding), 4)}` : 'Kripto sayfasında canlı veri'}</small></a><div class="end">${c.chg != null ? `<b class="${tone(c.chg)}">${pct(c.chg, 2)}</b><small class="muted">24 saat</small>` : ''}</div></div>`)}</div>` : empty('coin')}
         </section>
       </div>
 

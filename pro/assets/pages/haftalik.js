@@ -1,4 +1,4 @@
-import { shell, fail, esc, map, num, pct, tone, loadLive, setLivePill, refreshAlertDot, withTerms, speakBtn, params, prefs, loadSozluk } from '../core.js';
+import { shell, fail, esc, map, num, pct, tone, loadLive, setLivePill, refreshAlertDot, withTerms, params, prefs, loadSozluk } from '../core.js';
 
 const app = shell('haftalik', { title: 'Haftalık rapor' });
 const getJSON = (u) => fetch(u, { cache: 'no-cache' }).then((r) => r.json());
@@ -15,7 +15,7 @@ async function main() {
   const C = S.concepts || {};
   const maxK = Math.max(...(W.kpis || []).map((k) => Math.abs(k.chg)), 1);
 
-  const deepHTML = d ? `<section class="panel glass" id="deep"><div class="panel-h"><h2>Haftanın derin konusu</h2>${speakBtn('deep-text')}</div>
+  const deepHTML = d ? `<section class="panel glass" id="deep"><div class="panel-h"><h2>Haftanın derin konusu</h2></div>
       <h1 style="font-size:26px;max-width:32ch">${esc(d.title)}</h1>
       ${d.chain?.length ? `<div class="cause">${d.chain.map((x, i) => `${i ? '<span class="arr">→</span>' : ''}<span class="step">${esc(x)}</span>`).join('')}</div>` : ''}
       <div class="prose" id="deep-text">${map(d.paragraphs, (p) => `<p>${withTerms(p)}</p>`)}</div>
@@ -43,7 +43,7 @@ async function main() {
     ${longFirst ? '' : deepHTML + ltHTML}
     <div class="grid">
       <section class="panel glass c6"><div class="panel-h"><h2>Gelecek hafta neye bakmalı</h2><a class="act" href="takvim.html">Takvim</a></div>${map(W.next, (x) => `<div class="cal-row" style="grid-template-columns:96px 1fr"><span class="when">${esc(x.when)}</span><div><b style="font-weight:500">${esc(x.title)}</b><div class="small ink2">${esc(x.why)}</div></div></div>`)}</section>
-      <section class="panel glass c6"><div class="panel-h"><h2>Bu hafta öğrendiklerin</h2><a class="act" href="akademi.html">Akademi</a></div><div class="rows">${map((W.learned || []).filter((k) => C[k]), (k) => `<a class="row" href="akademi.html#k-${esc(k)}" style="color:inherit;text-decoration:none"><div class="main-c"><b>${esc(C[k].name)}</b><small>${esc(C[k].rule || '')}</small></div></a>`)}</div></section>
+      <section class="panel glass c6"><div class="panel-h"><h2>Bu hafta geçen kavramlar</h2><a class="act" href="../sozluk.html">Sözlük</a></div><div class="rows">${map((W.learned || []).filter((k) => C[k]), (k) => `<a class="row" href="../sozluk.html#${esc(k)}" style="color:inherit;text-decoration:none"><div class="main-c"><b>${esc(C[k].name)}</b><small>${esc(C[k].rule || '')}</small></div></a>`)}</div></section>
     </div>
   </div>`;
   document.getElementById('wk').addEventListener('change', (e) => { location.search = `?w=${e.target.value}`; });

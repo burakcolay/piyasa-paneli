@@ -33,7 +33,7 @@ async function main() {
   app.innerHTML = `<div class="page">
     <section class="hero glass">
       <span class="greet">${esc(f.company)} · ${f.type === 'endeks' ? esc(f.type_label) : 'aktif yönetilen hisse fonu'}</span>
-      <div style="display:flex;align-items:center;gap:12px;margin-top:6px;flex-wrap:wrap"><h1 style="margin:0;font-size:40px">${f.code}</h1>${watchBtn('fund', f.code)}</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:6px;flex-wrap:wrap"><h1 style="margin:0;font-size:30px">${f.code}</h1>${watchBtn('fund', f.code)}</div>
       <div class="ink2" style="margin-top:4px">${esc(f.name)}</div>
       <p class="lede">${esc(read)}</p>
       <div class="hero-row">

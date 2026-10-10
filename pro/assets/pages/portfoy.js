@@ -49,7 +49,7 @@ async function main() {
       <div class="page-head"><div><h1>Portföyüm</h1><p>Varlıklarını gir, canlı fiyatlarla günlük değişimini ve kâr/zararını gör. Veriler sadece bu tarayıcıda saklanır.</p></div></div>
       ${rows.length ? `<section class="hero glass">
         <span class="greet">Toplam değer</span>
-        <h1 style="font-size:40px;margin-top:4px">${num(total, 0)} ₺</h1>
+        <h1 style="font-size:32px;margin-top:2px">${num(total, 0)} ₺</h1>
         <div class="stats" style="margin-top:14px">
           <div class="stat"><div class="l">Bugün</div><div class="v ${tone(day)}">${day >= 0 ? '+' : '−'}${num(Math.abs(day), 0)} ₺</div><div class="s ${tone(dayP)}">${pct(dayP, 2)}</div></div>
           <div class="stat"><div class="l">Toplam kâr/zarar</div><div class="v ${tone(total - cost)}">${total - cost >= 0 ? '+' : '−'}${num(Math.abs(total - cost), 0)} ₺</div><div class="s ${tone(total - cost)}">${pct(cost ? (total / cost - 1) * 100 : 0)}</div></div>

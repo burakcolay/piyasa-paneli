@@ -1,6 +1,7 @@
 import { shell, fail, esc, map, num, pct, tone, loadCrypto, readCoin, watchBtn, qm, term, addAlert, hasAlert, toast, ICON, refreshAlertDot, loadFunds, loadLive, setLivePill } from '../core.js';
 
 const app = shell('turev', { title: 'Kripto türev' });
+const fr = (v) => `${v < 0 ? '−' : ''}%${num(Math.abs(v), 4)}`;
 const usd = (v) => (v >= 1e9 ? `${num(v / 1e9, 2)} mr $` : `${num(v / 1e6, 0)} mn $`);
 
 function spark(vals) {
@@ -17,10 +18,10 @@ function card(c) {
     <div class="coin-h"><div style="display:flex;align-items:center;gap:8px"><b>${c.code}</b><span class="small muted">${esc(c.name)}</span>${watchBtn('coin', c.code)}</div>
       <div style="text-align:right"><div class="p">$${num(c.price, c.price < 10 ? 3 : c.price < 1000 ? 2 : 0)}</div><div class="small ${tone(c.chg)}">${pct(c.chg, 2)} · 24 saat</div></div></div>
     <div><div style="display:flex;justify-content:space-between;align-items:baseline"><span class="small muted">Kaldıraç dengesi</span><b class="small">${r.label}</b></div>
-      <div class="gauge" style="margin-top:8px"><i style="left:${((r.heat + 2) / 4) * 100}%"></i></div><div class="gauge-l"><span>Aşırı short</span><span>Dengeli</span><span>Aşırı long</span></div></div>
+      <div class="gauge sym" style="margin-top:8px"><i style="left:${((r.heat + 2) / 4) * 100}%"></i></div><div class="gauge-l"><span>Aşırı short</span><span>Dengeli</span><span>Aşırı long</span></div></div>
     <dl class="kv">
-      <dt>${term('fonlama', 'Fonlama oranı')}</dt><dd class="${c.funding > 0.03 ? 'down' : c.funding < 0 ? 'up' : ''}">%${num(c.funding, 4)}</dd>
-      <dt>7 günlük ortalama</dt><dd>%${num(c.funding7, 4)}</dd>
+      <dt>${term('fonlama', 'Fonlama oranı')}</dt><dd class="${c.funding > 0.03 ? 'down' : c.funding < 0 ? 'up' : ''}">${fr(c.funding)}</dd>
+      <dt>7 günlük ortalama</dt><dd>${fr(c.funding7)}</dd>
       <dt>${term('acik-pozisyon', 'Açık pozisyon')}</dt><dd>${usd(c.oi)}</dd>
       <dt>24 saat / 7 gün değişim</dt><dd><span class="${tone(c.oi1d)}">${pct(c.oi1d)}</span> · <span class="${tone(c.oi7d)}">${pct(c.oi7d)}</span></dd>
       <dt>${term('long-short', 'Long hesap oranı')}</dt><dd>%${num(c.longPct, 0)}</dd>
@@ -34,7 +35,7 @@ function card(c) {
 
 async function main() {
   app.innerHTML = `<div class="page">
-    <div class="page-head"><div><h1>Kripto türev</h1><p>Vadeli piyasada kaldıraçlı pozisyonların durumu: kim kalabalık, kim ödüyor, yeni para giriyor mu. Fiyat değil, fiyatın arkasındaki konumlanma.</p></div><span class="chip" id="stamp">Bağlanıyor…</span></div>
+    <div class="page-head"><div><h1>Kripto türev</h1><p>Vadeli piyasada kaldıraçlı pozisyonların durumu: kim kalabalık, kim ödüyor, yeni para giriyor mu. Fiyat değil, fiyatın arkasındaki konumlanma.</p></div><span class="xs muted" id="stamp"></span></div>
     <div id="body"><div class="loading">Binance vadeli verisi alınıyor…</div></div>
   </div>`;
   const [C, Fd, L] = await Promise.all([loadCrypto(), loadFunds().catch(() => null), loadLive()]);
@@ -46,11 +47,11 @@ async function main() {
     body.innerHTML = `<section class="panel glass empty-state"><b>Binance vadeli verisine bağlanılamadı</b><p>Tarayıcın fapi.binance.com adresine ulaşamadı. Ağ kısıtı ya da reklam engelleyici olabilir. Sayfayı yenileyip tekrar dene.</p><button class="btn primary" onclick="sessionStorage.removeItem('pro-crypto');location.reload()">Tekrar dene</button></section>`;
     return;
   }
-  document.getElementById('stamp').textContent = `Canlı · ${new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`;
+  document.getElementById('stamp').textContent = '';
   const reads = C.map(readCoin), avg = reads.reduce((a, r) => a + r.heat, 0) / reads.length;
   const btc = C[0], br = reads[0];
   const head = avg >= 1 ? 'Piyasa genelinde long taraf kalabalık' : avg <= -1 ? 'Piyasa genelinde short taraf kalabalık' : 'Kaldıraç genel olarak dengeli';
-  const sub = `Bitcoin'de fonlama %${num(btc.funding, 4)}, açık pozisyon 24 saatte ${pct(btc.oi1d)}. ${br.lines[0]}`;
+  const sub = `Bitcoin'de fonlama ${fr(btc.funding)}, açık pozisyon 24 saatte ${pct(btc.oi1d)}. ${br.lines[0]}`;
 
   body.innerHTML = `<div style="display:flex;flex-direction:column;gap:18px">
     <section class="hero glass"><span class="greet">Şu anki tablo</span><h1>${esc(head)}</h1><p class="lede">${esc(sub)}</p></section>
