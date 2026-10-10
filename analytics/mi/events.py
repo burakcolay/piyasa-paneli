@@ -97,12 +97,33 @@ def earnings_study(r: pd.DataFrame, events: pd.DataFrame) -> dict:
     }
 
 
+def declutter(ev: pd.DataFrame, gap_days: int = 30) -> pd.DataFrame:
+    """Aynı şirkette art arda gelen işlemleri tek olaya indirir.
+
+    Bir yönetici birkaç gün arayla defalarca alım yapabilir; bunları ayrı olay saymak, aynı fiyat
+    hareketini birden çok kez sayıp örneği yapay olarak büyütür ve t-testini şişirir.
+    """
+    keep = []
+    for code, g in ev.sort_values("date").groupby("code"):
+        last = None
+        for row in g.itertuples():
+            d = pd.Timestamp(row.date)
+            if last is None or (d - last).days > gap_days:
+                keep.append(row.Index)
+                last = d
+    return ev.loc[keep]
+
+
 def insider_study(r: pd.DataFrame, trades: pd.DataFrame) -> dict:
-    """trades: code, date, buy_usd, sell_usd, plan. Piyasadan alımlar ve plansız satışlar ayrı incelenir."""
+    """trades: code, date, buy_usd, sell_usd, plan. Piyasadan alımlar ve plansız satışlar ayrı incelenir.
+
+    Aynı şirketteki 30 gün içindeki işlemler tek olay sayılır (bkz. declutter).
+    """
     out = {}
     for name, sel in (("alim", trades["buy_usd"] > trades["sell_usd"]),
                       ("plansiz_satis", (trades["sell_usd"] > trades["buy_usd"]) & (trades["plan"] == 0))):
-        ev = trades[sel].drop_duplicates(["code", "date"])
+        raw = trades[sel].drop_duplicates(["code", "date"])
+        ev = declutter(raw)
         res = []
         for e in ev.itertuples():
             ar = abnormal_path(r, e.code, e.date)
@@ -110,5 +131,7 @@ def insider_study(r: pd.DataFrame, trades: pd.DataFrame) -> dict:
                 res.append({"code": e.code, "date": e.date, "car20": car(ar, 1, 20), "car40": car(ar, 1, 40)})
         df = pd.DataFrame(res)
         out[name] = {"car20": _ttest(df["car20"].to_numpy()) if len(df) else {"n": 0},
-                     "car40": _ttest(df["car40"].to_numpy()) if len(df) else {"n": 0}}
+                     "car40": _ttest(df["car40"].to_numpy()) if len(df) else {"n": 0},
+                     "raw_events": int(len(raw)), "companies": int(df["code"].nunique()) if len(df) else 0,
+                     "period": [df["date"].min(), df["date"].max()] if len(df) else None}
     return out

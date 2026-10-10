@@ -30,3 +30,9 @@ def test_event_too_close_to_edges_is_skipped():
 def test_car_sums_window():
     ar = pd.Series([1.0, 2.0, 3.0], index=[0, 1, 2])
     assert ev.car(ar, 0, 1) == 3.0
+
+
+def test_declutter_merges_clustered_trades():
+    df = pd.DataFrame({"code": ["A", "A", "A", "B"], "date": ["2026-01-01", "2026-01-10", "2026-03-01", "2026-01-05"]})
+    out = ev.declutter(df)
+    assert sorted(out["date"].tolist()) == ["2026-01-01", "2026-01-05", "2026-03-01"]

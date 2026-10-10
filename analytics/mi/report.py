@@ -112,10 +112,13 @@ def narrative(R: dict) -> list[str]:
                  + (f"İlk tepkisi olumlu olanlar sonraki iki ayda da olumsuzlardan daha iyi gitti ve fark istatistiksel olarak anlamlı (p={tr(sp['p'], 3)}): piyasa bilançoyu tek seferde fiyatlamıyor."
                     if sp["p"] < 0.05 and sp["diff"] > 0 else
                     f"İlk tepkinin yönü sonraki iki ayı açıklamıyor (p={tr(sp['p'], 2)}): büyük şirketlerde bilanço haberi hızla fiyatlanıyor, sürüklenme görülmüyor."))
-    al = R["insider_study"].get("alim", {}).get("car40", {})
+    ins = R["insider_study"].get("alim", {})
+    al = ins.get("car40", {})
     if al.get("n", 0) >= 3 and al.get("mean") is not None:
-        s.append(f"Yöneticilerin piyasadan alım yaptığı {al['n']} olayda hisse sonraki iki ayda piyasaya göre ortalama {tr(al['mean'])} puan "
-                 f"{'fazla' if al['mean'] > 0 else 'az'} getiri sağladı; " + ("bu fark anlamlı." if al["p"] < 0.05 else "ancak örnek küçük ve fark istatistiksel olarak anlamlı değil, tek başına sinyal sayılmamalı."))
+        per = ins.get("period") or ["", ""]
+        s.append(f"Yöneticilerin piyasadan alım yaptığı {al['n']} olayda ({ins.get('companies')} şirket) hisse sonraki iki ayda piyasaya göre ortalama {tr(al['mean'])} puan "
+                 f"{'fazla' if al['mean'] > 0 else 'az'} getiri sağladı" + (f" ve fark istatistiksel olarak anlamlı. Ancak olaylar {per[0][:7]} – {per[1][:7]} arasındaki kısa bir döneme yığılmış; aynı piyasa ortamını paylaştıkları için bağımsız sayılmazlar, sonuç daha uzun bir dönemde doğrulanmadan sinyal sayılmamalı."
+                    if al["p"] < 0.05 else "; ancak örnek küçük ve fark istatistiksel olarak anlamlı değil, tek başına sinyal sayılmamalı."))
     if R["anomalies"]:
         names = ", ".join(sorted({a["code"] for a in R["anomalies"]})[:6])
         s.append(f"Son iki haftada getirisi ya da hacmi kendi normalinin çok dışına çıkan varlıklar: {names}. Bu günlerin arkasında genellikle bilanço, haber ya da endeks değişikliği olur.")
