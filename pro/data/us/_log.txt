@@ -1,0 +1,123 @@
+Wikipedia listesi beklenmedik (0); yedek liste kullanılıyor
+SEC eşleşmesi yok: EA
+Evren: 97 şirket
+CNBC alanları: symbol,symbolType,code,name,shortName,onAirName,altName,last,last_timedate,last_time,changetype,type,subType,exchange,source,open,high,low,change,change_pct,currencyCode,volume,volume_alt,provider,previous_day_closing,altSymbol,realTime,curmktstatus,pe,mktcapView,dividend,dividendyield,beta,tendayavgvol,pcttendayvol,yrhiprice,yrhidate,yrloprice,yrlodate,eps,sharesout,revenuettm,fpe,feps,psales,fsales,fpsales,cashmrq,enterpriseValue,netDebtttm,streamable,issue_id,issuer_id,countryCode,timeZone,feedSymbol,portfolioindicator,ROETTM,NETPROFTTM,GROSMGNTTM,TTMEBITD,DEBTEQTYQ,ExtendedMktQuote,EventData
+Fiyat: 97 hisse
+AAPL tamam (5 sn)
+MSFT tamam (9 sn)
+NVDA tamam (13 sn)
+AMZN tamam (17 sn)
+META tamam (20 sn)
+AVGO tamam (24 sn)
+GOOGL tamam (28 sn)
+TSLA tamam (30 sn)
+COST tamam (32 sn)
+NFLX tamam (36 sn)
+PLTR tamam (39 sn)
+TMUS tamam (42 sn)
+ASML tamam (43 sn)
+CSCO tamam (47 sn)
+AMD tamam (51 sn)
+AZN tamam (52 sn)
+LIN tamam (53 sn)
+ISRG tamam (58 sn)
+INTU tamam (62 sn)
+PEP tamam (65 sn)
+TXN tamam (69 sn)
+BKNG tamam (73 sn)
+QCOM tamam (77 sn)
+ADBE tamam (81 sn)
+AMGN tamam (85 sn)
+HON tamam (89 sn)
+AMAT tamam (92 sn)
+PDD tamam (93 sn)
+GILD tamam (97 sn)
+CMCSA tamam (101 sn)
+PANW tamam (104 sn)
+ADP tamam (108 sn)
+MU tamam (112 sn)
+APP tamam (116 sn)
+LRCX tamam (118 sn)
+VRTX tamam (122 sn)
+ADI tamam (126 sn)
+KLAC tamam (130 sn)
+MELI tamam (132 sn)
+SBUX tamam (136 sn)
+INTC tamam (139 sn)
+CRWD tamam (143 sn)
+CEG tamam (146 sn)
+MSTR tamam (150 sn)
+ABNB tamam (154 sn)
+DASH tamam (158 sn)
+ORLY tamam (160 sn)
+CTAS tamam (164 sn)
+SNPS tamam (168 sn)
+MDLZ tamam (170 sn)
+FTNT tamam (174 sn)
+MAR tamam (177 sn)
+REGN tamam (179 sn)
+CDNS tamam (183 sn)
+PYPL tamam (187 sn)
+ADSK tamam (190 sn)
+WDAY tamam (194 sn)
+MNST tamam (198 sn)
+CSX tamam (200 sn)
+AXON tamam (204 sn)
+CHTR tamam (208 sn)
+ROP tamam (210 sn)
+AEP tamam (214 sn)
+NXPI tamam (217 sn)
+PCAR tamam (221 sn)
+FAST tamam (222 sn)
+PAYX tamam (226 sn)
+TEAM tamam (228 sn)
+KDP tamam (230 sn)
+ZS tamam (233 sn)
+EXC tamam (237 sn)
+IDXX tamam (240 sn)
+DDOG tamam (244 sn)
+CPRT tamam (245 sn)
+VRSK tamam (249 sn)
+FANG tamam (253 sn)
+CCEP tamam (254 sn)
+ROST tamam (257 sn)
+XEL tamam (261 sn)
+TTWO tamam (265 sn)
+LULU tamam (269 sn)
+KHC tamam (271 sn)
+GEHC tamam (275 sn)
+CTSH tamam (279 sn)
+BKR tamam (282 sn)
+TTD tamam (285 sn)
+ODFL tamam (288 sn)
+MCHP tamam (292 sn)
+CSGP tamam (295 sn)
+CDW tamam (299 sn)
+DXCM tamam (304 sn)
+WBD tamam (308 sn)
+BIIB tamam (310 sn)
+ON tamam (312 sn)
+GFS tamam (316 sn)
+ARM tamam (320 sn)
+SHOP tamam (320 sn)
+13F Berkshire Hathaway: 29 pozisyon, 2026-06-30
+13F Scion Asset Management: 4 pozisyon, 2025-09-30
+13F Pershing Square: 11 pozisyon, 2026-03-31
+13F ARK Investment Management: 190 pozisyon, 2026-06-30
+13F Bridgewater Associates: 997 pozisyon, 2026-06-30
+13F Renaissance Technologies: 3140 pozisyon, 2026-06-30
+13F Tiger Global: 46 pozisyon, 2026-06-30
+13F Coatue Management: 66 pozisyon, 2026-06-30
+13F Soros Fund Management: 254 pozisyon, 2026-06-30
+13F Third Point: 42 pozisyon, 2026-06-30
+13F Appaloosa: 25 pozisyon, 2026-06-30
+13F Duquesne Family Office: 86 pozisyon, 2026-06-30
+13F Baupost Group: 23 pozisyon, 2026-06-30
+13F Greenlight Capital: 40 pozisyon, 2023-12-31
+13F Lone Pine Capital: 34 pozisyon, 2026-06-30
+13F Viking Global: 90 pozisyon, 2026-06-30
+13F Icahn Enterprises: 12 pozisyon, 2026-06-30
+13F Akre Capital: 19 pozisyon, 2026-06-30
+13F Himalaya Capital: 8 pozisyon, 2026-06-30
+13F Gates Foundation Trust: 24 pozisyon, 2026-06-30
+Bitti: 97 şirket, 20 fon, 334 sn, mod all
