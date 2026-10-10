@@ -8,8 +8,6 @@ const PRESETS = [
   ['growth', 'Hızlı büyüyen', (r) => r.revGrowth > 20],
   ['cheap', 'Düşük F/K', (r) => r.pe > 0 && r.pe < 20],
   ['margin', 'Yüksek marj', (r) => r.netMargin > 25],
-  ['cash', 'Nakit makinesi', (r) => r.fcfYield > 4],
-  ['insider', 'Yöneticiler alıyor', (r) => r.insiderNet90 > 0],
   ['loss', 'Zarar eden', (r) => r.netMargin < 0],
 ];
 const COLS = [
