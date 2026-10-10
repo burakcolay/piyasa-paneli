@@ -2,19 +2,84 @@
 
 # Market Intelligence
 
-**Her sabah kendiliğinden yazılan, rakamı değil anlamını anlatan kişisel piyasa paneli.**
+**Piyasa verisi için uçtan uca veri analizi projesi: veri toplama, temizleme, SQL, istatistik, görselleştirme ve otomatik raporlama.**
 
 ABD · Avrupa ve Asya · Faiz ve Fed · Makro veriler · Kripto · Türkiye · ABD hisseleri
 
-![Statik site](https://img.shields.io/badge/site-statik%20HTML%20%2B%20JS-173A5E)
-![Derleme yok](https://img.shields.io/badge/derleme-yok-0E7A4F)
-![Vercel](https://img.shields.io/badge/yayın-Vercel-000000)
-![Veri](https://img.shields.io/badge/veri-JSON-6B5BD2)
-![Dil](https://img.shields.io/badge/dil-Türkçe-C2362B)
+![Python](https://img.shields.io/badge/Python-3.12-3776AB)
+![Pandas](https://img.shields.io/badge/Pandas-veri%20işleme-150458)
+![SQL](https://img.shields.io/badge/SQL-SQLite-003B57)
+![SciPy](https://img.shields.io/badge/SciPy-istatistik-8CAAE6)
+![Jupyter](https://img.shields.io/badge/Jupyter-defterler-F37626)
+![GitHub Actions](https://img.shields.io/badge/otomasyon-GitHub%20Actions-2088FF)
+![Analiz](https://github.com/burakcolay/Market-Intelligence/actions/workflows/analytics.yml/badge.svg)
 
 <img src="docs/panel.png" alt="Ana sayfa: günün özeti ve canlı fiyat şeridi" width="900">
 
 </div>
+
+---
+
+## Veri analizi
+
+Bu bölüm projenin veri analizi tarafını özetler: hangi soruları sorduğu, veriyi nasıl işlediği ve ne bulduğu.
+
+### Sorular
+1. Nasdaq 100 hisselerinin getirileri nasıl dağılıyor; riskler normal dağılım varsayımıyla doğru ölçülebilir mi?
+2. Varlıklar arasındaki ilişkiler (Bitcoin–Nasdaq, altın–dolar, faiz–teknoloji) sabit mi, rejime göre mi değişiyor?
+3. Bilanço açıklamalarına piyasa nasıl tepki veriyor; ilk tepki sonraki haftalarda sürüyor mu?
+4. Yöneticiler kendi hisselerini aldıktan sonra hisse piyasadan iyi gidiyor mu?
+
+### Veri hattı
+```mermaid
+flowchart LR
+    Y[Yahoo Finance / Stooq<br/>5 yıl günlük fiyat] --> F[mi.fetch]
+    S[SEC EDGAR<br/>finansallar, 8-K, Form 4, 13F] --> J[data/us/*.json]
+    F --> C[mi.clean<br/>temizlik + kalite raporu]
+    C --> D[(SQLite<br/>market.db)]
+    J --> D
+    D --> Q[SQL sorguları]
+    D --> T[mi.stats · mi.events<br/>istatistik ve olay çalışmaları]
+    Q --> R[mi.report]
+    T --> R
+    R --> W[Site: Analiz sayfası]
+    R --> M[Haftalık rapor<br/>reports/]
+    D --> N[Jupyter defterleri]
+```
+
+### Beceri haritası
+
+| Beceri | Nerede |
+|---|---|
+| Veri toplama | [`mi/fetch.py`](analytics/mi/fetch.py): yedekli kaynak, toplu indirme · [`scripts/us/build.mjs`](scripts/us/build.mjs): SEC EDGAR |
+| Temizleme ve dönüştürme (Pandas) | [`mi/clean.py`](analytics/mi/clean.py): tekrarlar, hatalı fiyat tespiti, takvim hizalama, kalite raporu |
+| SQL | [`analytics/sql/`](analytics/sql): CTE, `ROW_NUMBER`, `RANK`, `PERCENT_RANK`, `LAG`, kayan ortalama, pivot · [`mi/db.py`](analytics/mi/db.py): şema |
+| Keşifsel analiz | [`01_veri_ve_kesif.ipynb`](analytics/notebooks/01_veri_ve_kesif.ipynb): dağılımlar, kalın kuyruk, aylık getiri ısı haritası, sektör risk/getiri |
+| İstatistiksel analiz | [`mi/stats.py`](analytics/mi/stats.py), [`02_risk_ve_iliskiler.ipynb`](analytics/notebooks/02_risk_ve_iliskiler.ipynb): oynaklık, beta, düşüş, kayan korelasyon, Fisher z testi, otokorelasyon |
+| Hipotez testi | [`mi/events.py`](analytics/mi/events.py), [`03_olay_calismalari.ipynb`](analytics/notebooks/03_olay_calismalari.ipynb): piyasa modeliyle olay çalışması, t-testi, Welch, Spearman |
+| Görselleştirme | [`mi/charts.py`](analytics/mi/charts.py), sitedeki [Analiz sayfası](analiz.html) |
+| Otomatik raporlama | [`analytics.yml`](.github/workflows/analytics.yml): her gün analiz, her cumartesi [haftalık rapor](reports) ve defterler |
+| Test | [`analytics/tests/`](analytics/tests): temizlik kuralları, beta, korelasyon, anormal getiri hesabı |
+
+### Bulgular
+Güncel sonuçlar her hafta [haftalık raporda](reports) ve sitenin Analiz sayfasında otomatik yenilenir.
+
+<!-- BULGULAR -->
+
+### Sınırlamalar
+- Evren bugünkü Nasdaq 100: geçmişte endeksten çıkan şirketler yok (hayatta kalma yanlılığı).
+- Fiyat kaynağı ücretsiz ve resmi değil; düzeltilmiş kapanış fiyatları kullanılıyor.
+- Bilanço "sürprizi" analist beklentisiyle değil fiyat tepkisiyle ölçülüyor; 8-K'nın gün içi saati bilinmiyor.
+- Yönetici alımı örneği küçük; sonuçlar tek başına sinyal değildir.
+
+### Çalıştırma
+```bash
+cd analytics
+pip install -r requirements.txt
+python -m pytest -q tests          # testler
+python -m mi.run weekly            # veri çek, veritabanını kur, analiz et, rapor üret
+python notebooks/build.py && jupyter lab notebooks
+```
 
 ---
 

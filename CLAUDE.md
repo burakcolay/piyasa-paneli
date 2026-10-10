@@ -175,3 +175,7 @@ Her sabah (hafta içi, günlük dosyadan sonra):
 2. `co/*.json` içinde son 2 günde gelen `form: "8-K"` açıklamalarından en önemli en fazla 10 tanesine (`items` 2.02 bilanço, 1.01 anlaşma, 2.01 satın alma, 5.02 yönetici değişikliği, 2.05 yeniden yapılanma, 1.05 siber olay öncelikli) `notes[acc]` yaz. İçerik için Bigdata.com'da şirket + konu araması yap; açıklamanın kendisini uydurma, bulamazsan yazma.
 3. `news`: piyasa değeri en büyük 15 şirket için Bigdata.com'dan son 24 saatin önemli haberi varsa şirket başına en fazla 2 haber ekle; her şirkette en yeni 6 haber kalsın.
 Yorum kuralları burada da geçerli: rakam sıralama yok, al/sat yok. `node scripts/validate.mjs` sonra aynı commit'e dahil et.
+
+## Veri analizi katmanı (`analytics/`, `analiz.html`)
+
+Python ile yazılmış analiz hattı: `analytics/mi` (fetch → clean → SQLite → stats/events → report), `analytics/sql/*.sql`, `analytics/notebooks/` (defterler `build.py` ile koddan üretilir), `analytics/tests/` (pytest). GitHub Actions (`.github/workflows/analytics.yml`) her gün `data/analytics/summary.json`'u, her cumartesi `reports/<YYYY-Www>/` haftalık raporunu ve çalıştırılmış defterleri üretir. Rutin bu dosyalara **dokunmaz**. Kod değişikliğinden önce `cd analytics && python -m pytest -q tests`.
