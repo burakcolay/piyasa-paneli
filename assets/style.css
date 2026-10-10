@@ -356,3 +356,12 @@ a.co b { font-family: var(--mono); font-weight: 600; } a.co small { color: var(-
 table.fin td:first-child { white-space: nowrap; position: sticky; left: 0; background: var(--card); color: var(--ink-2); }
 table.fin td.num { white-space: nowrap; }
 @media (max-width: 760px) { .row2 { grid-template-columns: 1fr; } .co-px small { text-align: left; } .filing { grid-template-columns: 1fr auto; } .filing .badge { justify-self: start; grid-row: 1; } .filing > div { grid-column: 1 / -1; } .qm:hover::after, .qm:focus::after { right: auto; left: -120px; } }
+.sec-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 6px; }
+.sec-tile { all: unset; box-sizing: border-box; cursor: pointer; display: flex; flex-direction: column; gap: 2px; padding: 10px 12px; border-radius: 8px; border: 2px solid transparent; line-height: 1.35; }
+.sec-tile:hover { border-color: rgba(0,0,0,.15); }
+.sec-tile.on { border-color: var(--ink); }
+.sec-tile .sn { font-weight: 600; font-size: 14px; }
+.sec-tile .sc { font-size: 18px; font-weight: 500; }
+.sec-tile .sm { font-size: 12px; color: var(--ink-2); }
+.sec-tiles .chip { align-self: center; justify-self: start; }
+@media (max-width: 640px) { .sec-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
