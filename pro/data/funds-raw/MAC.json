@@ -1,0 +1,23 @@
+{"code":"MAC","name":"MARMARA CAPITAL PORTFÖY HİSSE SENEDİ (TL) FONU (HİSSE SENEDİ YOĞUN FON)","company":"Marmara Capital Portföy","period":"2026-09","size":3590000000,"size_prev":4240000000,"investor_count":31742,"return_1m":-9.2,"return_1y":7.2,"equity_weight":96.1,"holdings":[
+{"t":"TABGD","name":"Tab Gıda Sanayi ve Ticaret A.Ş.","w":9.3,"d":-0.2,"status":"same"},
+{"t":"AEFES","name":"Anadolu Efes Biracılık ve Malt Sanayii A.Ş.","w":8.8,"d":0.3,"status":"same"},
+{"t":"AKGRT","name":"Aksigorta A.Ş.","w":6.2,"d":-1.0,"status":"same"},
+{"t":"MAVI","name":"Mavi Giyim Sanayi ve Ticaret A.Ş.","w":5.7,"d":0.9,"status":"same"},
+{"t":"TTRAK","name":"Türk Traktör ve Ziraat Makineleri A.Ş.","w":5.2,"d":0.2,"status":"same"},
+{"t":"LOGO","name":"Logo Yazılım Sanayi ve Ticaret A.Ş.","w":5.0,"d":0.8,"status":"same"},
+{"t":"AGESA","name":"Agesa Hayat ve Emeklilik A.Ş.","w":5.0,"d":0,"status":"same"},
+{"t":"ANSGR","name":"Anadolu Anonim Türk Sigorta Şirketi","w":4.8,"d":-0.1,"status":"same"},
+{"t":"GSDHO","name":"GSD Holding A.Ş.","w":4.8,"d":-2.3,"status":"same"},
+{"t":"DOAS","name":"Doğuş Otomotiv Servis ve Ticaret A.Ş.","w":4.6,"d":0.2,"status":"same"},
+{"t":"BRISA","name":"Brisa Bridgestone Sabancı Lastik Sanayi ve Ticaret A.Ş.","w":4.6,"d":0.3,"status":"same"},
+{"t":"GOLTS","name":"Göltaş Göller Bölgesi Çimento Sanayi ve Ticaret A.Ş.","w":4.6,"d":-0.1,"status":"same"},
+{"t":"ASUZU","name":"Anadolu Isuzu Otomotiv Sanayi ve Ticaret A.Ş.","w":4.6,"d":0.1,"status":"same"},
+{"t":"ANHYT","name":"Anadolu Hayat Emeklilik A.Ş.","w":4.5,"d":-0.5,"status":"same"},
+{"t":"TCELL","name":"Turkcell İletişim Hizmetleri A.Ş.","w":4.2,"d":4.2,"status":"new"},
+{"t":"TSKB","name":"Türkiye Sınai Kalkınma Bankası A.Ş.","w":3.7,"d":-1.2,"status":"same"},
+{"t":"ATAKP","name":"Atakey Patates Gıda Sanayi ve Ticaret A.Ş.","w":3.7,"d":-0.5,"status":"same"},
+{"t":"ALGYO","name":"Alarko GYO A.Ş.","w":3.3,"d":0.8,"status":"same"},
+{"t":"ALARK","name":"Alarko Holding A.Ş.","w":3.2,"d":-2.4,"status":"same"},
+{"t":"GMTAS","name":"Gimat Mağazacılık Sanayi ve Ticaret A.Ş.","w":0.4,"d":0.1,"status":"same"},
+{"t":"KRVGD","name":"Kervan Gıda Sanayi ve Ticaret A.Ş.","w":0,"d":-0.7,"status":"out"}
+],"other":[{"name":"Takasbank (nakit)","w":4.1},{"name":"VİOP teminatı","w":0.3}]}
