@@ -4,6 +4,7 @@ export const PAGES = [
   { key: 'index', href: 'index.html', label: 'Ana Sayfa' },
   { key: 'faizler', href: 'faizler.html', label: 'Faizler & Fed' },
   { key: 'kuresel', href: 'kuresel.html', label: 'Küresel' },
+  { key: 'hisseler', href: 'hisseler.html', label: 'ABD Hisseleri' },
   { key: 'kripto', href: 'kripto.html', label: 'Kripto' },
   { key: 'turkiye', href: 'turkiye.html', label: 'Türkiye' },
   { key: 'makro', href: 'makro.html', label: 'Makro Veriler' },

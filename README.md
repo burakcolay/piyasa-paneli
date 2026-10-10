@@ -42,18 +42,17 @@ Yazıların tek bir kuralı var: **rakamı tekrar etme, ne anlama geldiğini anl
 <img src="docs/makro.png" alt="Makro veriler: sürprizler ve yorum" width="900">
 </div>
 
-## ABD hisseleri (`/pro`)
+## ABD hisseleri
 
 Fintables benzeri bir ABD borsası bölümü, şimdilik **Nasdaq 100** şirketleri. Tüm veri resmi ve ücretsiz kaynaklardan gelir.
 
-- **Hisseler:** piyasa değeri, F/K, F/S, büyüme, net marj ve serbest nakit verimiyle sıralanabilir liste. Hazır filtreler: hızlı büyüyen, düşük F/K, yüksek marj, nakit makinesi, yöneticiler alıyor, zarar eden.
-- **Şirket sayfası:** 12 çeyrek ve 10 yıllık finansallar, SEC açıklamaları (Türkçe etiketli), büyük fonların pozisyonları ve yönetici alım satımları.
-- **Büyük yatırımcılar:** Buffett, Dalio, Ackman, Cathie Wood, Druckenmiller ve diğerlerinin 13F bildirimleri; son çeyrekte en çok alınan ve satılan hisseler.
+- **Liste:** piyasa değeri, F/K, F/S, büyüme, net marj ve serbest nakit verimiyle sıralanabilir. Hazır filtreler: hızlı büyüyen, düşük F/K, yüksek marj, nakit makinesi, yöneticiler alıyor, zarar eden.
+- **Şirket sayfası:** ne iş yaptığı (Türkçe), 12 çeyrek ve 10 yıllık finansallar, SEC açıklamaları, Buffett, Dalio, Ackman gibi büyük fonların pozisyonları ve yönetici alım satımları.
 
 <div align="center">
-<img src="docs/sirket.png" alt="Şirket sayfası" width="900">
+<img src="docs/hisseler.png" alt="ABD hisseleri listesi" width="900">
 <br><br>
-<img src="docs/yatirimcilar.png" alt="Büyük yatırımcılar" width="900">
+<img src="docs/sirket.png" alt="Şirket sayfası" width="900">
 </div>
 
 ## Nasıl çalışır?
@@ -61,7 +60,7 @@ Fintables benzeri bir ABD borsası bölümü, şimdilik **Nasdaq 100** şirketle
 ```mermaid
 flowchart LR
     A[Claude rutini<br/>her sabah] -->|Bigdata.com, Borsa MCP| B[data/daily/*.json]
-    G[GitHub Actions<br/>her gece] -->|SEC EDGAR, fiyat| H[pro/data/us/*.json]
+    G[GitHub Actions<br/>her gece] -->|SEC EDGAR, fiyat| H[data/us/*.json]
     B --> C[(Bu repo)]
     H --> C
     C -->|push| D[Vercel]
@@ -77,7 +76,7 @@ flowchart LR
 ## Klasör yapısı
 
 ```
-index.html … sozluk.html     ana panel sayfaları
+index.html … sozluk.html     panel sayfaları (hisseler, sirket dahil)
 assets/app.js                ortak: veri yükleme, menü, biçimlendirme
 assets/charts.js             SVG grafikler (kütüphane yok)
 assets/pages/*.js            her sayfanın çizimi
@@ -86,7 +85,7 @@ data/daily/YYYY-MM-DD.json   günlük veri ve yorum
 data/weekly/YYYY-Www.json    haftalık özet ve derin konu
 data/sozluk.json             kavramlar
 data/companies.json          büyük teknoloji şirketlerinin bilanço kartları
-pro/                         ABD hisseleri bölümü
+data/us/                     ABD hisseleri: liste, şirketler, 13F, Türkçe metinler
 scripts/validate.mjs         veri kontrolü
 scripts/us/build.mjs         SEC + fiyat çekici
 ```
@@ -113,7 +112,7 @@ node scripts/us/build.mjs all    # ABD verisini çek (internet gerekir)
 | BIST, TCMB, Türkiye tahvilleri | Borsa MCP (~15 dk gecikmeli) |
 | ABD şirket finansalları, açıklamalar, 13F, Form 4 | [SEC EDGAR](https://www.sec.gov/edgar) (kamu verisi) |
 | Canlı fiyatlar | CNBC, CoinGecko, alternative.me |
-| Grafikler (Pro) | TradingView ücretsiz widget'ları |
+| Hisse grafikleri | TradingView ücretsiz widget'ları |
 
 ---
 

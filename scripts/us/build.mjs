@@ -7,7 +7,7 @@ import path from 'node:path';
 
 const MODE = process.argv[2] || 'daily';
 const UA = 'PiyasaPaneli codegridteknoloji@gmail.com';
-const OUT = 'pro/data/us';
+const OUT = 'data/us';
 const CO = `${OUT}/co`;
 const log = [];
 const L = (...a) => { const s = a.join(' '); console.log(s); log.push(s); };

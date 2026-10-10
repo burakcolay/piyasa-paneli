@@ -6,7 +6,7 @@ Sayfalar `data/` altındaki JSON dosyalarını okuyup kendini çizer. **Günlük
 ## Dosya düzeni
 
 ```
-index.html, faizler.html, kuresel.html, kripto.html, turkiye.html, makro.html, haftalik.html, sozluk.html
+index.html, faizler.html, kuresel.html, hisseler.html, sirket.html, kripto.html, turkiye.html, makro.html, haftalik.html, sozluk.html
 assets/app.js        ortak: veri yükleme, menü, biçimlendirme
 assets/charts.js     SVG grafikler
 assets/pages/*.js    her sayfanın çizimi
@@ -159,11 +159,11 @@ python3 -m http.server 8000   # sonra http://localhost:8000
 node scripts/validate.mjs
 ```
 
-## ABD hisseleri (Pro, `/pro`)
+## ABD hisseleri (`hisseler.html`, `sirket.html`)
 
-Ham veri (fiyat, finansallar, SEC açıklamaları, yönetici işlemleri, 13F) **GitHub Actions** ile gelir: `.github/workflows/us-data.yml` → `scripts/us/build.mjs` → `pro/data/us/{universe.json, funds.json, co/<TICKER>.json, _log.txt}`. Hafta içi gece fiyat + açıklamalar, cumartesi finansallar dahil tam güncelleme. Bu dosyalara rutin **dokunmaz**.
+Ham veri (fiyat, finansallar, SEC açıklamaları, yönetici işlemleri, 13F) **GitHub Actions** ile gelir: `.github/workflows/us-data.yml` → `scripts/us/build.mjs` → `data/us/{universe.json, funds.json, co/<TICKER>.json, _log.txt}`. Hafta içi gece fiyat + açıklamalar, cumartesi finansallar dahil tam güncelleme. Bu dosyalara rutin **dokunmaz**.
 
-Rutinin tek işi Türkçe metin: `pro/data/us/tr.json`
+Rutinin tek işi Türkçe metin: `data/us/tr.json`
 ```
 { "updated": "YYYY-MM-DD",
   "about": { "AAPL": "Ne iş yapar: 2-3 cümle, gelirin nereden geldiği, rakamsız" },
