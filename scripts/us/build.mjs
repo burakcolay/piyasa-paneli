@@ -36,22 +36,32 @@ const acc0 = (a) => a.replace(/-/g, '');
 
 /* ---------------- 1. Endeks listesi ---------------- */
 const FALLBACK = 'AAPL MSFT NVDA AMZN META AVGO GOOGL TSLA COST NFLX PLTR TMUS ASML CSCO AMD AZN LIN ISRG INTU PEP TXN BKNG QCOM ADBE AMGN HON AMAT PDD GILD CMCSA PANW ADP MU APP LRCX VRTX ADI KLAC MELI SBUX INTC CRWD CEG MSTR ABNB DASH ORLY CTAS SNPS MDLZ FTNT MAR REGN CDNS PYPL ADSK WDAY MNST CSX AXON CHTR ROP AEP NXPI PCAR FAST PAYX TEAM KDP ZS EXC IDXX DDOG CPRT VRSK FANG CCEP ROST XEL TTWO LULU EA KHC GEHC CTSH BKR TTD ODFL MCHP CSGP CDW DXCM WBD BIIB ON GFS ARM SHOP'.split(' ');
+const SECTOR_TR = { 'Information Technology': 'Teknoloji', 'Communication Services': 'İletişim', 'Consumer Discretionary': 'Tüketici (döngüsel)', 'Consumer Staples': 'Temel tüketim', 'Health Care': 'Sağlık', Industrials: 'Sanayi', Utilities: 'Kamu hizmetleri', Financials: 'Finans', Energy: 'Enerji', Materials: 'Malzeme', 'Real Estate': 'Gayrimenkul' };
+const strip = (h) => h.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&#160;|&nbsp;/g, ' ').replace(/\[\d+\]/g, '').trim();
 async function nasdaq100() {
+  // 1) Wikipedia tablosu (GICS sektörüyle)
   try {
-    const raw = await get('https://en.wikipedia.org/w/index.php?title=Nasdaq-100&action=raw', 'text');
-    const sec = raw.slice(raw.search(/==\s*(Components|Current components)/i)) || raw;
+    const html = await get('https://en.wikipedia.org/wiki/Nasdaq-100', 'text');
+    const i = html.search(/<table[^>]*id="constituents"/);
+    const tbl = i >= 0 ? html.slice(i, html.indexOf('</table>', i)) : '';
     const out = new Map();
-    // satır biçimleri: | [[Şirket]] || TICKER || Sektör ...  ya da {{NasdaqSymbol|TICKER}}
-    for (const line of sec.split('\n|-')) {
-      const t = line.match(/\{\{\s*(?:Nasdaq|NASDAQ)[^|}]*\|\s*([A-Z.]{1,6})\s*\}\}/)?.[1] || line.match(/\|\|\s*([A-Z]{1,5}(?:\.[A-Z])?)\s*(?:\|\||\n)/)?.[1];
-      if (!t) continue;
-      const cells = line.split(/\|\||\n\|/).map((c) => c.replace(/\[\[(?:[^|\]]*\|)?([^\]]+)\]\]/g, '$1').replace(/\{\{[^}]*\}\}/g, '').replace(/<[^>]+>/g, '').trim()).filter(Boolean);
-      const sector = cells.find((c) => /Technology|Health|Consumer|Communication|Industrials|Utilities|Financials|Energy|Materials|Real Estate/i.test(c)) || '';
-      out.set(t, { t, sector });
+    for (const tr of tbl.split(/<tr[\s>]/).slice(1)) {
+      const cells = [...tr.matchAll(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/g)].map((m) => strip(m[1]));
+      const k = cells.findIndex((c) => /^[A-Z]{1,5}(\.[A-Z])?$/.test(c));
+      if (k < 0) continue;
+      const sec = cells.slice(k + 1).find((c) => SECTOR_TR[c]) || '';
+      out.set(cells[k], { t: cells[k], sector: SECTOR_TR[sec] || '' });
     }
-    if (out.size >= 90 && out.size <= 110) { L(`Wikipedia: ${out.size} şirket`); return [...out.values()]; }
-    L(`Wikipedia listesi beklenmedik (${out.size}); yedek liste kullanılıyor`);
+    if (out.size >= 95 && out.size <= 110) { L(`Wikipedia: ${out.size} şirket`); return [...out.values()]; }
+    L(`Wikipedia tablosu beklenmedik (${out.size})`);
   } catch (e) { L('Wikipedia hatası:', e.message); }
+  // 2) Nasdaq'ın kendi listesi
+  try {
+    const j = await get('https://api.nasdaq.com/api/quote/list-type/nasdaq100', 'json', { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36' });
+    const rows = j?.data?.data?.rows || [];
+    if (rows.length >= 95) { L(`Nasdaq: ${rows.length} şirket`); return rows.map((r) => ({ t: r.symbol, sector: '' })); }
+  } catch (e) { L('Nasdaq listesi hatası:', e.message); }
+  L('Yedek liste kullanılıyor');
   return FALLBACK.map((t) => ({ t, sector: '' }));
 }
 
@@ -112,6 +122,15 @@ function durSeries(facts, tags) {
     const k = `${kind}|${e.end}`; const p = by.get(k);
     if (!p || e.filed > p.filed) by.set(k, { kind, start: e.start, end: e.end, val: e.val, filed: e.filed, fy: e.fy, fp: e.fp, unit: e.unit });
   }
+  // Nakit akışı gibi kalemler çeyreklik değil yılbaşından bu yana (6 ay, 9 ay) bildirilir: farkından çeyrek çıkar
+  const ytd = new Map();
+  for (const e of entries(facts, tags)) { if (!e.start || e.val == null) continue; const k = `${e.start}|${e.end}`; const p = ytd.get(k); if (!p || e.filed > p.filed) ytd.set(k, e); }
+  for (const e of ytd.values()) {
+    const d = days(e.start, e.end); if (d < 160 || d > 290) continue;
+    if (by.has(`Q|${e.end}`)) continue;
+    const prev = [...ytd.values()].filter((x) => x.start === e.start && days(x.end, e.end) > 80 && days(x.end, e.end) < 100)[0];
+    if (prev) by.set(`Q|${e.end}`, { kind: 'Q', start: prev.end, end: e.end, val: e.val - prev.val, derived: true, unit: e.unit });
+  }
   const Y = [...by.values()].filter((x) => x.kind === 'Y').sort((a, b) => a.end.localeCompare(b.end));
   const Q = [...by.values()].filter((x) => x.kind === 'Q').sort((a, b) => a.end.localeCompare(b.end));
   // Q4 = yıllık − üç çeyrek (çoğu şirket 4. çeyreği ayrı etiketlemiyor)
@@ -140,7 +159,7 @@ async function financials(cik) {
   const yEnds = dur.revenue.Y.map((x) => x.end).slice(-10);
   const pick = (s, end) => s.find((x) => x.end === end)?.val ?? null;
   const pickI = (s, end) => { const c = s.filter((x) => Math.abs(days(x.end, end)) < 20); return c.length ? c.at(-1).val : null; };
-  const annual = yEnds.map((end) => ({ end, fy: dur.revenue.Y.find((x) => x.end === end)?.fy, revenue: pick(dur.revenue.Y, end), gross: pick(dur.gross.Y, end), opinc: pick(dur.opinc.Y, end), net: pick(dur.net.Y, end), eps: pick(dur.eps.Y, end), ocf: pick(dur.ocf.Y, end), capex: pick(dur.capex.Y, end), rnd: pick(dur.rnd.Y, end), buyback: pick(dur.buyback.Y, end), dps: pick(dur.dps.Y, end), assets: pickI(inst.assets, end), liab: pickI(inst.liab, end), equity: pickI(inst.equity, end), cash: pickI(inst.cash, end), debt: pickI(inst.debt, end) }));
+  const annual = yEnds.map((end) => ({ end, fy: +end.slice(0, 4) - (end.slice(5, 7) < '04' ? 1 : 0), revenue: pick(dur.revenue.Y, end), gross: pick(dur.gross.Y, end), opinc: pick(dur.opinc.Y, end), net: pick(dur.net.Y, end), eps: pick(dur.eps.Y, end), ocf: pick(dur.ocf.Y, end), capex: pick(dur.capex.Y, end), rnd: pick(dur.rnd.Y, end), buyback: pick(dur.buyback.Y, end), dps: pick(dur.dps.Y, end), assets: pickI(inst.assets, end), liab: pickI(inst.liab, end), equity: pickI(inst.equity, end), cash: pickI(inst.cash, end), debt: pickI(inst.debt, end) }));
   const qEnds = dur.revenue.Q.map((x) => x.end).slice(-12);
   const quarterly = qEnds.map((end) => ({ end, revenue: pick(dur.revenue.Q, end), gross: pick(dur.gross.Q, end), opinc: pick(dur.opinc.Q, end), net: pick(dur.net.Q, end), eps: pick(dur.eps.Q, end), ocf: pick(dur.ocf.Q, end), capex: pick(dur.capex.Q, end) }));
   const last4 = quarterly.slice(-4);
@@ -235,6 +254,7 @@ async function funds(universe, prevFunds) {
       for (let i = 0; i < r.form.length && idx.length < 2; i++) if (r.form[i] === '13F-HR') idx.push(i);
       if (!idx.length) { L(`13F yok: ${name}`); continue; }
       const accNow = r.accessionNumber[idx[0]];
+      if (days(r.reportDate[idx[0]], today) > 200) { L(`13F eski (${r.reportDate[idx[0]]}), atlandı: ${name}`); continue; }
       const old = prevFunds?.find((f) => f.cik === cik);
       if (old && old.acc === accNow) { out.push(old); continue; }
       const now = await infoTable(cik, accNow);
@@ -281,7 +301,7 @@ async function main() {
     const p = px[u.t] || old.px || null; c.px = p;
     const f = c.fin; const sh = f?.shares; const mcap = p?.mcap || (p?.price && sh ? p.price * sh : null);
     const ttm = f?.ttm || {};
-    const val = { mcap, pe: p?.price && ttm.eps > 0 ? p.price / ttm.eps : null, ps: mcap && ttm.revenue ? mcap / ttm.revenue : null, fcfYield: mcap && ttm.ocf != null ? ((ttm.ocf - (ttm.capex || 0)) / mcap) * 100 : null };
+    const val = { mcap, pe: p?.price && ttm.eps > 0 ? p.price / ttm.eps : p?.pe > 0 ? p.pe : null, ps: mcap && ttm.revenue ? mcap / ttm.revenue : null, fcfYield: mcap && ttm.ocf != null ? ((ttm.ocf - (ttm.capex || 0)) / mcap) * 100 : null };
     c.val = val;
     c.updated = today;
     await writeJSON(file, c);
