@@ -36,6 +36,14 @@ const acc0 = (a) => a.replace(/-/g, '');
 
 /* ---------------- 1. Endeks listesi ---------------- */
 const FALLBACK = 'AAPL MSFT NVDA AMZN META AVGO GOOGL TSLA COST NFLX PLTR TMUS ASML CSCO AMD AZN LIN ISRG INTU PEP TXN BKNG QCOM ADBE AMGN HON AMAT PDD GILD CMCSA PANW ADP MU APP LRCX VRTX ADI KLAC MELI SBUX INTC CRWD CEG MSTR ABNB DASH ORLY CTAS SNPS MDLZ FTNT MAR REGN CDNS PYPL ADSK WDAY MNST CSX AXON CHTR ROP AEP NXPI PCAR FAST PAYX TEAM KDP ZS EXC IDXX DDOG CPRT VRSK FANG CCEP ROST XEL TTWO LULU EA KHC GEHC CTSH BKR TTD ODFL MCHP CSGP CDW DXCM WBD BIIB ON GFS ARM SHOP'.split(' ');
+// SEC adları çoğu zaman büyük harf: "ADVANCED MICRO DEVICES INC" -> "Advanced Micro Devices"
+const KEEP = new Set(['ASML', 'NXP', 'PDD', 'CSX', 'AMD', 'KLA', 'IDEXX', 'CDW', 'GE', 'ON', 'AEP', 'ADP', 'NVIDIA', 'PACCAR', 'II', 'III', 'ARM', 'MSCI', 'AT&T']);
+const STRIP = /[,.]?\s+(INC|CORP|CORPORATION|CO|COMPANY|LTD|PLC|N\.?V|S\.?A|HOLDINGS?|HLDG|GROUP|INCORPORATED|SE|AG)\.?(?=\s|$|\/)/gi;
+function prettyName(n) {
+  let s = String(n || '').replace(/\/[A-Z]{2,3}\/?$/, '').replace(STRIP, '').replace(/[,.\s]+$/, '').trim();
+  if (s === s.toUpperCase()) s = s.split(/\s+/).map((w) => (KEEP.has(w) ? w : w.charAt(0) + w.slice(1).toLowerCase())).join(' ');
+  return s.replace(/\bCom$/, '').trim();
+}
 const SECTOR_TR = { 'Information Technology': 'Teknoloji', 'Communication Services': 'İletişim', 'Consumer Discretionary': 'Tüketici (döngüsel)', 'Consumer Staples': 'Temel tüketim', 'Health Care': 'Sağlık', Industrials: 'Sanayi', Utilities: 'Kamu hizmetleri', Financials: 'Finans', Energy: 'Enerji', Materials: 'Malzeme', 'Real Estate': 'Gayrimenkul' };
 const strip = (h) => h.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&#160;|&nbsp;/g, ' ').replace(/\[\d+\]/g, '').trim();
 async function nasdaq100() {
@@ -264,6 +272,8 @@ async function funds(universe, prevFunds) {
       // değer birimi: 2023 öncesi bin $, sonrası $; küçük toplam bin $ demektir
       const mult = total < 5e7 && now.length > 3 ? 1000 : 1;
       const hold = now.map((x) => { const p = pmap.get(x.cusip); const t = byNorm.get(norm(x.name)); return { cusip: x.cusip, name: x.name, t: t || null, value: x.value * mult, shares: x.shares, prevShares: p?.shares ?? 0, chg: !p ? 'new' : x.shares > p.shares * 1.02 ? 'add' : x.shares < p.shares * 0.98 ? 'cut' : 'same' }; });
+      // Aynı şirketin iki hisse sınıfı (GOOG/GOOGL) tek satırda
+      for (let i = hold.length - 1; i >= 0; i--) { const h = hold[i]; if (!h.t) continue; const j = hold.findIndex((x) => x.t === h.t); if (j < i) { const a = hold[j]; a.value += h.value; a.shares += h.shares; a.prevShares += h.prevShares; a.chg = !a.prevShares ? 'new' : a.shares > a.prevShares * 1.02 ? 'add' : a.shares < a.prevShares * 0.98 ? 'cut' : 'same'; hold.splice(i, 1); } }
       for (const p of prev) if (!now.some((x) => x.cusip === p.cusip)) hold.push({ cusip: p.cusip, name: p.name, t: byNorm.get(norm(p.name)) || null, value: 0, shares: 0, prevShares: p.shares, chg: 'out' });
       hold.sort((a, b) => b.value - a.value);
       out.push({ cik, name, person, acc: accNow, filed: r.filingDate[idx[0]], period: r.reportDate[idx[0]], total: total * mult, n: now.length, holdings: hold.slice(0, 120) });
@@ -282,7 +292,7 @@ async function main() {
   const map = new Map(Object.values(tick).map((x) => [x.ticker.replace('-', '.'), x]));
   const seenCik = new Set();
   const uni = [];
-  for (const x of list) { const s = map.get(x.t) || map.get(x.t.replace('.', '-')); if (!s) { L('SEC eşleşmesi yok:', x.t); continue; } if (seenCik.has(s.cik_str)) continue; seenCik.add(s.cik_str); uni.push({ t: x.t, cik: s.cik_str, name: s.title, sector: x.sector }); }
+  for (const x of list) { const s = map.get(x.t) || map.get(x.t.replace('.', '-')); if (!s) { L('SEC eşleşmesi yok:', x.t); continue; } if (seenCik.has(s.cik_str)) continue; seenCik.add(s.cik_str); uni.push({ t: x.t, cik: s.cik_str, name: prettyName(s.title), sector: x.sector }); }
   L(`Evren: ${uni.length} şirket`);
   const px = await prices(uni.map((u) => u.t));
   const prevUni = await readJSON(`${OUT}/universe.json`, { rows: [] });
