@@ -46,6 +46,7 @@ jobs:
           python notebooks/build.py
           jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=600 notebooks/0*.ipynb
       - name: Commit (Burak adına, Vercel için)
+        if: ${{ !cancelled() }}
         working-directory: .
         run: |
           git config user.name "Burak Colay"

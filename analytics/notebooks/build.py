@@ -166,7 +166,8 @@ print('Sonuç:', 'Sürüklenme var: piyasa bilançoyu tek seferde fiyatlamıyor.
 """md:## 3.4 Yönetici alımları ve plansız satışlar""",
 """T = pd.read_sql('SELECT * FROM insider_trades', con)
 ins = ev.insider_study(r, T)
-pd.DataFrame({(k, w): v for k, d in ins.items() for w, v in d.items()}).T""",
+print({k: f"{d['raw_events']} bildirim → {d['car40'].get('n', 0)} olay, {d['companies']} şirket, dönem {d['period']}" for k, d in ins.items()})
+pd.DataFrame({(k, w): d[w] for k, d in ins.items() for w in ('car20', 'car40')}).T""",
 """md:## Sınırlamalar
 - **Örneklem:** Yönetici alımları Nasdaq 100'de nadir; sonuçların güven aralığı geniş. Satışların çoğu önceden planlanmış (10b5-1) olduğu için yalnızca plansız satışlar incelendi.
 - **Hayatta kalma yanlılığı:** Evren bugünkü Nasdaq 100 listesi; geçmişte endeksten çıkan şirketler dahil değil, bu da geçmiş getirileri olduğundan iyi gösterebilir.
