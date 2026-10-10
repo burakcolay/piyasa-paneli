@@ -14,7 +14,8 @@ const enrich = (r) => ({ ...r, fcf: r.ocf != null ? r.ocf - (r.capex || 0) : nul
 const cell = (v, k) => (k === 'pct' ? pctv(v, 1) : k === 'eps' ? (v == null ? '—' : num(v, 2)) : usd(v));
 
 async function main() {
-  const [c, F] = await Promise.all([loadUS(`co/${T}.json`), loadUS('funds.json').catch(() => null)]);
+  const [c, F, TR] = await Promise.all([loadUS(`co/${T}.json`), loadUS('funds.json').catch(() => null), loadUS('tr.json').catch(() => ({}))]);
+  c.about_tr = TR.about?.[T] || c.about_tr; c.notes_tr = { ...(c.notes_tr || {}), ...(TR.notes || {}) }; c.news_tr = TR.news?.[T] || c.news_tr;
   document.title = `${T} · ${c.name} · Piyasa Paneli Pro`;
   const f = c.fin || {}, t = f.ttm || {}, v = c.val || {}, p = c.px || {};
   const A = (f.annual || []).map(enrich), Q = (f.quarterly || []).map(enrich);

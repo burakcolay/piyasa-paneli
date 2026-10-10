@@ -158,3 +158,20 @@ Tam örnek her zaman en son günün dosyasıdır.
 python3 -m http.server 8000   # sonra http://localhost:8000
 node scripts/validate.mjs
 ```
+
+## ABD hisseleri (Pro, `/pro`)
+
+Ham veri (fiyat, finansallar, SEC açıklamaları, yönetici işlemleri, 13F) **GitHub Actions** ile gelir: `.github/workflows/us-data.yml` → `scripts/us/build.mjs` → `pro/data/us/{universe.json, funds.json, co/<TICKER>.json, _log.txt}`. Hafta içi gece fiyat + açıklamalar, cumartesi finansallar dahil tam güncelleme. Bu dosyalara rutin **dokunmaz**.
+
+Rutinin tek işi Türkçe metin: `pro/data/us/tr.json`
+```
+{ "updated": "YYYY-MM-DD",
+  "about": { "AAPL": "Ne iş yapar: 2-3 cümle, gelirin nereden geldiği, rakamsız" },
+  "notes": { "<8-K accession no>": "Bu açıklama ne diyor, hisse için neden önemli: 1-2 cümle" },
+  "news":  { "NVDA": [{ "date": "YYYY-MM-DD", "title": "Türkçe başlık", "why": "neden önemli, tek cümle" }] } }
+```
+Her sabah (hafta içi, günlük dosyadan sonra):
+1. `about`'ta olmayan şirketlerden en büyük piyasa değerli 10 tanesine özet yaz (`universe.json` sırası). Hepsi dolunca bu adımı atla.
+2. `co/*.json` içinde son 2 günde gelen `form: "8-K"` açıklamalarından en önemli en fazla 10 tanesine (`items` 2.02 bilanço, 1.01 anlaşma, 2.01 satın alma, 5.02 yönetici değişikliği, 2.05 yeniden yapılanma, 1.05 siber olay öncelikli) `notes[acc]` yaz. İçerik için Bigdata.com'da şirket + konu araması yap; açıklamanın kendisini uydurma, bulamazsan yazma.
+3. `news`: piyasa değeri en büyük 15 şirket için Bigdata.com'dan son 24 saatin önemli haberi varsa şirket başına en fazla 2 haber ekle; her şirkette en yeni 6 haber kalsın.
+Yorum kuralları burada da geçerli: rakam sıralama yok, al/sat yok. `node scripts/validate.mjs` sonra aynı commit'e dahil et.
