@@ -59,6 +59,14 @@ async function getJSON(url) {
   return cache[url];
 }
 export const loadFunds = () => getJSON('data/funds.json');
+export const loadUS = (p) => getJSON(`data/us/${p}`);
+// Dolar tutarı: $3,2 T · $412 Mr · $18 Mn
+export function usd(v, d) {
+  if (v == null || !isFinite(v)) return '—';
+  const a = Math.abs(v), s = v < 0 ? '−' : '';
+  const [k, u] = a >= 1e12 ? [1e12, ' T'] : a >= 1e9 ? [1e9, ' Mr'] : a >= 1e6 ? [1e6, ' Mn'] : a >= 1e3 ? [1e3, ' B'] : [1, ''];
+  const x = a / k; return `${s}$${nf(d ?? (x >= 100 ? 0 : x >= 10 ? 1 : 2)).format(x)}${u}`;
+}
 export const loadNotes = () => getJSON('data/notes.json');
 export const loadSozluk = () => getJSON('../data/sozluk.json').catch(() => ({ concepts: {} }));
 export async function loadDaily() {
@@ -129,15 +137,10 @@ export function readCoin(c) {
 }
 
 /* ---------------- yerel depo (takip listesi + alarmlar) ---------------- */
-const KEY = 'pro-store-v1';
+const KEY = 'pro-store-v2';
 const DEFAULT = {
-  watch: { stock: ['BIMAS', 'ASELS', 'TCELL', 'GARAN'], fund: ['TI2', 'MAC'], coin: ['BTC', 'ETH'] },
-  alerts: [
-    { id: 'a1', kind: 'stock', code: 'ASELS', rule: 'fund-move', created: '2026-10-10' },
-    { id: 'a2', kind: 'fund', code: 'TI2', rule: 'new-out', created: '2026-10-10' },
-    { id: 'a3', kind: 'macro', code: 'vix', rule: 'above', value: 20, created: '2026-10-10' },
-    { id: 'a4', kind: 'coin', code: 'BTC', rule: 'funding-high', created: '2026-10-10' },
-  ],
+  watch: { us: ['NVDA', 'AAPL', 'MSFT', 'META'] },
+  alerts: [{ id: 'a3', kind: 'macro', code: 'vix', rule: 'above', value: 20, created: '2026-10-10' }],
 };
 let mem = null;
 export function store() {
@@ -198,7 +201,7 @@ export function alertTitle(a) {
 }
 
 /* ---------------- kabuk ---------------- */
-export const MARKETS = [
+export const ALL_MARKETS = [
   { id: 'abd', name: 'ABD borsaları', short: 'ABD', icon: 'stock', desc: 'S&P 500, Nasdaq 100, büyük teknoloji' },
   { id: 'bist', name: 'Borsa İstanbul', short: 'BIST', icon: 'flag', desc: 'BIST 100, sektörler, fonlar, TCMB' },
   { id: 'kripto', name: 'Kripto', short: 'Kripto', icon: 'coin', desc: 'Bitcoin, altcoinler, türev piyasası' },
@@ -206,41 +209,37 @@ export const MARKETS = [
   { id: 'dunya', name: 'Avrupa ve Asya', short: 'Dünya', icon: 'globe', desc: 'DAX, Stoxx, Nikkei, Hang Seng' },
   { id: 'faiz', name: 'Faiz ve makro', short: 'Faiz', icon: 'pct', desc: 'Fed, tahvil faizleri, enflasyon, istihdam' },
 ];
-export const marketById = (id) => MARKETS.find((m) => m.id === id);
+// ABD odaklı sürüm: menüde sadece ABD ve makro. Diğerleri kodda duruyor, gizli.
+export const MARKETS = ALL_MARKETS.filter((m) => ['abd', 'faiz'].includes(m.id));
+export const marketById = (id) => ALL_MARKETS.find((m) => m.id === id);
 const NAV = [
   { id: 'bugun', href: 'index.html', label: 'Bugün', icon: 'home' },
-  { id: 'takvim', href: 'takvim.html', label: 'Takvim', icon: 'cal' },
+  { id: 'hisseler', href: 'hisseler.html', label: 'Hisseler', icon: 'stock' },
+  { id: 'yatirimcilar', href: 'yatirimcilar.html', label: 'Büyük yatırımcılar', icon: 'pie' },
   { id: 'bilanco', href: 'bilanco.html', label: 'Bilançolar', icon: 'doc' },
-  { id: 'portfoy', href: 'portfoy.html', label: 'Portföyüm', icon: 'pie' },
+  { id: 'takvim', href: 'takvim.html', label: 'Takvim', icon: 'cal' },
   { id: 'takip', href: 'takip.html', label: 'Takip ve alarmlar', icon: 'star' },
   { id: 'haftalik', href: 'haftalik.html', label: 'Haftalık rapor', icon: 'week' },
 ];
-const TOOLS = [
-  { id: 'fonlar', href: 'fonlar.html', label: 'Fon hareketleri', icon: 'flow' },
-  { id: 'karsilastir', href: 'karsilastir.html', label: 'Fon karşılaştır', icon: 'compare' },
-  { id: 'turev', href: 'kripto.html', label: 'Kripto türev', icon: 'coin' },
-];
+const TOOLS = [];
 const TABS = [
   { id: 'bugun', href: 'index.html', label: 'Bugün', icon: 'home' },
-  { id: 'piyasa', href: 'piyasa.html', label: 'Piyasalar', icon: 'stock' },
-  { id: 'takvim', href: 'takvim.html', label: 'Takvim', icon: 'cal' },
-  { id: 'portfoy', href: 'portfoy.html', label: 'Portföy', icon: 'pie' },
+  { id: 'hisseler', href: 'hisseler.html', label: 'Hisseler', icon: 'stock' },
+  { id: 'yatirimcilar', href: 'yatirimcilar.html', label: 'Yatırımcılar', icon: 'pie' },
+  { id: 'piyasa', href: 'piyasa.html', label: 'Makro', icon: 'pct' },
   { id: 'menu', href: '#menu', label: 'Menü', icon: 'menu' },
 ];
 
 function navHTML(active) {
   const P = prefs();
-  const mine = P.markets.length ? P.markets.map(marketById).filter(Boolean) : MARKETS;
+  const mine = MARKETS;
   const link = (n) => `<a href="${n.href}" class="${n.id === active ? 'on' : ''}" ${n.id === active ? 'aria-current="page"' : ''}>${ICON[n.icon]}${n.label}</a>`;
   return `<nav class="nav">
       ${link(NAV[0])}
-      <div class="nav-h">Piyasalarım <a href="#tercih" data-prefs>düzenle</a></div>
+      ${map(NAV.slice(1, 4), link)}
+      <div class="nav-h">Piyasa ve makro</div>
       ${map(mine, (m) => link({ id: 'm:' + m.id, href: `piyasa.html?m=${m.id}`, label: m.name, icon: m.icon }))}
-      ${mine.length < MARKETS.length ? link({ id: 'piyasa', href: 'piyasa.html', label: 'Tüm piyasalar', icon: 'globe' }) : ''}
-      <div class="nav-h">Araçlar</div>
-      ${map(NAV.slice(1), link)}
-      <div class="nav-h">Derin veri</div>
-      ${map(TOOLS, link)}
+      ${map(NAV.slice(4), link)}
       <div class="sep"></div>
       <a href="../index.html">${ICON.ext}Eski panel</a>
     </nav>`;
@@ -260,7 +259,7 @@ export function shell(active, { title } = {}) {
     </aside>
     <div class="main">
       <header class="top">
-        <button class="search-btn glass" id="open-search" aria-label="Ara">${ICON.search}<span>Hisse, fon, coin ya da sayfa ara</span><kbd>⌘K</kbd></button>
+        <button class="search-btn glass" id="open-search" aria-label="Ara">${ICON.search}<span>Şirket ya da sayfa ara</span><kbd>⌘K</kbd></button>
         <div class="top-actions">
           <span class="live-pill glass" id="live-pill" hidden><i></i><span></span></span>
           <button class="icon-btn glass" id="open-alerts" aria-label="Alarmlar">${ICON.bell}<span class="dot" id="alert-dot" hidden></span></button>
@@ -392,14 +391,12 @@ function hidePop() { document.querySelectorAll('.pop').forEach((p) => p.remove()
 let searchIndex = null;
 async function buildIndex() {
   if (searchIndex) return searchIndex;
-  const F = await loadFunds().catch(() => null);
+  const U = await loadUS('universe.json').catch(() => null);
   const items = [];
   NAV.concat(TOOLS).forEach((n) => items.push({ g: 'Sayfalar', k: n.label, s: '', href: n.href }));
   MARKETS.forEach((m) => items.push({ g: 'Sayfalar', k: m.name, s: m.desc, href: `piyasa.html?m=${m.id}` }));
   items.push({ g: 'Sayfalar', k: 'Günlük analiz', s: 'Sabah yazısı ve makro panel', href: '../index.html' });
-  (F?.stocks || []).filter((s) => s.n_funds > 0).forEach((s) => items.push({ g: 'Hisseler', k: s.t, s: `${s.name} · ${s.n_funds} fonda`, href: `hisse.html?s=${s.t}` }));
-  (F?.funds || []).forEach((f) => items.push({ g: 'Fonlar', k: f.code, s: f.name, href: `fon.html?f=${f.code}` }));
-  COINS.forEach((c) => items.push({ g: 'Kripto', k: c.code, s: `${c.name} vadeli piyasa`, href: `kripto.html#${c.code}` }));
+  (U?.rows || []).forEach((r) => items.push({ g: 'Hisseler', k: r.t, s: r.name, href: `sirket.html?t=${r.t}` }));
   return (searchIndex = items);
 }
 const norm = (s) => s.toLocaleLowerCase('tr-TR').replace(/[ıi̇]/g, 'i').normalize('NFD').replace(/[̀-ͯ]/g, '');
@@ -407,16 +404,16 @@ async function openSearch() {
   if (document.querySelector('.palette-bg')) return;
   const items = await buildIndex();
   const bg = document.createElement('div'); bg.className = 'palette-bg';
-  bg.innerHTML = `<div class="palette" role="dialog" aria-label="Ara"><input placeholder="Hisse kodu, fon kodu ya da coin yaz… (ör. BIMAS, TI2, BTC)" aria-label="Ara"><div class="res"></div></div>`;
+  bg.innerHTML = `<div class="palette" role="dialog" aria-label="Ara"><input placeholder="Şirket adı ya da kodu yaz… (ör. NVDA, Apple)" aria-label="Ara"><div class="res"></div></div>`;
   document.body.appendChild(bg);
   const inp = bg.querySelector('input'), res = bg.querySelector('.res');
   let sel = 0, cur = [];
   const render = () => {
     const q = norm(inp.value.trim());
     cur = q ? items.filter((x) => norm(x.k).startsWith(q)).concat(items.filter((x) => !norm(x.k).startsWith(q) && norm(x.k + ' ' + x.s).includes(q))).slice(0, 40)
-      : items.filter((x) => x.g === 'Sayfalar' || (x.g === 'Hisseler' && isWatched('stock', x.k)) || (x.g === 'Fonlar' && isWatched('fund', x.k)));
+      : items.filter((x) => x.g === 'Sayfalar' || (x.g === 'Hisseler' && isWatched('us', x.k)));
     sel = Math.min(sel, Math.max(0, cur.length - 1));
-    if (!cur.length) { res.innerHTML = `<div class="empty">"${esc(inp.value)}" için sonuç yok. Demo şu an ${items.filter((x) => x.g === 'Fonlar').length} büyük hisse fonunu ve onların tuttuğu hisseleri kapsıyor.</div>`; return; }
+    if (!cur.length) { res.innerHTML = `<div class="empty">"${esc(inp.value)}" için sonuç yok. Şu an Nasdaq 100 şirketleri kapsanıyor.</div>`; return; }
     let g = '';
     res.innerHTML = cur.map((x, i) => { const head = x.g !== g ? `<div class="grp">${q ? x.g : x.g === 'Sayfalar' ? 'Sayfalar' : 'Takip listen'}</div>` : ''; g = x.g; return `${head}<a href="${x.href}" class="${i === sel ? 'sel' : ''}"><span class="k">${esc(x.k)}</span><small>${esc(x.s)}</small></a>`; }).join('');
   };

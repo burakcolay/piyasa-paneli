@@ -1,4 +1,4 @@
-import { shell, fail, esc, map, num, pct, tl, tone, MARKETS, marketById, prefs, openOnboarding, loadFunds, loadDaily, loadLive, loadCrypto, store, refreshAlertDot, setLivePill, MONTHS, liveOf, actStats } from '../core.js';
+import { shell, fail, esc, map, num, pct, tone, usd, MARKETS, marketById, prefs, openOnboarding, loadUS, loadDaily, loadLive, store, refreshAlertDot, setLivePill, MONTHS } from '../core.js';
 import { tileHTML, eventMarkets } from '../markets.js';
 
 const app = shell('bugun', { title: 'Bugün' });
@@ -19,10 +19,10 @@ function mood(L) {
 }
 
 async function render() {
-  const [{ day }, F, L] = await Promise.all([loadDaily(), loadFunds().catch(() => null), loadLive()]);
+  const [{ day }, U, L] = await Promise.all([loadDaily(), loadUS('universe.json').catch(() => null), loadLive()]);
   setLivePill(L);
   const P = prefs();
-  const mine = P.markets.length ? P.markets : MARKETS.map((m) => m.id);
+  const mine = MARKETS.map((m) => m.id);
   const now = new Date(), dd = new Date(day.date + 'T12:00:00');
   const isToday = now.toISOString().slice(0, 10) === day.date;
   const dateStr = `${dd.getDate()} ${MONTHS[dd.getMonth()]} ${DAYS[dd.getDay()]}`;
@@ -31,12 +31,9 @@ async function render() {
   const know = (day.s1?.changes || []).slice(0, 4);
   const nowHM = now.getHours() * 60 + now.getMinutes();
   const evs = (day.s6?.today || []).filter((e) => e.impact !== 'low' && eventMarkets(e.title).some((m) => mine.includes(m)));
-  const wStocks = F ? (W.stock || []).map((t) => F.stocks.find((s) => s.t === t)).filter(Boolean) : [];
-
-  const watchRows = [
-    ...(W.coin || []).map((c) => { const lv = liveOf(L, 'c:' + c.toLowerCase()); return lv ? `<a class="row" href="kripto.html#${c}"><div class="main-c"><b>${c}</b></div><span class="end">$${num(lv.price, lv.price < 10 ? 3 : 0)}</span><span class="badge-chg ${tone(lv.chg)}" style="width:62px;text-align:right">${pct(lv.chg, 2)}</span></a>` : ''; }),
-    ...wStocks.map((s) => { const a = actStats(s); return `<a class="row" href="hisse.html?s=${s.t}"><div class="main-c"><b>${s.t}</b><small>Fonlar: ${a.up} artırdı, ${a.down} azalttı</small></div><span class="badge-chg ${tone(s.flow_active)}" style="text-align:right">${tl(s.flow_active, true)}</span></a>`; }),
-  ].filter(Boolean);
+  const watchRows = (W.us || []).map((t) => U?.rows.find((r) => r.t === t)).filter(Boolean).map((r) => `<a class="row" href="sirket.html?t=${r.t}"><div class="main-c"><b>${r.t}</b><small>${esc(r.name)}</small></div><span class="end small muted">${usd(r.mcap)}</span><span class="badge-chg ${tone(r.chg)}" style="width:62px;text-align:right">${pct(r.chg, 2)}</span></a>`);
+  // Nasdaq 100'ün en çok hareket edenleri (son kapanış)
+  const movers = (U?.rows || []).filter((r) => r.chg != null).sort((a, b) => Math.abs(b.chg) - Math.abs(a.chg)).slice(0, 8);
 
   app.innerHTML = `<div class="page" style="gap:24px">
     <div class="today-h">
@@ -53,6 +50,9 @@ async function render() {
       <div class="legend"><span>Çubuklar: 1 gün, 1 hafta, 1 ay, yılbaşı</span><span>Alt satır: sebep → sonuç</span></div>
     </section>
 
+    ${movers.length ? `<section class="panel"><div class="panel-h"><h2>Nasdaq 100'de en çok hareket edenler</h2><a class="act" href="hisseler.html">Tüm hisseler</a></div>
+      <div class="movers">${map(movers, (r) => `<a href="sirket.html?t=${r.t}" class="mv ${tone(r.chg)}"><b>${r.t}</b><span>${pct(r.chg, 1)}</span><small>${esc(r.name.split(' ')[0])}</small></a>`)}</div></section>` : ''}
+
     ${evs.length ? `<section class="panel"><div class="panel-h"><h2>${isToday ? 'Bugün' : dateStr} saat saat</h2><a class="act" href="takvim.html">Takvim</a></div>
       <div class="tl">${map(evs, (e) => { const [h, m] = e.time.split(':').map(Number); const past = isToday && h * 60 + m < nowHM - 20; return `<div class="tl-i ${e.impact === 'high' ? 'high' : ''} ${past ? 'past' : ''}"><span class="dot" style="background:${IMPACT[e.impact] || IMPACT.low}"></span><div class="t">${esc(e.time)}</div><div class="ti">${esc(e.title)}</div></div>`; })}</div>
       <div class="legend"><span><i style="background:var(--down)"></i>Yüksek etki</span><span><i style="background:var(--warn)"></i>Orta</span><span><i style="background:var(--accent-2)"></i>Seans</span></div></section>` : ''}
@@ -63,15 +63,14 @@ async function render() {
           <div><div class="gauge"><i style="left:${((R.s + 6) / 12) * 100}%"></i></div><div class="gauge-l"><span>Kaçış</span><span>Kararsız</span><span>İştah</span></div></div>
           <div class="rows">${map(R.rows, (r) => `<div class="row" style="padding:6px 0"><div class="main-c small">${esc(r.name)}</div><span class="small ${r.v == null ? 'muted' : tone(r.v)}" style="font-variant-numeric:tabular-nums">${r.v != null ? pct(r.v, 2) : 'veri yok'}</span></div>`)}</div>` : '<p class="small muted">Canlı veri bekleniyor.</p>'}</section>
       <section class="panel"><div class="panel-h"><h2>Takibim</h2><a class="act" href="takip.html">Düzenle</a></div>
-        <div class="rows">${watchRows.length ? watchRows.slice(0, 7).join('') : '<p class="small muted">Aramadan bir hisse, fon ya da coin bul ve yıldıza bas.</p>'}</div></section>
+        <div class="rows">${watchRows.length ? watchRows.slice(0, 7).join('') : '<p class="small muted">Hisseler sayfasında yıldıza bas, burada görünsün.</p>'}</div></section>
       <section class="panel"><div class="panel-h"><h2>Günün kavramı</h2><a class="act" href="../sozluk.html">Sözlük</a></div>
         ${day.s8 ? `<b style="font-size:15px;line-height:1.4">${esc(day.s8.title)}</b>${day.s8.rule ? `<p class="small ink2">${esc(day.s8.rule)}</p>` : ''}` : '<p class="small muted">Bugün yeni kavram yok.</p>'}</section>
     </div>
     <p class="foot-note">Yorum sabah ${esc(day.updated || '')} itibarıyla yazıldı, rakamlar canlı. Genel piyasa değerlendirmesidir, yatırım tavsiyesi değildir.</p>
   </div>`;
 
-  refreshAlertDot({ funds: F, live: L });
-  if (mine.includes('kripto') || store().alerts.some((a) => a.kind === 'coin')) loadCrypto().then((C) => refreshAlertDot({ funds: F, live: L, crypto: C }));
+  refreshAlertDot({ live: L });
 }
 
 function main() {
