@@ -188,6 +188,17 @@ function instSeries(facts, tags) {
   for (const e of entries(facts, tags)) { if (e.start || e.val == null) continue; const p = by.get(e.end); if (!p || e.filed > p.filed) by.set(e.end, { end: e.end, val: e.val, filed: e.filed, unit: e.unit }); }
   return [...by.values()].sort((a, b) => a.end.localeCompare(b.end));
 }
+// Hisse bölünmesi: eski dönemlerin hisse sayısı ve hisse başı rakamları bugünkü adede çevrilir
+const SPLITS = [2, 3, 4, 5, 6, 7, 8, 10, 15, 20, 40];
+function splitAdjust(rows) {
+  for (let i = rows.length - 1; i > 0; i--) {
+    const a = rows[i - 1].shDil, b = rows[i].shDil; if (!a || !b) continue;
+    const r = b / a, up = SPLITS.find((s) => Math.abs(r / s - 1) < 0.12), down = SPLITS.find((s) => Math.abs(1 / r / s - 1) < 0.12);
+    const f = up || (down ? 1 / down : 0); // bölünme ya da birleşme (ters bölünme)
+    if (!f) continue;
+    for (let j = 0; j < i; j++) { const x = rows[j]; if (x.shDil != null) x.shDil *= f; if (x.eps != null) x.eps /= f; if (x.dps != null) x.dps /= f; }
+  }
+}
 async function financials(cik) {
   const cf = await get(`https://data.sec.gov/api/xbrl/companyfacts/CIK${pad(cik)}.json`);
   const F = cf.facts || {};
@@ -206,6 +217,7 @@ async function financials(cik) {
   };
   const annual = dur.revenue.Y.map((x) => x.end).slice(-10).map((end) => ({ fy: +end.slice(0, 4) - (end.slice(5, 7) < '04' ? 1 : 0), ...row(end, 'Y') }));
   const quarterly = dur.revenue.Q.map((x) => x.end).slice(-12).map((end) => row(end, 'Q'));
+  splitAdjust(annual); splitAdjust(quarterly);
   const FLOW = Object.keys(TAGS).filter((k) => !['eps', 'dps', 'shDil'].includes(k)).concat(['eps', 'dps']);
   const last4 = quarterly.slice(-4);
   const ttm = last4.length === 4 ? Object.fromEntries(FLOW.map((k) => [k, last4.every((q) => q[k] != null) ? last4.reduce((s, q) => s + q[k], 0) : null])) : { ...(annual.at(-1) || {}) };

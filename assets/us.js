@@ -29,22 +29,20 @@ export const TERMS = {
 };
 export const q = (id) => `<span class="qm" tabindex="0" title="${esc(TERMS[id])}" data-tip="${esc(TERMS[id])}">?</span>`;
 
-// Çubuk grafik: [{label, v, v2?}]
+// Çubuk grafik: [{label, v, v2?}]. Çubuklar SVG (esner), yazılar HTML (her ekranda aynı boy)
 export function bars(list, { h = 170, names = ['', ''], fmt = usd } = {}) {
   const L = list.filter((x) => x.v != null || x.v2 != null);
   if (!L.length) return '<p class="small muted">Veri yok.</p>';
   const vals = L.flatMap((x) => [x.v, x.v2]).filter((v) => v != null);
   const max = Math.max(0, ...vals), min = Math.min(0, ...vals), span = max - min || 1;
-  const W = 640, pad = 18, bw = (W - 8) / L.length, two = L.some((x) => x.v2 != null);
-  const y = (v) => pad + ((max - v) / span) * (h - pad * 2);
-  const bar = (v, x, w, c) => (v == null ? '' : `<rect x="${x}" y="${Math.min(y(v), y(0))}" width="${w}" height="${Math.max(1, Math.abs(y(v) - y(0)))}" rx="2" fill="${v < 0 ? 'var(--down)' : c}"><title>${esc(fmt(v))}</title></rect>`);
-  const g = L.map((x, i) => {
-    const x0 = 4 + i * bw, w = two ? bw * 0.34 : bw * 0.6;
-    return bar(x.v, x0 + (two ? bw * 0.14 : bw * 0.2), w, '#B8C6E8') + (two ? bar(x.v2, x0 + bw * 0.52, w, 'var(--accent)') : '')
- + (i === L.length - 1 ? `<text x="${x0 + bw / 2}" y="${Math.max(11, Math.min(y(x.v2 ?? x.v ?? 0), y(x.v ?? 0)) - 5)}" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink-2)">${esc(fmt(x.v2 ?? x.v))}</text>` : '')
-      + `<text x="${x0 + bw / 2}" y="${h + 12}" text-anchor="middle" font-size="11" fill="var(--muted)">${esc(x.label)}</text>`;
-  }).join('');
-  return `<svg viewBox="0 0 ${W} ${h + 18}" role="img" style="width:100%;height:auto;display:block"><line x1="0" x2="${W}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)"/>${g}</svg>
+  const W = 100 * L.length, two = L.some((x) => x.v2 != null);
+  const y = (v) => ((max - v) / span) * h;
+  const bar = (v, x, w, c) => (v == null ? '' : `<rect x="${x}" y="${Math.min(y(v), y(0))}" width="${w}" height="${Math.max(0.5, Math.abs(y(v) - y(0)))}" rx="3" fill="${v < 0 ? 'var(--down)' : c}"><title>${esc(fmt(v))}</title></rect>`);
+  const g = L.map((x, i) => { const x0 = i * 100, w = two ? 32 : 56; return bar(x.v, x0 + (two ? 16 : 22), w, '#B8C6E8') + (two ? bar(x.v2, x0 + 52, w, 'var(--accent)') : ''); }).join('');
+  const last = L.at(-1);
+  return `<div class="bars"><div class="bars-last">${esc(fmt(last.v2 ?? last.v))}<small>${esc(last.label)}</small></div>
+    <svg viewBox="0 0 ${W} ${h}" preserveAspectRatio="none" style="width:100%;height:${h}px;display:block"><line x1="0" x2="${W}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)" vector-effect="non-scaling-stroke"/>${g}</svg>
+    <div class="bars-x">${L.map((x) => `<span>${esc(x.label)}</span>`).join('')}</div></div>
     ${two ? `<div class="legend-row"><span><i style="background:#B8C6E8"></i>${esc(names[0])}</span><span><i style="background:var(--accent)"></i>${esc(names[1])}</span></div>` : ''}`;
 }
 export const qLabel = (end) => { const d = new Date(end + 'T12:00:00'); return `${Math.floor(d.getMonth() / 3) + 1}Ç${String(d.getFullYear()).slice(2)}`; };
