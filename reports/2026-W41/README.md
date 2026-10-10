@@ -4,11 +4,11 @@ _Otomatik üretildi: 2026-10-09 kapanış verisiyle. Kaynak kod: [`analytics/`](
 
 ## Özet
 - Nasdaq 100 yükseliş trendinde (200 günlük ortalamanın üstünde) ve oynaklık uzun dönem normaline göre normal. Bu, sakin bir yükseliş ortamı: geri çekilmeler genellikle sınırlı kalır.
-- Son bir ayda en güçlü sektör Teknoloji, en zayıfı İletişim. Para büyüme ve döngüsel tarafa kayıyor.
+- Son bir ayda en güçlü sektör Yarı iletken, en zayıfı İletişim. Para büyüme ve döngüsel tarafa kayıyor.
 - 10Y faiz ↔ Nasdaq 100 ilişkisi bir yıl öncesine göre belirgin zayıfladı. İki varlık birbirinden ayrışıyor; biri diğerinin hareketini eskisi kadar açıklamıyor.
 - Uzun tahvil ↔ Nasdaq 100 ilişkisi bir yıl öncesine göre belirgin güçlendi. İki varlık artık daha çok birlikte hareket ediyor; birini diğerine karşı çeşitlendirme aracı olarak kullanmak eskisi kadar işe yaramaz.
 - Bilanço açıklamalarından sonraki iki günde hisseler, sıradan iki günlük dönemlere göre yaklaşık 2,8 kat fazla oynuyor (894 bilanço). İlk tepkinin yönü sonraki iki ayı açıklamıyor (p=0,96): büyük şirketlerde bilanço haberi hızla fiyatlanıyor, sürüklenme görülmüyor.
-- Yöneticilerin piyasadan alım yaptığı 24 olayda hisse sonraki iki ayda piyasaya göre ortalama 16,2 puan fazla getiri sağladı; bu fark anlamlı.
+- Yöneticilerin piyasadan alım yaptığı 13 olayda (13 şirket) hisse sonraki iki ayda piyasaya göre ortalama 18,1 puan fazla getiri sağladı ve fark istatistiksel olarak anlamlı. Ancak olaylar 2026-03 – 2026-08 arasındaki kısa bir döneme yığılmış; aynı piyasa ortamını paylaştıkları için bağımsız sayılmazlar, sonuç daha uzun bir dönemde doğrulanmadan sinyal sayılmamalı.
 - Son iki haftada getirisi ya da hacmi kendi normalinin çok dışına çıkan varlıklar: CEG, DASH, MELI, PEP, SBUX, SNPS. Bu günlerin arkasında genellikle bilanço, haber ya da endeks değişikliği olur.
 
 ## Sektörler
@@ -16,9 +16,9 @@ _Otomatik üretildi: 2026-10-09 kapanış verisiyle. Kaynak kod: [`analytics/`](
 
 | Sektör | 1 hafta % | 1 ay % | 3 ay % | Öncü | Geride kalan |
 |---|---|---|---|---|---|
-| Teknoloji | 1,7 | 9,6 | 13,9 | SHOP | WDC |
 | Yarı iletken | −5,2 | 9,5 | 1,0 | MRVL | AVGO |
-| Sağlık | 4,4 | 7,0 | 24,4 | MRNA | PAYX |
+| Teknoloji | 1,8 | 8,8 | 13,2 | SHOP | WDC |
+| Sağlık | 4,3 | 8,7 | 27,4 | MRNA | ALNY |
 | Havacılık ve uzay | −1,6 | 6,3 | −6,6 | RKLB | HONA |
 | Tüketici hizmetleri | 4,5 | 1,0 | 10,2 | PYPL | DASH |
 | Seyahat ve eğlence | 1,6 | 0,8 | 1,9 | MAR | BKNG |
