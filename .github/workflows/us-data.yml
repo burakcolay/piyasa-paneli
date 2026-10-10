@@ -1,5 +1,8 @@
 name: ABD verisi
 on:
+  push:
+    branches: [main]
+    paths: ['scripts/us/**']
   workflow_dispatch:
     inputs:
       mode:
@@ -22,6 +25,7 @@ jobs:
       - name: Veriyi çek
         run: |
           MODE="${{ github.event.inputs.mode }}"
+          [ "${{ github.event_name }}" = "push" ] && MODE=all
           if [ -z "$MODE" ]; then [ "$(date -u +%u)" = "6" ] && MODE=all || MODE=daily; fi
           node scripts/us/build.mjs "$MODE"
       - name: Commit (Burak adına, Vercel için)
