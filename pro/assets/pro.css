@@ -472,3 +472,5 @@ details.co summary:hover { background: var(--soft); }
 .mv:hover { text-decoration: none; outline: 1px solid var(--line); }
 .mv b { font-size: 13.5px; } .mv span { font-weight: 600; font-variant-numeric: tabular-nums; } .mv small { color: var(--ink-3); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mv.up { background: var(--up-soft); } .mv.up span { color: var(--up); } .mv.down { background: var(--down-soft); } .mv.down span { color: var(--down); }
+.panel-h { flex-wrap: wrap; }
+@media (max-width: 600px) { .seg { flex-wrap: nowrap; } }

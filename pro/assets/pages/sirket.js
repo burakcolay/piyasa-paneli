@@ -29,7 +29,7 @@ async function main() {
   const earn = (c.filings || []).find((x) => x.items?.includes('2.02'));
 
   const head = `<div class="co-head">
-    <div class="co-id"><div class="co-tk">${esc(T)}${watchBtn('us', T)}</div><h1>${esc(c.name)}</h1><p>${esc([c.sector, c.sic].filter(Boolean).filter((x, i, a) => a.indexOf(x) === i).join(' · '))}</p></div>
+    <div class="co-id"><div class="co-tk">${esc(T)}${watchBtn('us', T)}</div><h1>${esc(c.name)}</h1><p>${esc(c.sector || c.sic || '')}</p></div>
     <div class="co-px"><b>${p.price != null ? '$' + num(p.price, 2) : '—'}</b><span class="${tone(p.chg)}">${pct(p.chg, 2)}</span><small>kapanış · ${esc(c.updated || '')}</small></div>
   </div>
   <div class="stats">

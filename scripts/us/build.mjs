@@ -130,7 +130,7 @@ function entries(facts, tags) {
   }
   return all;
 }
-function durSeries(facts, tags) {
+function durSeries(facts, tags, derive = true) {
   const by = new Map();
   for (const e of entries(facts, tags)) {
     if (!e.start || e.val == null) continue;
@@ -141,7 +141,7 @@ function durSeries(facts, tags) {
   // Nakit akışı gibi kalemler çeyreklik değil yılbaşından bu yana (6 ay, 9 ay) bildirilir: farkından çeyrek çıkar
   const ytd = new Map();
   for (const e of entries(facts, tags)) { if (!e.start || e.val == null) continue; const k = `${e.start}|${e.end}`; const p = ytd.get(k); if (!p || e.filed > p.filed) ytd.set(k, e); }
-  for (const e of ytd.values()) {
+  if (derive) for (const e of ytd.values()) {
     const d = days(e.start, e.end); if (d < 160 || d > 290) continue;
     if (by.has(`Q|${e.end}`)) continue;
     const prev = [...ytd.values()].filter((x) => x.start === e.start && days(x.end, e.end) > 80 && days(x.end, e.end) < 100)[0];
@@ -150,7 +150,7 @@ function durSeries(facts, tags) {
   const Y = [...by.values()].filter((x) => x.kind === 'Y').sort((a, b) => a.end.localeCompare(b.end));
   const Q = [...by.values()].filter((x) => x.kind === 'Q').sort((a, b) => a.end.localeCompare(b.end));
   // Q4 = yıllık − üç çeyrek (çoğu şirket 4. çeyreği ayrı etiketlemiyor)
-  for (const y of Y) {
+  if (derive) for (const y of Y) {
     if (Q.some((q) => q.end === y.end)) continue;
     const inYear = Q.filter((q) => q.start >= y.start && q.end < y.end);
     if (inYear.length === 3) Q.push({ kind: 'Q', start: inYear[2].end, end: y.end, val: y.val - inYear.reduce((s, q) => s + q.val, 0), derived: true, unit: y.unit });
@@ -166,7 +166,7 @@ function instSeries(facts, tags) {
 async function financials(cik) {
   const cf = await get(`https://data.sec.gov/api/xbrl/companyfacts/CIK${pad(cik)}.json`);
   const F = cf.facts || {};
-  const dur = {}; for (const [k, tags] of Object.entries(TAGS)) dur[k] = durSeries(F, tags);
+  const dur = {}; for (const [k, tags] of Object.entries(TAGS)) dur[k] = durSeries(F, tags, !['eps', 'dps'].includes(k)); // hisse başı rakamlar bölünmeyle bozulur, türetilmez
   const inst = {}; for (const [k, tags] of Object.entries(INSTANT)) inst[k] = instSeries(F, tags);
   const shares = instSeries(F.dei ? { 'us-gaap': F.dei } : {}, ['EntityCommonStockSharesOutstanding']);
   const sh2 = (F.dei?.EntityCommonStockSharesOutstanding?.units?.shares || []).slice().sort((a, b) => a.end.localeCompare(b.end));
@@ -319,7 +319,7 @@ async function main() {
     const p = px[u.t] || old.px || null; c.px = p;
     const f = c.fin; const sh = f?.shares; const mcap = p?.mcap || (p?.price && sh ? p.price * sh : null);
     const ttm = f?.ttm || {};
-    const val = { mcap, pe: p?.price && ttm.eps > 0 ? p.price / ttm.eps : p?.pe > 0 ? p.pe : null, ps: mcap && ttm.revenue ? mcap / ttm.revenue : null, fcfYield: mcap && ttm.ocf != null ? ((ttm.ocf - (ttm.capex || 0)) / mcap) * 100 : null };
+    const val = { mcap, pe: p?.pe > 0 ? p.pe : p?.price && ttm.eps > 0 ? p.price / ttm.eps : null, ps: mcap && ttm.revenue ? mcap / ttm.revenue : null, fcfYield: mcap && ttm.ocf != null ? ((ttm.ocf - (ttm.capex || 0)) / mcap) * 100 : null };
     c.val = val;
     c.updated = today;
     await writeJSON(file, c);
