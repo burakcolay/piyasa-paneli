@@ -365,3 +365,14 @@ table.fin td.num { white-space: nowrap; }
 .sec-tile .sm { font-size: 12px; color: var(--ink-2); }
 .sec-tiles .chip { align-self: center; justify-self: start; }
 @media (max-width: 640px) { .sec-tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+table.fin tr.strong td { font-weight: 600; color: var(--ink); }
+table.fin th.ttm, table.fin td.ttm { background: var(--accent-soft); }
+table.us tr.me td { background: var(--accent-soft); }
+.fscore { display: flex; align-items: center; gap: 12px; }
+.fscore b { font-size: 34px; font-weight: 500; } .fscore small { font-size: 18px; color: var(--muted); }
+.checks { display: flex; flex-direction: column; }
+.checks div { display: flex; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line-soft); font-size: 14px; }
+.checks div:last-child { border-bottom: 0; }
+.checks i { font-style: normal; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+.checks .ok i { background: var(--good-bg); color: var(--good-fg); } .checks .no i { background: var(--bad-bg); color: var(--bad-fg); } .checks .na { color: var(--muted); } .checks .na i { background: var(--flat-bg); }
+.tabs { gap: 18px; }

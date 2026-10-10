@@ -4,6 +4,7 @@
 // Çalıştır: node scripts/us/build.mjs [daily|all]   (GitHub Actions üzerinde çalışır)
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { metrics } from './metrics.mjs';
 
 const MODE = process.argv[2] || 'daily';
 const UA = 'PiyasaPaneli codegridteknoloji@gmail.com';
@@ -105,20 +106,44 @@ async function prices(tickers) {
 /* ---------------- 3. Finansallar (XBRL) ---------------- */
 const TAGS = {
   revenue: ['RevenueFromContractWithCustomerExcludingAssessedTax', 'Revenues', 'SalesRevenueNet', 'RevenueFromContractWithCustomerIncludingAssessedTax', 'Revenue'],
+  cogs: ['CostOfRevenue', 'CostOfGoodsAndServicesSold', 'CostOfGoodsSold', 'CostOfServices', 'CostOfSales'],
   gross: ['GrossProfit'],
+  rnd: ['ResearchAndDevelopmentExpense', 'ResearchAndDevelopmentExpenseExcludingAcquiredInProcessCost'],
+  sga: ['SellingGeneralAndAdministrativeExpense', 'GeneralAndAdministrativeExpense'],
   opinc: ['OperatingIncomeLoss', 'ProfitLossFromOperatingActivities'],
+  interest: ['InterestExpense', 'InterestExpenseNonoperating', 'InterestExpenseDebt', 'InterestPaidNet'],
+  pretax: ['IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest', 'IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments', 'ProfitLossBeforeTax'],
+  tax: ['IncomeTaxExpenseBenefit', 'IncomeTaxExpenseContinuingOperations'],
   net: ['NetIncomeLoss', 'ProfitLossAttributableToOwnersOfParent', 'ProfitLoss'],
   eps: ['EarningsPerShareDiluted', 'DilutedEarningsLossPerShare', 'EarningsPerShareBasic'],
+  shDil: ['WeightedAverageNumberOfDilutedSharesOutstanding', 'WeightedAverageNumberOfSharesOutstandingBasic'],
+  da: ['DepreciationDepletionAndAmortization', 'DepreciationAmortizationAndAccretionNet', 'DepreciationAndAmortization', 'DepreciationAmortizationAndOther', 'Depreciation'],
+  sbc: ['ShareBasedCompensation', 'AllocatedShareBasedCompensationExpense'],
   ocf: ['NetCashProvidedByUsedInOperatingActivities', 'CashFlowsFromUsedInOperatingActivities'],
   capex: ['PaymentsToAcquirePropertyPlantAndEquipment', 'PurchaseOfPropertyPlantAndEquipmentClassifiedAsInvestingActivities', 'PaymentsToAcquireProductiveAssets'],
-  rnd: ['ResearchAndDevelopmentExpense', 'ResearchAndDevelopmentExpenseExcludingAcquiredInProcessCost'],
+  acq: ['PaymentsToAcquireBusinessesNetOfCashAcquired', 'PaymentsToAcquireBusinessesGross'],
   buyback: ['PaymentsForRepurchaseOfCommonStock'],
+  divPaid: ['PaymentsOfDividendsCommonStock', 'PaymentsOfDividends'],
   dps: ['CommonStockDividendsPerShareDeclared', 'CommonStockDividendsPerShareCashPaid'],
 };
+const NO_DERIVE = ['eps', 'dps', 'shDil']; // hisse başı ve ortalama adetler toplanamaz
 const INSTANT = {
-  assets: ['Assets'], liab: ['Liabilities'], equity: ['StockholdersEquity', 'StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest', 'Equity'],
   cash: ['CashAndCashEquivalentsAtCarryingValue', 'CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents', 'CashAndCashEquivalents'],
+  stInv: ['MarketableSecuritiesCurrent', 'ShortTermInvestments', 'AvailableForSaleSecuritiesDebtSecuritiesCurrent'],
+  recv: ['AccountsReceivableNetCurrent', 'ReceivablesNetCurrent'],
+  inv: ['InventoryNet'],
+  curAssets: ['AssetsCurrent'],
+  ppe: ['PropertyPlantAndEquipmentNet'],
+  goodwill: ['Goodwill'],
+  intang: ['IntangibleAssetsNetExcludingGoodwill', 'FiniteLivedIntangibleAssetsNet'],
+  assets: ['Assets'],
+  payables: ['AccountsPayableCurrent'],
+  stDebt: ['DebtCurrent', 'LongTermDebtCurrent', 'ShortTermBorrowings'],
+  curLiab: ['LiabilitiesCurrent'],
   debt: ['LongTermDebtNoncurrent', 'LongTermDebt', 'LongTermBorrowings'],
+  liab: ['Liabilities'],
+  retained: ['RetainedEarningsAccumulatedDeficit'],
+  equity: ['StockholdersEquity', 'StockholdersEquityIncludingPortionAttributableToNoncontrollingInterest', 'Equity'],
 };
 const days = (a, b) => (Date.parse(b) - Date.parse(a)) / 864e5;
 function entries(facts, tags) {
@@ -166,27 +191,31 @@ function instSeries(facts, tags) {
 async function financials(cik) {
   const cf = await get(`https://data.sec.gov/api/xbrl/companyfacts/CIK${pad(cik)}.json`);
   const F = cf.facts || {};
-  const dur = {}; for (const [k, tags] of Object.entries(TAGS)) dur[k] = durSeries(F, tags, !['eps', 'dps'].includes(k)); // hisse başı rakamlar bölünmeyle bozulur, türetilmez
+  const dur = {}; for (const [k, tags] of Object.entries(TAGS)) dur[k] = durSeries(F, tags, !NO_DERIVE.includes(k));
   const inst = {}; for (const [k, tags] of Object.entries(INSTANT)) inst[k] = instSeries(F, tags);
-  const shares = instSeries(F.dei ? { 'us-gaap': F.dei } : {}, ['EntityCommonStockSharesOutstanding']);
   const sh2 = (F.dei?.EntityCommonStockSharesOutstanding?.units?.shares || []).slice().sort((a, b) => a.end.localeCompare(b.end));
   const currency = dur.revenue.Y.at(-1)?.unit || 'USD';
-  // yıllık tablo: gelirin olduğu yıl sonlarına göre
-  const yEnds = dur.revenue.Y.map((x) => x.end).slice(-10);
   const pick = (s, end) => s.find((x) => x.end === end)?.val ?? null;
   const pickI = (s, end) => { const c = s.filter((x) => Math.abs(days(x.end, end)) < 20); return c.length ? c.at(-1).val : null; };
-  const annual = yEnds.map((end) => ({ end, fy: +end.slice(0, 4) - (end.slice(5, 7) < '04' ? 1 : 0), revenue: pick(dur.revenue.Y, end), gross: pick(dur.gross.Y, end), opinc: pick(dur.opinc.Y, end), net: pick(dur.net.Y, end), eps: pick(dur.eps.Y, end), ocf: pick(dur.ocf.Y, end), capex: pick(dur.capex.Y, end), rnd: pick(dur.rnd.Y, end), buyback: pick(dur.buyback.Y, end), dps: pick(dur.dps.Y, end), assets: pickI(inst.assets, end), liab: pickI(inst.liab, end), equity: pickI(inst.equity, end), cash: pickI(inst.cash, end), debt: pickI(inst.debt, end) }));
-  const qEnds = dur.revenue.Q.map((x) => x.end).slice(-12);
-  const quarterly = qEnds.map((end) => ({ end, revenue: pick(dur.revenue.Q, end), gross: pick(dur.gross.Q, end), opinc: pick(dur.opinc.Q, end), net: pick(dur.net.Q, end), eps: pick(dur.eps.Q, end), ocf: pick(dur.ocf.Q, end), capex: pick(dur.capex.Q, end) }));
+  const row = (end, kind) => {
+    const r = { end };
+    for (const k of Object.keys(TAGS)) r[k] = pick(dur[k][kind], end);
+    for (const k of Object.keys(INSTANT)) r[k] = pickI(inst[k], end);
+    if (r.gross == null && r.revenue != null && r.cogs != null) r.gross = r.revenue - r.cogs;
+    return r;
+  };
+  const annual = dur.revenue.Y.map((x) => x.end).slice(-10).map((end) => ({ fy: +end.slice(0, 4) - (end.slice(5, 7) < '04' ? 1 : 0), ...row(end, 'Y') }));
+  const quarterly = dur.revenue.Q.map((x) => x.end).slice(-12).map((end) => row(end, 'Q'));
+  const FLOW = Object.keys(TAGS).filter((k) => !['eps', 'dps', 'shDil'].includes(k)).concat(['eps', 'dps']);
   const last4 = quarterly.slice(-4);
-  const ttm = last4.length === 4 ? Object.fromEntries(['revenue', 'gross', 'opinc', 'net', 'eps', 'ocf', 'capex'].map((k) => [k, last4.every((q) => q[k] != null) ? last4.reduce((s, q) => s + q[k], 0) : null])) : (annual.at(-1) || {});
+  const ttm = last4.length === 4 ? Object.fromEntries(FLOW.map((k) => [k, last4.every((q) => q[k] != null) ? last4.reduce((s, q) => s + q[k], 0) : null])) : { ...(annual.at(-1) || {}) };
+  if (ttm.eps == null && annual.at(-1)?.eps != null && last4.at(-1)?.end === annual.at(-1).end) ttm.eps = annual.at(-1).eps;
   const prev4 = quarterly.slice(-8, -4);
   const revPrevTTM = prev4.length === 4 && prev4.every((q) => q.revenue != null) ? prev4.reduce((s, q) => s + q.revenue, 0) : annual.at(-2)?.revenue;
-  const latestInst = (s) => s.at(-1)?.val ?? null;
+  const bs = { end: inst.assets.at(-1)?.end }; for (const k of Object.keys(INSTANT)) bs[k] = inst[k].at(-1)?.val ?? null;
   return {
     currency, annual, quarterly, ttm: { ...ttm, end: (last4.at(-1) || annual.at(-1))?.end, revGrowth: ttm.revenue && revPrevTTM ? (ttm.revenue / revPrevTTM - 1) * 100 : null },
-    bs: { assets: latestInst(inst.assets), liab: latestInst(inst.liab), equity: latestInst(inst.equity), cash: latestInst(inst.cash), debt: latestInst(inst.debt), end: inst.assets.at(-1)?.end },
-    shares: sh2.at(-1)?.val ?? null,
+    bs, shares: sh2.at(-1)?.val ?? null,
   };
 }
 
@@ -320,11 +349,13 @@ async function main() {
     const f = c.fin; const sh = f?.shares; const mcap = p?.mcap || (p?.price && sh ? p.price * sh : null);
     const ttm = f?.ttm || {};
     const val = { mcap, pe: p?.pe > 0 ? p.pe : p?.price && ttm.eps > 0 ? p.price / ttm.eps : null, ps: mcap && ttm.revenue ? mcap / ttm.revenue : null, fcfYield: mcap && ttm.ocf != null ? ((ttm.ocf - (ttm.capex || 0)) / mcap) * 100 : null };
+    c.m = metrics(f, mcap);
+    if (c.m) { Object.assign(val, { pb: c.m.val.pb, evEbitda: c.m.val.evEbitda, evSales: c.m.val.evSales, ev: c.m.val.ev, divYield: c.m.val.divYield, buybackYield: c.m.val.buybackYield }); if (c.m.val.fcfYield != null) val.fcfYield = c.m.val.fcfYield; }
     c.val = val;
     c.updated = today;
     await writeJSON(file, c);
     const insBuy = (c.insiders || []).filter((x) => x.date >= new Date(Date.now() - 90 * 864e5).toISOString().slice(0, 10));
-    rows.push({ t: u.t, name: u.name, sector: c.sector || c.sic || '', price: p?.price ?? null, chg: p?.chg ?? null, mcap, pe: val.pe, ps: val.ps, fcfYield: val.fcfYield, rev: ttm.revenue ?? null, revGrowth: ttm.revGrowth ?? null, netMargin: ttm.revenue && ttm.net != null ? (ttm.net / ttm.revenue) * 100 : null, grossMargin: ttm.revenue && ttm.gross != null ? (ttm.gross / ttm.revenue) * 100 : null, cur: f?.currency || 'USD', lastFiling: c.filings?.[0]?.date || null, insiderNet90: insBuy.reduce((s, x) => s + x.buy - x.sell, 0) });
+    rows.push({ t: u.t, name: u.name, sector: c.sector || c.sic || '', price: p?.price ?? null, chg: p?.chg ?? null, mcap, pe: val.pe, ps: val.ps, fcfYield: val.fcfYield, rev: ttm.revenue ?? null, revGrowth: ttm.revGrowth ?? null, netMargin: ttm.revenue && ttm.net != null ? (ttm.net / ttm.revenue) * 100 : null, grossMargin: ttm.revenue && ttm.gross != null ? (ttm.gross / ttm.revenue) * 100 : null, cur: f?.currency || 'USD', roe: c.m?.ttm.roe ?? null, roic: c.m?.ttm.roic ?? null, opMargin: c.m?.ttm.opM ?? null, debtEq: c.m?.ttm.debtEq ?? null, evEbitda: val.evEbitda ?? null, pb: val.pb ?? null, divYield: val.divYield ?? null, fscore: c.m?.fscore ? c.m.fscore.score : null, fscoreN: c.m?.fscore?.n ?? null, g3: c.m?.growth.revenue.y3 ?? null, lastFiling: c.filings?.[0]?.date || null, insiderNet90: insBuy.reduce((s, x) => s + x.buy - x.sell, 0) });
     L(`${u.t} tamam (${Math.round((Date.now() - t0) / 1000)} sn)`);
   }
   rows.sort((a, b) => (b.mcap || 0) - (a.mcap || 0));
