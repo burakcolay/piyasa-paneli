@@ -1,4 +1,5 @@
 import { shell, fail, esc, map, tvMini } from '../app.js';
+import { yorumla, yorumBox } from '../yorum.js';
 import { n, pct, pctv, tone, usd, loadUS, q, bars, qLabel, ago, chgBadge, star, toggleWatch } from '../us.js';
 
 const T = (new URLSearchParams(location.search).get('t') || 'AAPL').toUpperCase();
@@ -41,9 +42,13 @@ async function main() {
   const nm = t.revenue && t.net != null ? (t.net / t.revenue) * 100 : null;
   const fcf = t.ocf != null ? t.ocf - (t.capex || 0) : null;
   const earn = (c.filings || []).find((x) => x.items?.includes('2.02'));
+  const Y = yorumla(c, (U?.rows || []).filter((r) => r.sector === c.sector));
   const adders = holders.filter((h) => h.chg === 'new' || h.chg === 'add').length;
 
-  const ozet = () => `<div class="row2">
+  const ozet = () => `${Y.ozet.good.length || Y.ozet.bad.length ? `<div class="row2">
+      <section class="card yorum"><span class="eyebrow" style="color:var(--up)">Güçlü yanlar</span><ul>${map(Y.ozet.good, (x) => `<li class="good">${x.s}</li>`) || '<li class="flat">Belirgin bir güçlü yan çıkmadı.</li>'}</ul></section>
+      <section class="card yorum"><span class="eyebrow" style="color:var(--down)">Dikkat edilecekler</span><ul>${map(Y.ozet.bad, (x) => `<li class="bad">${x.s}</li>`) || '<li class="flat">Belirgin bir zayıf yan çıkmadı.</li>'}</ul></section>
+    </div>` : ''}<div class="row2">
       <section class="card"><span class="eyebrow">Fiyat, 1 yıl</span><div id="tv" class="tv"></div></section>
       <section class="card"><span class="eyebrow">Çeyreklik gelir ve net kâr</span>${bars(Q.slice(-8).map((x) => ({ label: qLabel(x.end), v: x.revenue, v2: x.net })), { names: ['Gelir', 'Net kâr'] })}</section>
     </div>
@@ -71,6 +76,7 @@ async function main() {
       : stmt === 'bilanco' ? bars(L.slice(-10).map((r) => ({ label: lab(r), v: r.assets, v2: r.equity })), { names: ['Toplam varlık', 'Özkaynak'] })
       : bars(L.slice(-10).map((r) => ({ label: lab(r), v: r.ocf, v2: r.fcf })), { names: ['Faaliyet nakit akışı', 'Serbest nakit akışı'] });
     return `<section class="card"><div class="head-row"><div class="chips">${map(Object.entries(STMT), ([k, [t]]) => `<button class="chip ${stmt === k ? 'on' : ''}" data-stmt="${k}">${t}</button>`)}</div>${perBtns()}</div>${chart}</section>
+      ${yorumBox(Y[stmt], `${title}: ne anlatıyor?`)}
       <section class="card" style="padding:8px 12px"><div class="tbl-wrap"><table class="tbl fin"><thead><tr><th>${esc(title)}</th>${map(L, (r) => `<th class="r">${esc(lab(r))}</th>`)}</tr></thead><tbody>
       ${map(shown, ([k, l, f, b]) => (k === '_' ? `<tr class="group"><td colspan="${L.length + 1}">${l}</td></tr>` : `<tr class="${b ? 'strong' : ''}"><td>${l}</td>${map(L, (r) => `<td class="r num">${fmtS(r[k], f)}</td>`)}</tr>`))}
       </tbody></table></div></section>
@@ -82,7 +88,9 @@ async function main() {
     const L = per === 'q' ? M.quarterly : M.annual;
     const rows = RATIOS.filter(([k]) => k === '_' || ((per === 'y' || QR.has(k)) && (L.some((r) => r[k] != null) || M.ttm[k] != null)));
     return `<section class="card"><div class="head-row"><span class="eyebrow">Değerleme, bugün</span></div>
-      <div class="grid" style="--min:140px">${kpi(`F/K ${q('fk')}`, v.pe > 0 ? n(v.pe, 1) : '—')}${kpi(`PD/DD ${tip('Piyasa değeri / özkaynak. Şirketin defter değerinin kaç katına fiyatlandığı.')}`, n(M.val.pb, 1))}${kpi(`FD/FAVÖK ${tip('Firma değeri (piyasa değeri + net borç) / son 12 ay FAVÖK. Borçlu ve borçsuz şirketleri aynı terazide tartar.')}`, n(M.val.evEbitda, 1))}${kpi(`FD/Satış`, n(M.val.evSales, 1))}${kpi(`Serbest nakit verimi ${q('fcfy')}`, pctv(M.val.fcfYield, 1))}${kpi('Temettü verimi', pctv(M.val.divYield, 2))}${kpi(`Geri alım verimi ${tip('Son 12 ayda geri alınan hisse tutarı / piyasa değeri.')}`, pctv(M.val.buybackYield, 1))}</div></section>
+      <div class="grid" style="--min:140px">${kpi(`F/K ${q('fk')}`, v.pe > 0 ? n(v.pe, 1) : '—')}${kpi(`PD/DD ${tip('Piyasa değeri / özkaynak. Şirketin defter değerinin kaç katına fiyatlandığı.')}`, n(M.val.pb, 1))}${kpi(`FD/FAVÖK ${tip('Firma değeri (piyasa değeri + net borç) / son 12 ay FAVÖK. Borçlu ve borçsuz şirketleri aynı terazide tartar.')}`, n(M.val.evEbitda, 1))}${kpi(`FD/Satış`, n(M.val.evSales, 1))}${kpi(`Serbest nakit verimi ${q('fcfy')}`, pctv(M.val.fcfYield, 1))}${kpi('Temettü verimi', pctv(M.val.divYield, 2))}${kpi(`Geri alım verimi ${tip('Son 12 ayda geri alınan hisse tutarı / piyasa değeri.')}`, pctv(M.val.buybackYield, 1))}</div>
+      ${Y.degerleme.length ? `<ul class="yorum-ul">${map(Y.degerleme, (x) => `<li class="${x.t}">${x.s}</li>`)}</ul>` : ''}</section>
+      <div class="row3y">${yorumBox(Y.karlilik, 'Kârlılık')}${yorumBox(Y.borc, 'Borç ve likidite')}${yorumBox(Y.verimlilik, 'Verimlilik ve harcama')}</div>
       <section class="card" style="padding:8px 12px"><div class="head-row" style="padding:8px 4px 0"><span class="eyebrow">Finansal oranlar</span>${perBtns()}</div><div class="tbl-wrap"><table class="tbl fin"><thead><tr><th></th><th class="r ttm">Son 12 ay</th>${map(L, (r) => `<th class="r">${esc(lab(r))}</th>`)}</tr></thead><tbody>
       ${map(rows, ([k, l, fm, t]) => (k === '_' ? `<tr class="group"><td colspan="${L.length + 2}">${l}</td></tr>` : `<tr><td>${l} ${tip(t)}</td><td class="r num ttm">${fmtR(M.ttm[k], fm)}</td>${map(L, (r) => `<td class="r num">${fmtR(r[k], fm)}</td>`)}</tr>`))}
       </tbody></table></div></section>`;
@@ -94,14 +102,15 @@ async function main() {
     const gRow = (k, l) => `<tr><td>${l}</td>${map(['y1', 'y3', 'y5'], (y) => `<td class="r num ${tone(G[k]?.[y])}">${pct(G[k]?.[y], 1)}</td>`)}</tr>`;
     const sh = A.filter((r) => r.shDil != null);
     const shChg = sh.length > 1 ? (sh.at(-1).shDil / sh[0].shDil - 1) * 100 : null;
-    return `<div class="row2">
+    return `${yorumBox(Y.buyume, 'Büyüme: ne anlatıyor?')}<div class="row2">
       <section class="card"><span class="eyebrow">Yıllık bileşik büyüme ${tip('Her yıl ortalama yüzde kaç büyüdüğü. Başlangıç ya da bitiş değeri negatifse hesaplanmaz.')}</span>
         <div class="tbl-wrap"><table class="tbl"><thead><tr><th></th><th class="r">1 yıl</th><th class="r">3 yıl</th><th class="r">5 yıl</th></tr></thead><tbody>
         ${gRow('revenue', 'Satışlar')}${gRow('opinc', 'Faaliyet kârı')}${gRow('net', 'Net kâr')}${gRow('eps', 'Hisse başı kâr')}${gRow('fcf', 'Serbest nakit akışı')}${G.dps?.y1 != null ? gRow('dps', 'Hisse başı temettü') : ''}
         </tbody></table></div></section>
       ${F ? `<section class="card"><div class="head-row"><span class="eyebrow">Finansal sağlık (F-skoru) ${tip('Piotroski F-skoru: kârlılık, borç ve verimlilikte son yılın bir öncekine göre iyileşip iyileşmediğine bakan 9 maddelik kontrol. 7 ve üstü güçlü, 3 ve altı zayıf sayılır.')}</span><span class="xs muted">${esc(String(F.year))} ile önceki yıl</span></div>
         <div class="fscore"><b class="mono">${F.score}<small>/${F.n}</small></b><span class="badge ${F.score / F.n >= 0.7 ? 'b-good' : F.score / F.n <= 0.35 ? 'b-bad' : 'b-mid'}">${F.score / F.n >= 0.7 ? 'Güçlü' : F.score / F.n <= 0.35 ? 'Zayıf' : 'Orta'}</span></div>
-        <div class="checks">${map(F.items, (x) => `<div class="${x.ok == null ? 'na' : x.ok ? 'ok' : 'no'}"><i>${x.ok == null ? '–' : x.ok ? '✓' : '✕'}</i>${esc(x.label)}</div>`)}</div></section>` : ''}
+        <div class="checks">${map(F.items, (x) => `<div class="${x.ok == null ? 'na' : x.ok ? 'ok' : 'no'}"><i>${x.ok == null ? '–' : x.ok ? '✓' : '✕'}</i>${esc(x.label)}</div>`)}</div>
+        <ul class="yorum-ul">${map(Y.fscore, (x) => `<li class="${x.t}">${x.s}</li>`)}</ul></section>` : ''}
     </div>
     <div class="row2">
       <section class="card"><div class="head-row"><span class="eyebrow">Hisse sayısı</span><span class="xs ${shChg != null ? (shChg < 0 ? 'up' : 'down') : 'muted'}">${shChg != null ? `${sh.length - 1} yılda ${pct(shChg, 0)}` : ''}</span></div>
@@ -110,7 +119,7 @@ async function main() {
       <section class="card"><span class="eyebrow">Ortaklara dönen nakit</span>
         ${bars(A.slice(-8).map((r) => ({ label: String(r.fy), v: r.buyback, v2: r.divPaid })), { names: ['Geri alım', 'Temettü'] })}
         <p class="small muted">Son 12 ayda ${usd(f.ttm?.buyback)} geri alım, ${usd(f.ttm?.divPaid)} temettü.</p></section>
-    </div>`;
+    </div>${yorumBox(Y.ortaklar, 'Ortaklar açısından')}`;
   };
 
   const sektor = () => {
@@ -119,7 +128,7 @@ async function main() {
     const COLS = [['mcap', 'Piyasa değeri', usd, 1], ['pe', 'F/K', (x) => (x > 0 ? n(x, 1) : '—'), -1], ['evEbitda', 'FD/FAVÖK', (x) => (x > 0 ? n(x, 1) : '—'), -1], ['revGrowth', 'Büyüme', (x) => pct(x, 0), 1], ['g3', '3 yıllık büyüme', (x) => pct(x, 0), 1], ['opMargin', 'Faaliyet marjı', (x) => pctv(x, 0), 1], ['roic', 'ROIC', (x) => pctv(x, 0), 1], ['debtEq', 'Borç/özkaynak', (x) => n(x, 2), -1], ['fscore', 'F-skoru', (x) => (x == null ? '—' : String(x)), 1]];
     const rank = (k, better) => { const vals = P.filter((r) => r[k] != null && (k !== 'pe' && k !== 'evEbitda' || r[k] > 0)).sort((a, b) => (b[k] - a[k]) * better); const i = vals.findIndex((r) => r.t === T); return i < 0 ? null : [i + 1, vals.length]; };
     const med = (k) => { const v = P.map((r) => r[k]).filter((x) => x != null && (k !== 'pe' && k !== 'evEbitda' || x > 0)).sort((a, b) => a - b); return v.length ? v[Math.floor(v.length / 2)] : null; };
-    return `<section class="card"><div class="head-row"><span class="eyebrow">${esc(c.sector)} · ${P.length} şirket</span><span class="xs muted">Sıra: sektör içinde kaçıncı (daha iyi olan önde)</span></div>
+    return `${yorumBox(Y.sektor, 'Sektöre göre konumu')}<section class="card"><div class="head-row"><span class="eyebrow">${esc(c.sector)} · ${P.length} şirket</span><span class="xs muted">Sıra: sektör içinde kaçıncı (daha iyi olan önde)</span></div>
       <div class="grid" style="--min:150px">${map(COLS.slice(1), ([k, l, f, b]) => { const r = rank(k, b); return `<div class="kpi"><span class="l">${l}</span><span class="v">${f(P.find((x) => x.t === T)?.[k])}</span><span class="s muted">sektör ortancası ${f(med(k))}${r ? ` · ${r[0]}/${r[1]}` : ''}</span></div>`; })}</div></section>
       <section class="card" style="padding:8px 12px"><div class="tbl-wrap"><table class="tbl us"><thead><tr><th>Şirket</th>${map(COLS, ([, l]) => `<th class="r">${l}</th>`)}</tr></thead><tbody>
       ${map(P, (r) => `<tr data-href="sirket.html?t=${r.t}" class="${r.t === T ? 'me' : ''}"><td><a href="sirket.html?t=${r.t}" class="co"><b>${esc(r.t)}</b><small>${esc(r.name)}</small></a></td>${map(COLS, ([k, , fm]) => `<td class="r num">${fm(r[k])}</td>`)}</tr>`)}
