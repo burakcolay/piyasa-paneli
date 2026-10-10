@@ -44,6 +44,14 @@ function prettyName(n) {
   if (s === s.toUpperCase()) s = s.split(/\s+/).map((w) => (KEEP.has(w) ? w : w.charAt(0) + w.slice(1).toLowerCase())).join(' ');
   return s.replace(/\bCom$/, '').trim();
 }
+// Wikipedia sektörü gelmezse SEC'in SIC kodundan kaba sektör
+const SECTOR_OVR = { GOOGL: 'İletişim', GOOG: 'İletişim', META: 'İletişim', NFLX: 'İletişim', WBD: 'İletişim', EA: 'İletişim', TTWO: 'İletişim', AMZN: 'Perakende', MELI: 'Perakende', PDD: 'Perakende', TSLA: 'Otomotiv', ABNB: 'Seyahat ve eğlence', BKNG: 'Seyahat ve eğlence', MAR: 'Seyahat ve eğlence', DASH: 'Tüketici hizmetleri', MSTR: 'Teknoloji', SPCX: 'Havacılık ve uzay', RKLB: 'Havacılık ve uzay' };
+function sectorOf(sic, t) {
+  if (SECTOR_OVR[t]) return SECTOR_OVR[t];
+  const n = +sic; if (!n) return '';
+  const r = [[3674, 3674, 'Yarı iletken'], [3559, 3559, 'Yarı iletken'], [3825, 3827, 'Yarı iletken'], [7370, 7379, 'Teknoloji'], [3570, 3579, 'Teknoloji'], [3600, 3699, 'Teknoloji'], [4800, 4899, 'İletişim'], [2830, 2836, 'Sağlık'], [3840, 3851, 'Sağlık'], [8000, 8099, 'Sağlık'], [8700, 8749, 'Sağlık'], [2000, 2099, 'Gıda ve içecek'], [4900, 4999, 'Enerji ve kamu hizmeti'], [1300, 1399, 'Enerji ve kamu hizmeti'], [2900, 2999, 'Enerji ve kamu hizmeti'], [3710, 3716, 'Otomotiv'], [3720, 3769, 'Havacılık ve uzay'], [5000, 5999, 'Perakende'], [6000, 6799, 'Finans'], [7000, 7999, 'Tüketici hizmetleri'], [4000, 4799, 'Ulaştırma']];
+  return r.find(([a, b]) => n >= a && n <= b)?.[2] || 'Sanayi';
+}
 const SECTOR_TR = { 'Information Technology': 'Teknoloji', 'Communication Services': 'İletişim', 'Consumer Discretionary': 'Tüketici (döngüsel)', 'Consumer Staples': 'Temel tüketim', 'Health Care': 'Sağlık', Industrials: 'Sanayi', Utilities: 'Kamu hizmetleri', Financials: 'Finans', Energy: 'Enerji', Materials: 'Malzeme', 'Real Estate': 'Gayrimenkul' };
 const strip = (h) => h.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&#160;|&nbsp;/g, ' ').replace(/\[\d+\]/g, '').trim();
 async function nasdaq100() {
@@ -300,10 +308,10 @@ async function main() {
   for (const u of uni) {
     const file = `${CO}/${u.t}.json`;
     const old = await readJSON(file, {});
-    const c = { ...old, t: u.t, cik: u.cik, name: u.name, sector: u.sector || old.sector || '' };
+    const c = { ...old, t: u.t, cik: u.cik, name: u.name, sector: u.sector || '' };
     try {
       const sub = await get(`https://data.sec.gov/submissions/CIK${pad(u.cik)}.json`);
-      c.sic = sub.sicDescription || c.sic; c.exchange = (sub.exchanges || [])[0]; c.website = sub.website || c.website; c.fye = sub.fiscalYearEnd;
+      c.sic = sub.sicDescription || c.sic; if (!u.sector) c.sector = sectorOf(sub.sic, u.t); c.exchange = (sub.exchanges || [])[0]; c.website = sub.website || c.website; c.fye = sub.fiscalYearEnd;
       c.filings = filingsOf(sub, u.cik);
       c.insiders = await insiders(sub, u.cik, old.insiders);
       if (MODE === 'all' || !old.fin) { c.fin = await financials(u.cik); }

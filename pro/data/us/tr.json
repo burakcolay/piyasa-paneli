@@ -1,6 +1,27 @@
 {
   "updated": "2026-10-10",
-  "about": {},
+  "about": {
+    "NVDA": "Yapay zekâ veri merkezlerinin çipini yapıyor. Gelirin büyük kısmı bulut şirketlerine ve büyük teknoloji firmalarına sattığı grafik işlemcileri ve bunları birbirine bağlayan ağ ürünlerinden geliyor; oyun kartları artık küçük bir parça.",
+    "AAPL": "iPhone başta olmak üzere Mac, iPad, saat ve kulaklık satıyor. Gelirin yarıdan fazlası iPhone'dan, en hızlı büyüyen ve en kârlı kısım ise App Store, iCloud ve ödeme gibi hizmetlerden geliyor.",
+    "GOOGL": "Google aramasının, YouTube'un ve Android'in sahibi. Gelirin çoğu bu ürünlerdeki reklamlardan geliyor; Google Cloud hızla büyüyen ikinci ayak, Waymo gibi yeni işler henüz küçük.",
+    "MSFT": "Kurumlara yazılım ve bulut hizmeti satıyor. En büyük ve en hızlı büyüyen iş Azure bulutu; Office 365 aboneliği, Windows, LinkedIn ve Xbox diğer gelir kalemleri.",
+    "AMZN": "Dünyanın en büyük internet perakendecisi ve en büyük bulut sağlayıcısı. Satış hacmi mağazadan gelse de kârın çoğunu AWS bulutu ve hızla büyüyen reklam işi üretiyor.",
+    "META": "Facebook, Instagram, WhatsApp ve Messenger'ın sahibi. Gelirin neredeyse tamamı bu uygulamalardaki reklamlardan; gözlük ve sanal gerçeklik yatırımları şimdilik zarar ediyor.",
+    "AVGO": "Yapay zekâ veri merkezleri için özel çipler ve ağ çipleri tasarlıyor; büyük teknoloji şirketlerine kendi çiplerini yapmalarında ortaklık ediyor. VMware satın alımıyla kurumsal yazılım da ikinci büyük ayak.",
+    "TSLA": "Elektrikli otomobil üretiyor; gelirin çoğu araç satışından. Ev ve şebeke ölçekli batarya depolama hızla büyüyor; değerlemenin büyük kısmı ise sürücüsüz taksi ve insansı robot beklentisine dayanıyor.",
+    "MU": "Bellek çipi üreticisi: bilgisayar, telefon ve veri merkezlerinin DRAM ve NAND belleklerini yapıyor. Yapay zekâ çiplerinin yanına takılan yüksek bant genişlikli bellek (HBM) son dönemin büyüme motoru.",
+    "AMD": "Bilgisayar ve sunucu işlemcileri ile yapay zekâ hızlandırıcıları tasarlıyor; üretimi TSMC yapıyor. Veri merkezi işi en büyük ve en hızlı büyüyen kalem, oyun konsolu çipleri de satıyor.",
+    "ASML": "Hollanda şirketi; en gelişmiş çiplerin üretiminde kullanılan litografi makinelerini dünyada tek başına yapıyor. Müşterileri TSMC, Samsung ve Intel gibi çip üreticileri.",
+    "INTC": "Bilgisayar ve sunucu işlemcisi üretiyor, aynı zamanda başkalarına çip üretme (dökümhane) işine girmeye çalışıyor. Son yıllarda pazar payı kaybı ve yüksek yatırım nedeniyle kâr baskı altında.",
+    "PLTR": "Devlet kurumlarına ve şirketlere veri analizi ve yapay zekâ yazılımı satıyor. Gelirin yaklaşık yarısı ABD hükümeti ve savunma tarafından, ticari müşteri tarafı hızla büyüyor.",
+    "CSCO": "Kurumların ağ altyapısını kuruyor: yönlendirici, anahtar, güvenlik ve iş birliği yazılımı. Gelirin büyük kısmı donanımdan, giderek artan payı aboneliklerden geliyor.",
+    "COST": "Üyelikle çalışan toptan perakende zinciri. Ürünleri çok düşük marjla satıyor; kârın büyük kısmı yıllık üyelik ücretlerinden geliyor.",
+    "AMAT": "Çip fabrikalarına üretim ekipmanı satan en büyük şirket: kaplama, aşındırma ve ölçüm makineleri. Çip üreticilerinin yatırım harcamalarına bağlı döngüsel bir iş.",
+    "LRCX": "Çip fabrikalarına aşındırma ve kaplama ekipmanı satıyor; bellek üreticileri en büyük müşterileri. Satışlar çip şirketlerinin yatırım döngüsüne bağlı.",
+    "NFLX": "Abonelikle dizi ve film yayını yapıyor. Gelirin neredeyse tamamı aylık aboneliklerden; reklamlı ucuz paket ve canlı yayın yeni büyüme alanları.",
+    "KLAC": "Çip üretiminde hata bulan ölçüm ve denetim makineleri yapıyor. Bu alanda pazarın yarısından fazlası onda, marjları sektörün en yükseklerinden.",
+    "PANW": "Siber güvenlik şirketi: kurumlara güvenlik duvarı, bulut güvenliği ve güvenlik operasyonu yazılımı satıyor. Gelirin giderek artan kısmı aboneliklerden geliyor."
+  },
   "notes": {},
   "news": {}
 }
