@@ -64,7 +64,17 @@ flowchart LR
 ### Bulgular
 Güncel sonuçlar her hafta [haftalık raporda](reports) ve sitenin Analiz sayfasında otomatik yenilenir.
 
-<!-- BULGULAR -->
+İlk çalıştırma (5 yıllık veri, 2026-10-09 kapanışı) sonuçları:
+
+| Soru | Bulgu |
+|---|---|
+| Getiriler normal dağılıyor mu? | Hayır. Nasdaq 100 günlük getirilerinde kalın kuyruk var; Jarque-Bera testi normalliği reddediyor. Oynaklıkla hesaplanan risk ölçüleri aşırı günleri olduğundan küçük gösterir. |
+| Bilanço günleri ne kadar oynak? | 894 bilançoda (91 şirket), açıklamayı izleyen iki günlük anormal hareket sıradan iki günlük dönemlerin **yaklaşık 2,8 katı**. |
+| İlk tepki sürüyor mu (PEAD)? | **Hayır.** İlk tepkisi olumlu ve olumsuz olan grupların sonraki iki aylık getirisi arasında fark yok (Welch p≈0,96; Spearman ρ≈0,02). Büyük ve çok takip edilen şirketlerde bilanço haberi hızla fiyatlanıyor. |
+| Yöneticiler alınca hisse yükseliyor mu? | 13 bağımsız alım olayında sonraki iki ayda piyasaya göre ortalama yaklaşık +18 puan, p<0,01. Ancak olaylar 2026'nın birkaç ayına yığılmış ve örnek küçük; **sonuç daha uzun bir dönemde doğrulanmalı**. Art arda yapılan alımlar tek olay sayıldı (37 bildirim → 13 olay); bu yapılmasaydı anlamlılık yapay olarak şişecekti. |
+| İlişkiler sabit mi? | Hayır. 10 yıllık faiz ile Nasdaq 100 arasındaki ilişki bir yılda belirgin zayıfladı, uzun vadeli tahvil ile Nasdaq 100 ise daha çok birlikte hareket etmeye başladı. Tahvilin hisseye karşı çeşitlendirme gücü azaldı. |
+
+<div align="center"><img src="docs/analiz.png" alt="Analiz sayfası" width="900"></div>
 
 ### Sınırlamalar
 - Evren bugünkü Nasdaq 100: geçmişte endeksten çıkan şirketler yok (hayatta kalma yanlılığı).
