@@ -101,3 +101,43 @@ export function scenario(title) {
   const r = SC.find(([re]) => re.test(title));
   return r ? { aT: r[1], a: r[2], bT: r[3], b: r[4] } : null;
 }
+
+/* ---- v2 karolar: büyük rakam + momentum çubukları + tek satır neden ---- */
+import { ICON, liveOf as _lv } from './core.js';
+const TILE = {
+  abd: { key: 'ndx', label: 'Nasdaq 100', row: 'Nasdaq 100', ticker: 'Nasdaq 100', d: 0 },
+  bist: { key: 'xu100', label: 'BIST 100', row: 'Türkiye (TUR ETF, $)', rowLabel: 'TUR ETF $', ticker: 'BIST 100', d: 0 },
+  kripto: { key: 'c:btc', label: 'Bitcoin', row: 'Bitcoin', ticker: 'Bitcoin', d: 0, pre: '$' },
+  emtia: { key: 'gramgold', label: 'Gram altın', row: 'Altın', rowLabel: 'Ons altın', ticker: 'Ons altın', d: 0, suf: ' ₺' },
+  dunya: { key: 'dax', label: 'DAX', row: 'DAX', d: 0 },
+  faiz: { key: 'us10y', label: 'ABD 10 yıllık', row: '10 yıllık', ticker: 'ABD 10Y', d: 2, pre: '%', bp: true },
+};
+export function momHTML(D, id) {
+  const T = TILE[id]; let row, unit = 'pct';
+  for (const g of D.kuresel?.groups || []) { const r = g.rows.find((x) => x.name === T.row); if (r) { row = r; unit = g.unit; break; } }
+  if (!row) return '';
+  const vals = [['1g', row.d1], ['1h', row.w1], ['1a', row.m1], ['YB', row.ytd]];
+  const max = Math.max(...vals.map(([, v]) => Math.abs(v || 0)), unit === 'bp' ? 10 : 1);
+  return `<div class="mom" title="${esc(T.rowLabel || T.row)}: 1 gün, 1 hafta, 1 ay, yılbaşından">${vals.map(([l, v]) => {
+    const h = v == null ? 0 : Math.sqrt(Math.abs(v) / max) * 46; const good = unit === 'bp' ? v < 0 : v > 0;
+    return `<div><span class="bar"><i style="${v >= 0 ? `bottom:50%` : `top:50%`};height:${Math.max(h, v ? 8 : 0)}%;background:${v == null ? 'transparent' : good ? 'var(--up)' : 'var(--down)'};opacity:.75"></i></span><small>${l} <span class="v">${v == null ? '–' : unit === 'bp' ? `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v)}` : `${v > 0 ? '+' : v < 0 ? '−' : ''}${num(Math.abs(v), Math.abs(v) >= 10 ? 0 : 1)}`}</span></small></div>`; }).join('')}</div>`;
+}
+export function whyHTML(chain) {
+  if (!chain?.length) return '';
+  const a = chain[0], b = chain.at(-1);
+  return `<div class="why"><span>${esc(a)}</span>${chain.length > 1 ? `<span class="ar">→</span><b>${esc(b)}</b>` : ''}</div>`;
+}
+export function tileHTML(id, D, L, m) {
+  const T = TILE[id], lv = _lv(L, T.key);
+  let big = '—', chg = null;
+  if (lv?.price != null) { big = `${T.pre || ''}${num(lv.price, T.d)}${T.suf || ''}`; chg = lv.chg; }
+  else { const t = (D.tickers || []).find((x) => x.name === T.ticker); if (t) big = t.value; }
+  const S = story(id, D);
+  const chain = S.chain?.length ? S.chain : null;
+  return `<a class="tile glass" href="piyasa.html?m=${id}">
+    <div class="tile-h">${ICON[m.icon]}${esc(m.name)}<span class="arrow">›</span></div>
+    <div><div class="big">${esc(big)}</div><div class="sub" style="margin-top:6px"><span class="badge-chg ${tone(chg)}">${chg != null ? pct(chg, 2) : 'sabah'}</span><span>${esc(T.label)}</span></div></div>
+    ${momHTML(D, id)}
+    ${chain ? whyHTML(chain) : `<div class="why">${esc(S.title || '')}</div>`}
+  </a>`;
+}
